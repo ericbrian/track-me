@@ -5,6 +5,9 @@ import UIKit
 import BackgroundTasks
 
 class LocationManager: NSObject, ObservableObject {
+    private var phoneConnectivity: PhoneConnectivityManager? {
+        PhoneConnectivityManager.shared
+    }
     private let locationManager = CLLocationManager()
     private var persistenceController = PersistenceController.shared
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
@@ -40,8 +43,10 @@ class LocationManager: NSObject, ObservableObject {
             do {
                 try context.save()
                 print("Recovered orphaned active sessions on launch.")
+                phoneConnectivity?.sendStatusUpdateToWatch()
             } catch {
                 print("Failed to recover orphaned sessions: \(error)")
+                phoneConnectivity?.sendStatusUpdateToWatch()
             }
         }
     }
@@ -124,6 +129,7 @@ class LocationManager: NSObject, ObservableObject {
         guard authorizationStatus == .authorizedAlways else {
             requestLocationPermission()
             trackingStartError = "Location permission is not set to 'Always'. Please enable it in Settings."
+            phoneConnectivity?.sendStatusUpdateToWatch()
             return
         }
 
@@ -135,6 +141,7 @@ class LocationManager: NSObject, ObservableObject {
         if let activeSessions = try? context.fetch(fetchRequest), activeSessions.first != nil {
             print("An active tracking session already exists. Only one tracker allowed at a time.")
             trackingStartError = "A tracker is already running. Please stop it before starting a new one."
+            phoneConnectivity?.sendStatusUpdateToWatch()
             return
         }
 
@@ -156,9 +163,11 @@ class LocationManager: NSObject, ObservableObject {
             locationCount = 0
             // Notify Watch about tracking state change
             NotificationCenter.default.post(name: NSNotification.Name("TrackingStateChanged"), object: nil)
+            phoneConnectivity?.sendStatusUpdateToWatch()
         } catch {
             print("Error creating tracking session: \(error)")
             trackingStartError = "Failed to save tracking session. Please try again."
+            phoneConnectivity?.sendStatusUpdateToWatch()
             return
         }
 
@@ -223,8 +232,10 @@ class LocationManager: NSObject, ObservableObject {
             isTracking = false
             // Notify Watch about tracking state change
             NotificationCenter.default.post(name: NSNotification.Name("TrackingStateChanged"), object: nil)
+            phoneConnectivity?.sendStatusUpdateToWatch()
         } catch {
             print("Error ending tracking session: \(error)")
+            phoneConnectivity?.sendStatusUpdateToWatch()
             // Optionally, add error feedback for the user here
             return
         }
