@@ -1,5 +1,6 @@
 import SwiftUI
 import CoreData
+import CoreLocation
 
 struct HistoryView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -370,7 +371,7 @@ struct LocationRowView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text("Lat: \(location.latitude, specifier: "%.6f"), Long: \(location.longitude, specifier: "%.6f")")
                     .font(.caption)
-                    .fontFamily(.monospaced)
+                    .monospaced()
                 
                 HStack {
                     Text("Accuracy: ±\(Int(location.accuracy))m")

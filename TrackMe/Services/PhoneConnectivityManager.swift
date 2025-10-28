@@ -3,6 +3,8 @@ import WatchConnectivity
 import UIKit
 
 class PhoneConnectivityManager: NSObject, ObservableObject {
+    static let shared = PhoneConnectivityManager()
+    
     @Published var isWatchConnected = false
     
     private var session: WCSession?
