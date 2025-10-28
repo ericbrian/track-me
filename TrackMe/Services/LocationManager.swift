@@ -28,6 +28,8 @@ class LocationManager: NSObject, ObservableObject {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.distanceFilter = 5 // Update every 5 meters
         locationManager.pausesLocationUpdatesAutomatically = false
+        locationManager.activityType = .otherNavigation // travel app
+        locationManager.showsBackgroundLocationIndicator = true
         
         // Note: allowsBackgroundLocationUpdates should only be set when tracking starts
         // and after authorization is granted
@@ -125,8 +127,13 @@ class LocationManager: NSObject, ObservableObject {
             return
         }
         
-        // Enable background location updates only when tracking
-        locationManager.allowsBackgroundLocationUpdates = true
+        // Enable background location updates only when tracking and on real device
+        // Simulator has limitations with background location
+        #if !targetEnvironment(simulator)
+        if authorizationStatus == .authorizedAlways {
+            locationManager.allowsBackgroundLocationUpdates = true
+        }
+        #endif
         
         // Start location updates
         locationManager.startUpdatingLocation()
@@ -163,7 +170,9 @@ class LocationManager: NSObject, ObservableObject {
         locationManager.stopMonitoringSignificantLocationChanges()
         
         // Disable background location updates when not tracking
+        #if !targetEnvironment(simulator)
         locationManager.allowsBackgroundLocationUpdates = false
+        #endif
         
         let context = persistenceController.container.viewContext
         session.endDate = Date()
