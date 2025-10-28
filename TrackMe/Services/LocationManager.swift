@@ -36,6 +36,7 @@ class LocationManager: NSObject, ObservableObject {
                 showSettingsSuggestion = true
             }
         }
+    }
 
     /// Mark any orphaned active sessions as inactive on app launch
     private func recoverOrphanedSessions() {
