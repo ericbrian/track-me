@@ -10,7 +10,7 @@
 		7C8E9F2A2B4A1B3C00123456 /* TrackMeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F292B4A1B3C00123456 /* TrackMeApp.swift */; };
 		7C8E9F2C2B4A1B3C00123456 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F2B2B4A1B3C00123456 /* ContentView.swift */; };
 		7C8E9F2E2B4A1B3D00123456 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8E9F2D2B4A1B3D00123456 /* Assets.xcassets */; };
-		7C8E9F312B4A1B3D00123456 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8E9F302B4A1B3D00123456 /* Preview Assets.xcassets */; };
+		7C8E9F312B4A1B3D00123456 /* Preview Content/Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8E9F302B4A1B3D00123456 /* Preview Content/Preview Assets.xcassets */; };
 		7C8E9F332B4A1B3D00123456 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F322B4A1B3D00123456 /* Persistence.swift */; };
 		7C8E9F362B4A1B3D00123456 /* TrackMe.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F342B4A1B3D00123456 /* TrackMe.xcdatamodeld */; };
 		7C8E9F3E2B4A1C1000123456 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F3D2B4A1C1000123456 /* LocationManager.swift */; };
@@ -18,13 +18,10 @@
 		7C8E9F422B4A1C3000123456 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F412B4A1C3000123456 /* HistoryView.swift */; };
 		7C8E9F442B4A1C4000123456 /* TripMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F432B4A1C4000123456 /* TripMapView.swift */; };
 		7C8E9F462B4A1C5000123456 /* PhoneConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F452B4A1C5000123456 /* PhoneConnectivityManager.swift */; };
-		
-		/* Watch App */
-		7C8E9F462B4A1C5000123456 /* Info.plist in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F452B4A1C5000123456 /* Info.plist */; };
 		7C8E9F502B4A1D1000123456 /* TrackMe_Watch_AppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F4F2B4A1D1000123456 /* TrackMe_Watch_AppApp.swift */; };
 		7C8E9F522B4A1D1000123456 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F512B4A1D1000123456 /* ContentView.swift */; };
 		7C8E9F542B4A1D1000123456 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8E9F532B4A1D1000123456 /* Assets.xcassets */; };
-		7C8E9F572B4A1D1000123456 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8E9F562B4A1D1000123456 /* Preview Assets.xcassets */; };
+		7C8E9F572B4A1D1000123456 /* Preview Content/Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8E9F562B4A1D1000123456 /* Preview Content/Preview Assets.xcassets */; };
 		7C8E9F592B4A1D2000123456 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F582B4A1D2000123456 /* WatchConnectivityManager.swift */; };
 		7C8E9F5B2B4A1D3000123456 /* TrackingControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F5A2B4A1D3000123456 /* TrackingControlView.swift */; };
 		7C8E9F5D2B4A1D4000123456 /* SessionStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F5C2B4A1D4000123456 /* SessionStatusView.swift */; };
@@ -36,7 +33,7 @@
 		7C8E9F292B4A1B3C00123456 /* TrackMeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMeApp.swift; sourceTree = "<group>"; };
 		7C8E9F2B2B4A1B3C00123456 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7C8E9F2D2B4A1B3D00123456 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		7C8E9F302B4A1B3D00123456 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Content/Preview Assets.xcassets"; sourceTree = "<group>"; };
+		7C8E9F302B4A1B3D00123456 /* Preview Content/Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Content/Preview Assets.xcassets"; sourceTree = "<group>"; };
 		7C8E9F322B4A1B3D00123456 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		7C8E9F352B4A1B3D00123456 /* TrackMe.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TrackMe.xcdatamodel; sourceTree = "<group>"; };
 		7C8E9F3D2B4A1C1000123456 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
@@ -48,7 +45,7 @@
 		7C8E9F4F2B4A1D1000123456 /* TrackMe_Watch_AppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMe_Watch_AppApp.swift; sourceTree = "<group>"; };
 		7C8E9F512B4A1D1000123456 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7C8E9F532B4A1D1000123456 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		7C8E9F562B4A1D1000123456 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Content/Preview Assets.xcassets"; sourceTree = "<group>"; };
+		7C8E9F562B4A1D1000123456 /* Preview Content/Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Content/Preview Assets.xcassets"; sourceTree = "<group>"; };
 		7C8E9F582B4A1D2000123456 /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
 		7C8E9F5A2B4A1D3000123456 /* TrackingControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingControlView.swift; sourceTree = "<group>"; };
 		7C8E9F5C2B4A1D4000123456 /* SessionStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStatusView.swift; sourceTree = "<group>"; };
@@ -108,7 +105,7 @@
 		7C8E9F2F2B4A1B3D00123456 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				7C8E9F302B4A1B3D00123456 /* Preview Assets.xcassets */,
+				7C8E9F302B4A1B3D00123456 /* Preview Content/Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -157,7 +154,7 @@
 		7C8E9F552B4A1D1000123456 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				7C8E9F562B4A1D1000123456 /* Preview Assets.xcassets */,
+				7C8E9F562B4A1D1000123456 /* Preview Content/Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -258,7 +255,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7C8E9F312B4A1B3D00123456 /* Preview Assets.xcassets in Resources */,
+				7C8E9F312B4A1B3D00123456 /* Preview Content/Preview Assets.xcassets in Resources */,
 				7C8E9F2E2B4A1B3D00123456 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -267,7 +264,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7C8E9F572B4A1D1000123456 /* Preview Assets.xcassets in Resources */,
+				7C8E9F572B4A1D1000123456 /* Preview Content/Preview Assets.xcassets in Resources */,
 				7C8E9F542B4A1D1000123456 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -433,8 +430,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"TrackMe/Preview Content\"";
+				DEVELOPMENT_TEAM = ATXPKWAZ8W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_BGTaskSchedulerPermittedIdentifiers = "com.ericbrian.TrackMe.background-location com.ericbrian.TrackMe.data-sync";
 				INFOPLIST_KEY_CFBundleDisplayName = "Track Me Go";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "This app needs location access to track your movements and provide accurate GPS tracking data.";
@@ -446,7 +445,6 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_BGTaskSchedulerPermittedIdentifiers = "com.ericbrian.TrackMe.background-location com.ericbrian.TrackMe.data-sync";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -469,8 +467,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"TrackMe/Preview Content\"";
+				DEVELOPMENT_TEAM = ATXPKWAZ8W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_BGTaskSchedulerPermittedIdentifiers = "com.ericbrian.TrackMe.background-location com.ericbrian.TrackMe.data-sync";
 				INFOPLIST_KEY_CFBundleDisplayName = "Track Me Go";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "This app needs location access to track your movements and provide accurate GPS tracking data.";
@@ -482,7 +482,6 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_BGTaskSchedulerPermittedIdentifiers = "com.ericbrian.TrackMe.background-location com.ericbrian.TrackMe.data-sync";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
