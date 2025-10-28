@@ -7,6 +7,7 @@ struct TrackingView: View {
     @State private var showingNarrativeInput = false
     @State private var appState = UIApplication.shared.applicationState
     @State private var showTrackingErrorAlert = false
+    @State private var showSettingsAlert = false
     
     // Computed properties to simplify type-checking
     private var statusGradientColors: [Color] {
@@ -335,6 +336,26 @@ struct TrackingView: View {
                     dismissButton: .default(Text("OK")) {
                         // Clear error after showing
                         locationManager.trackingStartError = nil
+                    }
+                )
+            }
+            .onReceive(locationManager.$showSettingsSuggestion) { show in
+                if show {
+                    showSettingsAlert = true
+                }
+            }
+            .alert(isPresented: $showSettingsAlert) {
+                Alert(
+                    title: Text("Enable 'Always' Location in Settings"),
+                    message: Text("You've denied 'Always' location permission multiple times. Please enable it manually in Settings > Privacy > Location Services > TrackMe."),
+                    primaryButton: .default(Text("Open Settings")) {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                        locationManager.showSettingsSuggestion = false
+                    },
+                    secondaryButton: .cancel {
+                        locationManager.showSettingsSuggestion = false
                     }
                 )
             }

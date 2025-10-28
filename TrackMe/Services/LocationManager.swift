@@ -5,6 +5,8 @@ import UIKit
 import BackgroundTasks
 
 class LocationManager: NSObject, ObservableObject {
+    private let deniedAlwaysKey = "TrackMeDeniedAlwaysCount"
+    @Published var showSettingsSuggestion = false
     private var phoneConnectivity: PhoneConnectivityManager? {
         PhoneConnectivityManager.shared
     }
@@ -27,7 +29,11 @@ class LocationManager: NSObject, ObservableObject {
         recoverOrphanedSessions()
         // Prompt for Always permission on launch if not already granted
         if authorizationStatus != .authorizedAlways {
-            requestLocationPermission()
+            if UserDefaults.standard.integer(forKey: deniedAlwaysKey) < 2 {
+                requestLocationPermission()
+            } else {
+                showSettingsSuggestion = true
+            }
         }
 
     /// Mark any orphaned active sessions as inactive on app launch
@@ -327,12 +333,23 @@ extension LocationManager: CLLocationManagerDelegate {
         switch status {
         case .authorizedAlways:
             print("Location permission granted for always")
+            UserDefaults.standard.set(0, forKey: deniedAlwaysKey)
+            showSettingsSuggestion = false
         case .authorizedWhenInUse:
             print("Location permission granted for when in use")
             // Always request 'Always' authorization if not already granted
-            manager.requestAlwaysAuthorization()
+            if UserDefaults.standard.integer(forKey: deniedAlwaysKey) < 2 {
+                manager.requestAlwaysAuthorization()
+            } else {
+                showSettingsSuggestion = true
+            }
         case .denied, .restricted:
             print("Location permission denied")
+            let deniedCount = UserDefaults.standard.integer(forKey: deniedAlwaysKey) + 1
+            UserDefaults.standard.set(deniedCount, forKey: deniedAlwaysKey)
+            if deniedCount >= 2 {
+                showSettingsSuggestion = true
+            }
             if isTracking {
                 stopTracking()
             }
