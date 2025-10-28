@@ -50,7 +50,7 @@ class PhoneConnectivityManager: NSObject, ObservableObject {
         sendStatusUpdateToWatch()
     }
     
-    private func sendStatusUpdateToWatch() {
+    func sendStatusUpdateToWatch() {
         guard let session = session,
               session.isPaired && session.isWatchAppInstalled,
               let locationManager = locationManager else { return }
