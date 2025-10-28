@@ -18,20 +18,25 @@ struct TripMapView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                // Map View
-                Map(coordinateRegion: $region, annotationItems: locations, annotationContent: { location in
-                    MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)) {
-                        LocationPin(
-                            location: location,
-                            isSelected: selectedLocation?.id == location.id,
-                            isStart: isStartLocation(location),
-                            isEnd: isEndLocation(location)
-                        )
-                        .onTapGesture {
-                            selectedLocation = location
+                // Map View - Modern iOS 17+ API
+                Map(position: .constant(.region(region))) {
+                    ForEach(locations, id: \.id) { location in
+                        Annotation(
+                            "",
+                            coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
+                        ) {
+                            LocationPin(
+                                location: location,
+                                isSelected: selectedLocation?.id == location.id,
+                                isStart: isStartLocation(location),
+                                isEnd: isEndLocation(location)
+                            )
+                            .onTapGesture {
+                                selectedLocation = location
+                            }
                         }
                     }
-                })
+                }
                 .overlay(
                     // Route overlay
                     RouteOverlay(coordinates: coordinates, showRoute: showingRoute)
