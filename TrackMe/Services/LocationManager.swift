@@ -58,8 +58,6 @@ class LocationManager: NSObject, ObservableObject {
             }
         }
     }
-    }
-    
     
     private func setupLocationManager() {
         locationManager.delegate = self
