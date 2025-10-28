@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs location access to track your movements and provide accurate GPS tracking data.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app needs always location access to track your movements even when the app is in the background.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs location access to track your movements when you're using the app.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+		<string>background-processing</string>
+		<string>background-fetch</string>
+	</array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.ericbrian.TrackMe.background-location</string>
+		<string>com.ericbrian.TrackMe.data-sync</string>
+	</array>
+	<key>CFBundleDisplayName</key>
+	<string>TrackMe</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.ericbrian.TrackMe</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+</dict>
+</plist>
