@@ -132,12 +132,14 @@ class LocationManager: NSObject, ObservableObject {
         #if !targetEnvironment(simulator)
         if authorizationStatus == .authorizedAlways {
             locationManager.allowsBackgroundLocationUpdates = true
+        } else {
+            locationManager.allowsBackgroundLocationUpdates = false
         }
         #endif
-        
+
         // Start location updates
         locationManager.startUpdatingLocation()
-        
+
         // Also monitor significant location changes for better background performance
         locationManager.startMonitoringSignificantLocationChanges()
         
