@@ -21,6 +21,10 @@ struct ContentView: View {
         }
         .onAppear {
             phoneConnectivity.setLocationManager(locationManager)
+            // Defer heavy setup until after UI appears
+            DispatchQueue.main.async {
+                locationManager.asyncSetup()
+            }
         }
     }
 }

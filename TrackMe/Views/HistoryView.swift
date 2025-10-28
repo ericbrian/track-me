@@ -6,8 +6,17 @@ struct HistoryView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \TrackingSession.startDate, ascending: false)],
-        animation: .default)
+        predicate: nil,
+        animation: .default
+    )
     private var sessions: FetchedResults<TrackingSession>
+
+    init() {
+        let request = TrackingSession.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \TrackingSession.startDate, ascending: false)]
+        request.fetchLimit = 20
+        _sessions = FetchRequest(fetchRequest: request, animation: .default)
+    }
     
     @State private var selectedSession: TrackingSession?
     @State private var showingSessionDetail = false

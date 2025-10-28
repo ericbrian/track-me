@@ -24,37 +24,54 @@ class LocationManager: NSObject, ObservableObject {
     
     override init() {
         super.init()
+        // Defer heavy setup to asyncSetup()
+    }
+
+    /// Call this after UI appears to perform heavy setup
+    func asyncSetup() {
         setupLocationManager()
         setupBackgroundTasks()
-        authorizationStatus = locationManager.authorizationStatus
-        recoverOrphanedSessions()
+        DispatchQueue.main.async {
+            self.authorizationStatus = self.locationManager.authorizationStatus
+        }
+        // Run orphaned session recovery asynchronously to avoid blocking UI
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.recoverOrphanedSessions()
+        }
         // Prompt for Always permission on launch if not already granted
-        if authorizationStatus != .authorizedAlways {
+        if locationManager.authorizationStatus != .authorizedAlways {
             if UserDefaults.standard.integer(forKey: deniedAlwaysKey) < 2 {
-                requestLocationPermission()
+                self.requestLocationPermission()
             } else {
-                showSettingsSuggestion = true
+                DispatchQueue.main.async {
+                    self.showSettingsSuggestion = true
+                }
             }
         }
     }
 
     /// Mark any orphaned active sessions as inactive on app launch
     private func recoverOrphanedSessions() {
-        let context = persistenceController.container.viewContext
+        let context = persistenceController.container.newBackgroundContext()
         let fetchRequest: NSFetchRequest<TrackingSession> = TrackingSession.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "isActive == YES")
-        if let orphaned = try? context.fetch(fetchRequest), !orphaned.isEmpty {
-            for session in orphaned {
-                session.isActive = false
-                session.endDate = Date()
-            }
-            do {
+        do {
+            let orphaned = try context.fetch(fetchRequest)
+            if !orphaned.isEmpty {
+                for session in orphaned {
+                    session.isActive = false
+                    session.endDate = Date()
+                }
                 try context.save()
                 print("Recovered orphaned active sessions on launch.")
-                phoneConnectivity?.sendStatusUpdateToWatch()
-            } catch {
-                print("Failed to recover orphaned sessions: \(error)")
-                phoneConnectivity?.sendStatusUpdateToWatch()
+                DispatchQueue.main.async {
+                    self.phoneConnectivity?.sendStatusUpdateToWatch()
+                }
+            }
+        } catch {
+            print("Failed to recover orphaned sessions: \(error)")
+            DispatchQueue.main.async {
+                self.phoneConnectivity?.sendStatusUpdateToWatch()
             }
         }
     }
@@ -186,8 +203,9 @@ class LocationManager: NSObject, ObservableObject {
 
         // Enable background location updates only if background mode is enabled and authorizedAlways is granted
         #if !targetEnvironment(simulator)
-        if Bundle.main.infoDictionary?["UIBackgroundModes"] as? [String] ?? [].contains("location") &&
-            authorizationStatus == .authorizedAlways {
+        if let modes = Bundle.main.infoDictionary?["UIBackgroundModes"] as? [String],
+           modes.contains("location"),
+           authorizationStatus == .authorizedAlways {
             locationManager.allowsBackgroundLocationUpdates = true
         } else {
             locationManager.allowsBackgroundLocationUpdates = false
