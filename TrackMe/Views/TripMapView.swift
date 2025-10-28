@@ -5,14 +5,11 @@ import CoreData
 struct TripMapView: View {
     let session: TrackingSession
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.managedObjectContext) private var viewContext
     @State private var region = MKCoordinateRegion()
     @State private var showingRoute = true
     @State private var selectedLocation: LocationEntry?
-    
-    private var locations: [LocationEntry] {
-        let locationArray = session.locations?.allObjects as? [LocationEntry] ?? []
-        return locationArray.sorted { ($0.timestamp ?? Date.distantPast) < ($1.timestamp ?? Date.distantPast) }
-    }
+    @State private var locations: [LocationEntry] = []
     
     private var coordinates: [CLLocationCoordinate2D] {
         locations.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
@@ -40,7 +37,7 @@ struct TripMapView: View {
                     RouteOverlay(coordinates: coordinates, showRoute: showingRoute)
                 )
                 .onAppear {
-                    setupInitialRegion()
+                    fetchLocations()
                 }
                 
                 // Control panel
@@ -150,24 +147,33 @@ struct TripMapView: View {
             )
         }
     }
+
+    private func fetchLocations() {
+        let fetchRequest: NSFetchRequest<LocationEntry> = LocationEntry.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "session == %@", session)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: true)]
+        do {
+            let fetched = try viewContext.fetch(fetchRequest)
+            self.locations = fetched
+            setupInitialRegion()
+        } catch {
+            print("Failed to fetch locations for session: \(error)")
+            self.locations = []
+        }
+    }
     
     private func setupInitialRegion() {
         guard !locations.isEmpty else { return }
-        
         let latitudes = locations.map { $0.latitude }
         let longitudes = locations.map { $0.longitude }
-        
         let minLat = latitudes.min() ?? 0
         let maxLat = latitudes.max() ?? 0
         let minLon = longitudes.min() ?? 0
         let maxLon = longitudes.max() ?? 0
-        
         let centerLat = (minLat + maxLat) / 2
         let centerLon = (minLon + maxLon) / 2
-        
         let spanLat = max(maxLat - minLat, 0.01) * 1.2
         let spanLon = max(maxLon - minLon, 0.01) * 1.2
-        
         region = MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: centerLat, longitude: centerLon),
             span: MKCoordinateSpan(latitudeDelta: spanLat, longitudeDelta: spanLon)
