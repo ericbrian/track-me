@@ -6,6 +6,7 @@ struct TrackingView: View {
     @State private var narrative = ""
     @State private var showingNarrativeInput = false
     @State private var appState = UIApplication.shared.applicationState
+    @State private var showTrackingErrorAlert = false
     
     // Computed properties to simplify type-checking
     private var statusGradientColors: [Color] {
@@ -316,8 +317,26 @@ struct TrackingView: View {
             .sheet(isPresented: $showingNarrativeInput) {
                 NarrativeInputView(narrative: $narrative) {
                     locationManager.startTracking(with: narrative)
-                    narrative = ""
+                    // Only close the sheet if tracking actually started
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        if locationManager.trackingStartError == nil {
+                            showingNarrativeInput = false
+                            narrative = ""
+                        } else {
+                            showTrackingErrorAlert = true
+                        }
+                    }
                 }
+            }
+            .alert(isPresented: $showTrackingErrorAlert) {
+                Alert(
+                    title: Text("Unable to Start Tracking"),
+                    message: Text(locationManager.trackingStartError ?? "Unknown error"),
+                    dismissButton: .default(Text("OK")) {
+                        // Clear error after showing
+                        locationManager.trackingStartError = nil
+                    }
+                )
             }
             .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
                 appState = .background

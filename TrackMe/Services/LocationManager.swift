@@ -14,6 +14,7 @@ class LocationManager: NSObject, ObservableObject {
     @Published var currentLocation: CLLocation?
     @Published var currentSession: TrackingSession?
     @Published var locationCount = 0
+    @Published var trackingStartError: String?
     
     override init() {
         super.init()
@@ -102,6 +103,7 @@ class LocationManager: NSObject, ObservableObject {
     func startTracking(with narrative: String) {
         guard authorizationStatus == .authorizedAlways else {
             requestLocationPermission()
+            trackingStartError = "Location permission is not set to 'Always'. Please enable it in Settings."
             return
         }
 
@@ -112,7 +114,7 @@ class LocationManager: NSObject, ObservableObject {
         fetchRequest.fetchLimit = 1
         if let activeSessions = try? context.fetch(fetchRequest), activeSessions.first != nil {
             print("An active tracking session already exists. Only one tracker allowed at a time.")
-            // Optionally, notify the user here (e.g., via NotificationCenter or a published property)
+            trackingStartError = "A tracker is already running. Please stop it before starting a new one."
             return
         }
 
