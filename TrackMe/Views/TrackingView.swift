@@ -237,32 +237,31 @@ struct TrackingView: View {
                     // Control Buttons
                     VStack(spacing: 20) {
                         if !locationManager.isTracking {
-                            Button(action: {
-                                showingNarrativeInput = true
-                            }) {
-                                HStack(spacing: 12) {
-                                    Image(systemName: "play.circle.fill")
-                                        .font(.title2)
-                                    Text("Start Tracking")
-                                        .font(.title3)
-                                        .fontWeight(.semibold)
-                                }
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 56)
-                                .background(
-                                    LinearGradient(
-                                        gradient: Gradient(colors: [Color.green, Color.green.opacity(0.8)]),
-                                        startPoint: .leading,
-                                        endPoint: .trailing
+                            if locationManager.authorizationStatus == .authorizedAlways {
+                                Button(action: {
+                                    showingNarrativeInput = true
+                                }) {
+                                    HStack(spacing: 12) {
+                                        Image(systemName: "play.circle.fill")
+                                            .font(.title2)
+                                        Text("Start Tracking")
+                                            .font(.title3)
+                                            .fontWeight(.semibold)
+                                    }
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 56)
+                                    .background(
+                                        LinearGradient(
+                                            gradient: Gradient(colors: [Color.green, Color.green.opacity(0.8)]),
+                                            startPoint: .leading,
+                                            endPoint: .trailing
+                                        )
                                     )
-                                )
-                                .clipShape(RoundedRectangle(cornerRadius: 28))
-                                .shadow(color: Color.green.opacity(0.3), radius: 8, x: 0, y: 4)
+                                    .clipShape(RoundedRectangle(cornerRadius: 28))
+                                    .shadow(color: Color.green.opacity(0.3), radius: 8, x: 0, y: 4)
+                                }
                             }
-                            .disabled(locationManager.authorizationStatus != .authorizedAlways)
-                            .scaleEffect(locationManager.authorizationStatus != .authorizedAlways ? 0.95 : 1.0)
-                            .opacity(locationManager.authorizationStatus != .authorizedAlways ? 0.6 : 1.0)
                         } else {
                             Button(action: {
                                 locationManager.stopTracking()
@@ -288,10 +287,10 @@ struct TrackingView: View {
                                 .shadow(color: Color.red.opacity(0.3), radius: 8, x: 0, y: 4)
                             }
                         }
-                        
+
                         // Permission status
                         permissionStatusView
-                        
+
                         // Background tracking info
                         if locationManager.isTracking {
                             backgroundTrackingInfoView
