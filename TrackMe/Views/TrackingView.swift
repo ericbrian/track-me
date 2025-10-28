@@ -54,24 +54,27 @@ struct TrackingView: View {
             ScrollView {
                 VStack(spacing: 24) {
                     // --- Always Allow Notice ---
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack(spacing: 10) {
-                            Image(systemName: "exclamationmark.shield.fill")
-                                .foregroundColor(.red)
-                                .font(.title2)
-                            Text("'Always' Location Permission Required")
-                                .font(.headline)
-                                .fontWeight(.bold)
-                                .foregroundColor(.red)
+                    // Only show if permission is not "Always"
+                    if locationManager.authorizationStatus != .authorizedAlways {
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack(spacing: 10) {
+                                Image(systemName: "exclamationmark.shield.fill")
+                                    .foregroundColor(.red)
+                                    .font(.title2)
+                                Text("'Always' Location Permission Required")
+                                    .font(.headline)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.red)
+                            }
+                            Text("TrackMe requires 'Always Allow' location access to function correctly, including background tracking. Please grant 'Always' permission when prompted, or enable it in Settings > Privacy > Location Services > TrackMe.")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
                         }
-                        Text("TrackMe requires 'Always Allow' location access to function correctly, including background tracking. Please grant 'Always' permission when prompted, or enable it in Settings > Privacy > Location Services > TrackMe.")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                        .padding(16)
+                        .background(Color.red.opacity(0.07))
+                        .cornerRadius(12)
+                        .padding(.top, 8)
                     }
-                    .padding(16)
-                    .background(Color.red.opacity(0.07))
-                    .cornerRadius(12)
-                    .padding(.top, 8)
                     // Hero Status Section
                     VStack(spacing: 20) {
                         // Main status indicator
@@ -143,6 +146,35 @@ struct TrackingView: View {
                         }
                     }
                     .padding(.top, 20)
+                    
+                    // Stop/Start Button - Right after status
+                    if locationManager.isTracking {
+                        Button(action: {
+                            locationManager.stopTracking()
+                        }) {
+                            HStack(spacing: 12) {
+                                Image(systemName: "stop.circle.fill")
+                                    .font(.title2)
+                                Text("Stop Tracking")
+                                    .font(.title3)
+                                    .fontWeight(.semibold)
+                            }
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 56)
+                            .background(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [Color.red, Color.red.opacity(0.8)]),
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 28))
+                            .shadow(color: Color.red.opacity(0.3), radius: 8, x: 0, y: 4)
+                        }
+                        .padding(.horizontal, 20)
+                    }
+                    
                     // Statistics Cards
                     if locationManager.isTracking {
                         VStack(spacing: 16) {
@@ -258,35 +290,7 @@ struct TrackingView: View {
                     
                     // Control Buttons
                     VStack(spacing: 20) {
-                        if locationManager.isTracking {
-                            Button(action: {
-                                locationManager.stopTracking()
-                            }) {
-                                HStack(spacing: 12) {
-                                    Image(systemName: "stop.circle.fill")
-                                        .font(.title2)
-                                    Text("Stop Tracking")
-                                        .font(.title3)
-                                        .fontWeight(.semibold)
-                                }
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 56)
-                                .background(
-                                    LinearGradient(
-                                        gradient: Gradient(colors: [Color.red, Color.red.opacity(0.8)]),
-                                        startPoint: .leading,
-                                        endPoint: .trailing
-                                    )
-                                )
-                                .clipShape(RoundedRectangle(cornerRadius: 28))
-                                .shadow(color: Color.red.opacity(0.3), radius: 8, x: 0, y: 4)
-                            }
-                            Text("Stop the current tracker to start a new one.")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                                .multilineTextAlignment(.center)
-                        } else {
+                        if !locationManager.isTracking {
                             if locationManager.authorizationStatus == .authorizedAlways {
                                 Button(action: {
                                     showingNarrativeInput = true
