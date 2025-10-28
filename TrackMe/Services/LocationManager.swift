@@ -20,6 +20,10 @@ class LocationManager: NSObject, ObservableObject {
         setupLocationManager()
         setupBackgroundTasks()
         authorizationStatus = locationManager.authorizationStatus
+        // Prompt for Always permission on launch if not already granted
+        if authorizationStatus != .authorizedAlways {
+            requestLocationPermission()
+        }
     }
     
     
@@ -127,14 +131,16 @@ class LocationManager: NSObject, ObservableObject {
             return
         }
         
+        // Only proceed if authorizedAlways
+        guard authorizationStatus == .authorizedAlways else {
+            print("Not authorized for always location. Aborting startTracking.")
+            return
+        }
+
         // Enable background location updates only when tracking and on real device
         // Simulator has limitations with background location
         #if !targetEnvironment(simulator)
-        if authorizationStatus == .authorizedAlways {
-            locationManager.allowsBackgroundLocationUpdates = true
-        } else {
-            locationManager.allowsBackgroundLocationUpdates = false
-        }
+        locationManager.allowsBackgroundLocationUpdates = true
         #endif
 
         // Start location updates
@@ -275,14 +281,14 @@ extension LocationManager: CLLocationManagerDelegate {
         DispatchQueue.main.async {
             self.authorizationStatus = status
         }
-        
+
         switch status {
         case .authorizedAlways:
             print("Location permission granted for always")
         case .authorizedWhenInUse:
             print("Location permission granted for when in use")
-            // Request always authorization for background tracking
-            locationManager.requestAlwaysAuthorization()
+            // Always request 'Always' authorization if not already granted
+            manager.requestAlwaysAuthorization()
         case .denied, .restricted:
             print("Location permission denied")
             if isTracking {
