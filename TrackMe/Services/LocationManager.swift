@@ -261,6 +261,8 @@ class LocationManager: NSObject, ObservableObject {
             isTracking = false
             // Notify Watch about tracking state change
             NotificationCenter.default.post(name: NSNotification.Name("TrackingStateChanged"), object: nil)
+            // Notify app to refresh history
+            NotificationCenter.default.post(name: NSNotification.Name("HistoryShouldRefresh"), object: nil)
             phoneConnectivity?.sendStatusUpdateToWatch()
         } catch {
             print("Error ending tracking session: \(error)")
