@@ -236,7 +236,35 @@ struct TrackingView: View {
                     
                     // Control Buttons
                     VStack(spacing: 20) {
-                        if !locationManager.isTracking {
+                        if locationManager.isTracking {
+                            Button(action: {
+                                locationManager.stopTracking()
+                            }) {
+                                HStack(spacing: 12) {
+                                    Image(systemName: "stop.circle.fill")
+                                        .font(.title2)
+                                    Text("Stop Tracking")
+                                        .font(.title3)
+                                        .fontWeight(.semibold)
+                                }
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 56)
+                                .background(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [Color.red, Color.red.opacity(0.8)]),
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                )
+                                .clipShape(RoundedRectangle(cornerRadius: 28))
+                                .shadow(color: Color.red.opacity(0.3), radius: 8, x: 0, y: 4)
+                            }
+                            Text("Stop the current tracker to start a new one.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.center)
+                        } else {
                             if locationManager.authorizationStatus == .authorizedAlways {
                                 Button(action: {
                                     showingNarrativeInput = true
@@ -261,30 +289,6 @@ struct TrackingView: View {
                                     .clipShape(RoundedRectangle(cornerRadius: 28))
                                     .shadow(color: Color.green.opacity(0.3), radius: 8, x: 0, y: 4)
                                 }
-                            }
-                        } else {
-                            Button(action: {
-                                locationManager.stopTracking()
-                            }) {
-                                HStack(spacing: 12) {
-                                    Image(systemName: "stop.circle.fill")
-                                        .font(.title2)
-                                    Text("Stop Tracking")
-                                        .font(.title3)
-                                        .fontWeight(.semibold)
-                                }
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 56)
-                                .background(
-                                    LinearGradient(
-                                        gradient: Gradient(colors: [Color.red, Color.red.opacity(0.8)]),
-                                        startPoint: .leading,
-                                        endPoint: .trailing
-                                    )
-                                )
-                                .clipShape(RoundedRectangle(cornerRadius: 28))
-                                .shadow(color: Color.red.opacity(0.3), radius: 8, x: 0, y: 4)
                             }
                         }
 

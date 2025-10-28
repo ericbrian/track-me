@@ -104,25 +104,35 @@ class LocationManager: NSObject, ObservableObject {
             requestLocationPermission()
             return
         }
-        
+
+        // Prevent multiple active sessions
+        let context = persistenceController.container.viewContext
+        let fetchRequest: NSFetchRequest<TrackingSession> = TrackingSession.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "isActive == YES")
+        fetchRequest.fetchLimit = 1
+        if let activeSessions = try? context.fetch(fetchRequest), activeSessions.first != nil {
+            print("An active tracking session already exists. Only one tracker allowed at a time.")
+            // Optionally, notify the user here (e.g., via NotificationCenter or a published property)
+            return
+        }
+
         // Begin background task to ensure we don't get terminated
         beginBackgroundTask()
-        
+
         // Create new tracking session
-        let context = persistenceController.container.viewContext
         let session = TrackingSession(context: context)
         session.id = UUID()
         session.narrative = narrative
         session.startDate = Date()
         session.isActive = true
-        
+
         currentSession = session
         isTracking = true
         locationCount = 0
-        
+
         // Notify Watch about tracking state change
         NotificationCenter.default.post(name: NSNotification.Name("TrackingStateChanged"), object: nil)
-        
+
         // Save the session
         do {
             try context.save()
@@ -130,7 +140,7 @@ class LocationManager: NSObject, ObservableObject {
             print("Error creating tracking session: \(error)")
             return
         }
-        
+
         // Only proceed if authorizedAlways
         guard authorizationStatus == .authorizedAlways else {
             print("Not authorized for always location. Aborting startTracking.")
@@ -148,13 +158,13 @@ class LocationManager: NSObject, ObservableObject {
 
         // Also monitor significant location changes for better background performance
         locationManager.startMonitoringSignificantLocationChanges()
-        
+
         // Keep the app alive in background
         UIApplication.shared.isIdleTimerDisabled = true
-        
+
         // Schedule background tasks
         scheduleBackgroundLocationTask()
-        
+
         // Add app lifecycle observers
         NotificationCenter.default.addObserver(
             self,
@@ -162,7 +172,7 @@ class LocationManager: NSObject, ObservableObject {
             name: UIApplication.didEnterBackgroundNotification,
             object: nil
         )
-        
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(appWillEnterForeground),
