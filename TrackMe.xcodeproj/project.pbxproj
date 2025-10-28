@@ -527,8 +527,8 @@
 			);
 			currentVersion = 7C8E9F352B4A1B3D00123456 /* TrackMe.xcdatamodel */;
 			name = TrackMe.xcdatamodeld;
-			path = Data/TrackMe.xcdatamodeld;
-			sourceTree = "<group>";
+			path = TrackMe/Data/TrackMe.xcdatamodeld;
+			sourceTree = SOURCE_ROOT;
 			versionGroupType = wrapper.xcdatamodel;
 		};
 /* End XCVersionGroup section */
