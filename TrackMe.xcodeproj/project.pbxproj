@@ -7,23 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		076726E82EB18CCF00BEDA68 /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076726E72EB18CCF00BEDA68 /* ExportService.swift */; };
 		7C8E9F2A2B4A1B3C00123456 /* TrackMeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F292B4A1B3C00123456 /* TrackMeApp.swift */; };
-	7C8E9F2C2B4A1B3C00123456 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F2B2B4A1B3C00123456 /* ContentView.swift */; };
-	7C8E9F2E2B4A1B3D00123456 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8E9F2D2B4A1B3D00123456 /* Assets.xcassets */; };
-	7C8E9F312B4A1B3D00123456 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8E9F302B4A1B3D00123456 /* Preview Assets.xcassets */; };
-	7C8E9F332B4A1B3D00123456 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F322B4A1B3D00123456 /* Persistence.swift */; };
+		7C8E9F2C2B4A1B3C00123456 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F2B2B4A1B3C00123456 /* ContentView.swift */; };
+		7C8E9F2E2B4A1B3D00123456 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8E9F2D2B4A1B3D00123456 /* Assets.xcassets */; };
+		7C8E9F312B4A1B3D00123456 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8E9F302B4A1B3D00123456 /* Preview Assets.xcassets */; };
+		7C8E9F332B4A1B3D00123456 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F322B4A1B3D00123456 /* Persistence.swift */; };
 		7C8E9F362B4A1B3D00123456 /* TrackMe.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F342B4A1B3D00123456 /* TrackMe.xcdatamodeld */; };
 		7C8E9F3E2B4A1C1000123456 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F3D2B4A1C1000123456 /* LocationManager.swift */; };
 		7C8E9F402B4A1C2000123456 /* TrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F3F2B4A1C2000123456 /* TrackingView.swift */; };
 		7C8E9F422B4A1C3000123456 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F412B4A1C3000123456 /* HistoryView.swift */; };
 		7C8E9F442B4A1C4000123456 /* TripMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F432B4A1C4000123456 /* TripMapView.swift */; };
 		7C8E9F462B4A1C5000123456 /* PhoneConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F452B4A1C5000123456 /* PhoneConnectivityManager.swift */; };
-		7C8E9F482B4A1C6000123456 /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F472B4A1C6000123456 /* ExportService.swift */; };
 		7C8E9F502B4A1D1000123456 /* TrackMe_Watch_AppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F4F2B4A1D1000123456 /* TrackMe_Watch_AppApp.swift */; };
-	7C8E9F522B4A1D1000123456 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F512B4A1D1000123456 /* ContentView.swift */; };
-	7C8E9F542B4A1D1000123456 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8E9F532B4A1D1000123456 /* Assets.xcassets */; };
-	7C8E9F572B4A1D1000123456 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8E9F562B4A1D1000123456 /* Preview Assets.xcassets */; };
-	7C8E9F592B4A1D2000123456 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F582B4A1D2000123456 /* WatchConnectivityManager.swift */; };
+		7C8E9F522B4A1D1000123456 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F512B4A1D1000123456 /* ContentView.swift */; };
+		7C8E9F542B4A1D1000123456 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8E9F532B4A1D1000123456 /* Assets.xcassets */; };
+		7C8E9F572B4A1D1000123456 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8E9F562B4A1D1000123456 /* Preview Assets.xcassets */; };
+		7C8E9F592B4A1D2000123456 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F582B4A1D2000123456 /* WatchConnectivityManager.swift */; };
 		7C8E9F5B2B4A1D3000123456 /* TrackingControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F5A2B4A1D3000123456 /* TrackingControlView.swift */; };
 		7C8E9F5D2B4A1D4000123456 /* SessionStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F5C2B4A1D4000123456 /* SessionStatusView.swift */; };
 /* End PBXBuildFile section */
@@ -42,24 +42,23 @@
 		070366E42EB14C8600C2E1F4 /* TrackMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrackMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		070366E62EB14C8600C2E1F4 /* TrackMe Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TrackMe Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		07216F482EB170870091E25F /* TrackMeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackMeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		076726E72EB18CCF00BEDA68 /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
 		7C8E9F292B4A1B3C00123456 /* TrackMeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMeApp.swift; sourceTree = "<group>"; };
-	7C8E9F2B2B4A1B3C00123456 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-	7C8E9F2D2B4A1B3D00123456 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-	7C8E9F302B4A1B3D00123456 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-	7C8E9F322B4A1B3D00123456 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		7C8E9F2B2B4A1B3C00123456 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		7C8E9F2D2B4A1B3D00123456 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7C8E9F302B4A1B3D00123456 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		7C8E9F322B4A1B3D00123456 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		7C8E9F352B4A1B3D00123456 /* TrackMe.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TrackMe.xcdatamodel; sourceTree = "<group>"; };
 		7C8E9F3D2B4A1C1000123456 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		7C8E9F3F2B4A1C2000123456 /* TrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingView.swift; sourceTree = "<group>"; };
 		7C8E9F412B4A1C3000123456 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		7C8E9F432B4A1C4000123456 /* TripMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripMapView.swift; sourceTree = "<group>"; };
 		7C8E9F452B4A1C5000123456 /* PhoneConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneConnectivityManager.swift; sourceTree = "<group>"; };
-		7C8E9F472B4A1C6000123456 /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
-		7C8E9F492B4A1C6100123456 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7C8E9F4F2B4A1D1000123456 /* TrackMe_Watch_AppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMe_Watch_AppApp.swift; sourceTree = "<group>"; };
-	7C8E9F512B4A1D1000123456 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-	7C8E9F532B4A1D1000123456 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-	7C8E9F562B4A1D1000123456 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-	7C8E9F582B4A1D2000123456 /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
+		7C8E9F512B4A1D1000123456 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		7C8E9F532B4A1D1000123456 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7C8E9F562B4A1D1000123456 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		7C8E9F582B4A1D2000123456 /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
 		7C8E9F5A2B4A1D3000123456 /* TrackingControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingControlView.swift; sourceTree = "<group>"; };
 		7C8E9F5C2B4A1D4000123456 /* SessionStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStatusView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -118,7 +117,6 @@
 			children = (
 				7C8E9F292B4A1B3C00123456 /* TrackMeApp.swift */,
 				7C8E9F2B2B4A1B3C00123456 /* ContentView.swift */,
-				7C8E9F472B4A1C6000123456 /* Info.plist */,
 				7C8E9F3C2B4A1C0000123456 /* Services */,
 				7C8E9F3B2B4A1BF000123456 /* Views */,
 				7C8E9F372B4A1BE000123456 /* Data */,
@@ -158,9 +156,9 @@
 		7C8E9F3C2B4A1C0000123456 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				076726E72EB18CCF00BEDA68 /* ExportService.swift */,
 				7C8E9F3D2B4A1C1000123456 /* LocationManager.swift */,
 				7C8E9F452B4A1C5000123456 /* PhoneConnectivityManager.swift */,
-				7C8E9F472B4A1C6000123456 /* ExportService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -354,7 +352,7 @@
 				7C8E9F422B4A1C3000123456 /* HistoryView.swift in Sources */,
 				7C8E9F442B4A1C4000123456 /* TripMapView.swift in Sources */,
 				7C8E9F462B4A1C5000123456 /* PhoneConnectivityManager.swift in Sources */,
-				7C8E9F482B4A1C6000123456 /* ExportService.swift in Sources */,
+				076726E82EB18CCF00BEDA68 /* ExportService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

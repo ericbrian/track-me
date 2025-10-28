@@ -25,7 +25,9 @@ struct ActivityViewController: UIViewControllerRepresentable {
 struct HistoryView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(
+        entity: TrackingSession.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \TrackingSession.startDate, ascending: false)],
+        predicate: nil,
         animation: .default
     )
     private var sessions: FetchedResults<TrackingSession>
@@ -120,16 +122,16 @@ struct HistoryView: View {
     }
     
     private func deleteSessions(offsets: IndexSet) {
+        print("[DEBUG] Sessions before delete: \(sessions.count)")
         withAnimation {
             offsets.map { sessions[$0] }.forEach(viewContext.delete)
-            
             do {
                 try viewContext.save()
             } catch {
-                // Handle the error appropriately
                 print("Error deleting sessions: \(error)")
             }
         }
+        print("[DEBUG] Sessions after delete: \(sessions.count)")
     }
 }
 

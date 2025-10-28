@@ -39,12 +39,17 @@ struct PersistenceController {
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
+        
+        let semaphore = DispatchSemaphore(value: 0)
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 // Replace this implementation with code to handle the error appropriately.
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
+            semaphore.signal()
         })
+        semaphore.wait()
+        
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
 }
