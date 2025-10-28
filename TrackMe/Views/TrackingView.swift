@@ -363,17 +363,23 @@ struct TrackingView: View {
     private var permissionStatusView: some View {
         switch locationManager.authorizationStatus {
         case .notDetermined:
-            Button("Request Location Permission") {
-                locationManager.requestLocationPermission()
+            VStack(spacing: 12) {
+                Button("Request Location Permission") {
+                    locationManager.requestLocationPermission()
+                }
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundColor(.blue)
+                .padding(.vertical, 12)
+                .padding(.horizontal, 24)
+                .background(Color.blue.opacity(0.1))
+                .clipShape(Capsule())
+                Text("To enable background tracking, select 'Allow While Using the App' first, then accept the next prompt for 'Always Allow'.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
             }
-            .font(.subheadline)
-            .fontWeight(.medium)
-            .foregroundColor(.blue)
-            .padding(.vertical, 12)
-            .padding(.horizontal, 24)
-            .background(Color.blue.opacity(0.1))
-            .clipShape(Capsule())
-            
+
         case .denied, .restricted:
             VStack(spacing: 12) {
                 HStack {
@@ -384,7 +390,6 @@ struct TrackingView: View {
                         .fontWeight(.medium)
                         .foregroundColor(.orange)
                 }
-                
                 Button("Open Settings") {
                     if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
                         UIApplication.shared.open(settingsUrl)
@@ -397,11 +402,15 @@ struct TrackingView: View {
                 .padding(.horizontal, 20)
                 .background(Color.orange)
                 .clipShape(Capsule())
+                Text("To enable background tracking, select 'Allow While Using the App' first, then accept the next prompt for 'Always Allow', or enable 'Always' in Settings.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
             }
             .padding(16)
             .background(Color.orange.opacity(0.1))
             .clipShape(RoundedRectangle(cornerRadius: 12))
-            
+
         case .authorizedWhenInUse:
             VStack(spacing: 12) {
                 HStack {
@@ -412,8 +421,7 @@ struct TrackingView: View {
                         .fontWeight(.medium)
                         .foregroundColor(.yellow)
                 }
-                
-                Text("Please allow 'Always' location access for background tracking")
+                Text("Please allow 'Always' location access for background tracking. After selecting 'Allow While Using the App', accept the next prompt for 'Always Allow', or enable 'Always' in Settings.")
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -421,7 +429,7 @@ struct TrackingView: View {
             .padding(16)
             .background(Color.yellow.opacity(0.1))
             .clipShape(RoundedRectangle(cornerRadius: 12))
-            
+
         case .authorizedAlways:
             HStack {
                 Image(systemName: "checkmark.shield.fill")
@@ -435,7 +443,7 @@ struct TrackingView: View {
             .padding(.horizontal, 20)
             .background(Color.green.opacity(0.1))
             .clipShape(Capsule())
-            
+
         @unknown default:
             EmptyView()
         }
