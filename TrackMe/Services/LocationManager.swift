@@ -27,11 +27,10 @@ class LocationManager: NSObject, ObservableObject {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.distanceFilter = 5 // Update every 5 meters
-        locationManager.allowsBackgroundLocationUpdates = true
         locationManager.pausesLocationUpdatesAutomatically = false
         
-        // Request significant location changes for better background performance
-        locationManager.startMonitoringSignificantLocationChanges()
+        // Note: allowsBackgroundLocationUpdates should only be set when tracking starts
+        // and after authorization is granted
     }
     
     private func setupBackgroundTasks() {
@@ -126,8 +125,14 @@ class LocationManager: NSObject, ObservableObject {
             return
         }
         
+        // Enable background location updates only when tracking
+        locationManager.allowsBackgroundLocationUpdates = true
+        
         // Start location updates
         locationManager.startUpdatingLocation()
+        
+        // Also monitor significant location changes for better background performance
+        locationManager.startMonitoringSignificantLocationChanges()
         
         // Keep the app alive in background
         UIApplication.shared.isIdleTimerDisabled = true
@@ -155,6 +160,10 @@ class LocationManager: NSObject, ObservableObject {
         guard let session = currentSession else { return }
         
         locationManager.stopUpdatingLocation()
+        locationManager.stopMonitoringSignificantLocationChanges()
+        
+        // Disable background location updates when not tracking
+        locationManager.allowsBackgroundLocationUpdates = false
         
         let context = persistenceController.container.viewContext
         session.endDate = Date()
