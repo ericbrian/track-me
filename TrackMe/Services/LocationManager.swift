@@ -21,10 +21,30 @@ class LocationManager: NSObject, ObservableObject {
         setupLocationManager()
         setupBackgroundTasks()
         authorizationStatus = locationManager.authorizationStatus
+        recoverOrphanedSessions()
         // Prompt for Always permission on launch if not already granted
         if authorizationStatus != .authorizedAlways {
             requestLocationPermission()
         }
+
+    /// Mark any orphaned active sessions as inactive on app launch
+    private func recoverOrphanedSessions() {
+        let context = persistenceController.container.viewContext
+        let fetchRequest: NSFetchRequest<TrackingSession> = TrackingSession.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "isActive == YES")
+        if let orphaned = try? context.fetch(fetchRequest), !orphaned.isEmpty {
+            for session in orphaned {
+                session.isActive = false
+                session.endDate = Date()
+            }
+            do {
+                try context.save()
+                print("Recovered orphaned active sessions on launch.")
+            } catch {
+                print("Failed to recover orphaned sessions: \(error)")
+            }
+        }
+    }
     }
     
     
