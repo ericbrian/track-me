@@ -148,18 +148,17 @@ class LocationManager: NSObject, ObservableObject {
         session.startDate = Date()
         session.isActive = true
 
-        currentSession = session
-        isTracking = true
-        locationCount = 0
-
-        // Notify Watch about tracking state change
-        NotificationCenter.default.post(name: NSNotification.Name("TrackingStateChanged"), object: nil)
-
         // Save the session
         do {
             try context.save()
+            currentSession = session
+            isTracking = true
+            locationCount = 0
+            // Notify Watch about tracking state change
+            NotificationCenter.default.post(name: NSNotification.Name("TrackingStateChanged"), object: nil)
         } catch {
             print("Error creating tracking session: \(error)")
+            trackingStartError = "Failed to save tracking session. Please try again."
             return
         }
 
@@ -205,37 +204,37 @@ class LocationManager: NSObject, ObservableObject {
     
     func stopTracking() {
         guard let session = currentSession else { return }
-        
+
         locationManager.stopUpdatingLocation()
         locationManager.stopMonitoringSignificantLocationChanges()
-        
+
         // Disable background location updates when not tracking
         #if !targetEnvironment(simulator)
         locationManager.allowsBackgroundLocationUpdates = false
         #endif
-        
+
         let context = persistenceController.container.viewContext
         session.endDate = Date()
         session.isActive = false
-        
+
         do {
             try context.save()
+            currentSession = nil
+            isTracking = false
+            // Notify Watch about tracking state change
+            NotificationCenter.default.post(name: NSNotification.Name("TrackingStateChanged"), object: nil)
         } catch {
             print("Error ending tracking session: \(error)")
+            // Optionally, add error feedback for the user here
+            return
         }
-        
-        currentSession = nil
-        isTracking = false
-        
-        // Notify Watch about tracking state change
-        NotificationCenter.default.post(name: NSNotification.Name("TrackingStateChanged"), object: nil)
-        
+
         // Re-enable idle timer
         UIApplication.shared.isIdleTimerDisabled = false
-        
+
         // End background task
         endBackgroundTask()
-        
+
         // Remove observers
         NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
