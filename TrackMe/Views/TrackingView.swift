@@ -18,6 +18,34 @@ struct TrackingView: View {
         locationManager.isTracking ? .green : .gray
     }
     
+    private var statusIconName: String {
+        locationManager.isTracking ? "location.fill" : "location"
+    }
+    
+    private var statusText: String {
+        locationManager.isTracking ? "ACTIVE" : "STOPPED"
+    }
+    
+    private var trackingStatusText: String {
+        locationManager.isTracking ? "GPS Tracking Active" : "GPS Tracking Stopped"
+    }
+    
+    private var backgroundIconName: String {
+        appState == .background ? "moon.fill" : "sun.max.fill"
+    }
+    
+    private var backgroundStatusColor: Color {
+        appState == .background ? .indigo : .orange
+    }
+    
+    private var backgroundStatusText: String {
+        appState == .background ? "Running in Background" : "Active in Foreground"
+    }
+    
+    private var backgroundStrokeColor: Color {
+        appState == .background ? Color.indigo.opacity(0.3) : Color.orange.opacity(0.3)
+    }
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -41,11 +69,11 @@ struct TrackingView: View {
                                 )
                             
                             VStack(spacing: 8) {
-                                Image(systemName: locationManager.isTracking ? "location.fill" : "location")
+                                Image(systemName: statusIconName)
                                     .font(.system(size: 40, weight: .medium))
                                     .foregroundColor(statusColor)
                                 
-                                Text(locationManager.isTracking ? "ACTIVE" : "STOPPED")
+                                Text(statusText)
                                     .font(.caption)
                                     .fontWeight(.semibold)
                                     .foregroundColor(statusColor)
@@ -56,7 +84,7 @@ struct TrackingView: View {
                         
                         // Status text
                         VStack(spacing: 8) {
-                            Text(locationManager.isTracking ? "GPS Tracking Active" : "GPS Tracking Stopped")
+                            Text(trackingStatusText)
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .foregroundStyle(
@@ -70,14 +98,14 @@ struct TrackingView: View {
                             // Background status indicator
                             if locationManager.isTracking {
                                 HStack(spacing: 8) {
-                                    Image(systemName: appState == .background ? "moon.fill" : "sun.max.fill")
+                                    Image(systemName: backgroundIconName)
                                         .font(.caption)
-                                        .foregroundColor(appState == .background ? .indigo : .orange)
+                                        .foregroundColor(backgroundStatusColor)
                                     
-                                    Text(appState == .background ? "Running in Background" : "Active in Foreground")
+                                    Text(backgroundStatusText)
                                         .font(.caption)
                                         .fontWeight(.medium)
-                                        .foregroundColor(appState == .background ? .indigo : .orange)
+                                        .foregroundColor(backgroundStatusColor)
                                 }
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 8)
@@ -86,7 +114,7 @@ struct TrackingView: View {
                                         .fill(Color(.systemGray6))
                                         .overlay(
                                             Capsule()
-                                                .stroke(appState == .background ? Color.indigo.opacity(0.3) : Color.orange.opacity(0.3), lineWidth: 1)
+                                                .stroke(backgroundStrokeColor, lineWidth: 1)
                                         )
                                 )
                             }
