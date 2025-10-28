@@ -21,6 +21,7 @@ struct HistoryView: View {
     @State private var selectedSession: TrackingSession?
     @State private var showingSessionDetail = false
     @State private var showingMapView = false
+    @State private var refreshID = UUID()
     
     var body: some View {
         NavigationView {
@@ -98,6 +99,10 @@ struct HistoryView: View {
                 if let session = selectedSession {
                     TripMapView(session: session)
                 }
+            }
+            .id(refreshID) // Force view reload when refreshID changes
+            .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("HistoryShouldRefresh"))) { _ in
+                refreshID = UUID()
             }
         }
     }
