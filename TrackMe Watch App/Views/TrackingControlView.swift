@@ -67,7 +67,7 @@ struct TrackingControlView: View {
                         }
                     }
                     .padding(12)
-                    .background(Color(.systemGray6))
+                    .background(Color.gray.opacity(0.15))
                     .cornerRadius(12)
                 }
                 
@@ -202,7 +202,7 @@ struct NarrativeInputView: View {
                                 }
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 60)
-                                .background(selectedNarrative == suggestion ? Color.blue : Color(.systemGray6))
+                                .background(selectedNarrative == suggestion ? Color.blue : Color.gray.opacity(0.15))
                                 .cornerRadius(12)
                             }
                             .buttonStyle(PlainButtonStyle())

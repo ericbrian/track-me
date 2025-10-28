@@ -1,6 +1,26 @@
 import SwiftUI
 import CoreData
 import CoreLocation
+import UIKit
+
+// MARK: - ActivityViewController
+
+struct ActivityViewController: UIViewControllerRepresentable {
+    let activityItems: [Any]
+    let applicationActivities: [UIActivity]? = nil
+    
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        let controller = UIActivityViewController(
+            activityItems: activityItems,
+            applicationActivities: applicationActivities
+        )
+        return controller
+    }
+    
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {
+        // No update needed
+    }
+}
 
 struct HistoryView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -221,6 +241,10 @@ struct SessionDetailView: View {
     let session: TrackingSession
     @Environment(\.presentationMode) var presentationMode
     
+    @State private var showingExportMenu = false
+    @State private var showingExportSheet = false
+    @State private var exportFileURL: URL?
+    
     private var locations: [LocationEntry] {
         session.locations?.allObjects as? [LocationEntry] ?? []
     }
@@ -308,9 +332,31 @@ struct SessionDetailView: View {
                 .padding()
             }
             .navigationTitle("Session Details")
-            .navigationBarItems(trailing: Button("Done") {
-                presentationMode.wrappedValue.dismiss()
-            })
+            .navigationBarItems(
+                leading: Button(action: {
+                    showingExportMenu = true
+                }) {
+                    Label("Export", systemImage: "square.and.arrow.up")
+                },
+                trailing: Button("Done") {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            )
+            .confirmationDialog("Export Session", isPresented: $showingExportMenu) {
+                ForEach(ExportFormat.allCases, id: \.self) { format in
+                    Button(format.rawValue) {
+                        exportSession(format: format)
+                    }
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Choose a format to export this tracking session")
+            }
+            .sheet(isPresented: $showingExportSheet) {
+                if let fileURL = exportFileURL {
+                    ActivityViewController(activityItems: [fileURL])
+                }
+            }
         }
     }
     
@@ -342,6 +388,29 @@ struct SessionDetailView: View {
     private var maxSpeed: Double? {
         guard !locations.isEmpty else { return nil }
         return locations.map { $0.speed }.max()
+    }
+    
+    private func exportSession(format: ExportFormat) {
+        let exportService = ExportService.shared
+        let content: String
+        
+        switch format {
+        case .gpx:
+            content = exportService.exportToGPX(session: session, locations: sortedLocations)
+        case .kml:
+            content = exportService.exportToKML(session: session, locations: sortedLocations)
+        case .csv:
+            content = exportService.exportToCSV(session: session, locations: sortedLocations)
+        case .geojson:
+            content = exportService.exportToGeoJSON(session: session, locations: sortedLocations)
+        }
+        
+        let filename = exportService.generateFilename(session: session, format: format)
+        
+        if let fileURL = exportService.saveToTemporaryFile(content: content, filename: filename) {
+            exportFileURL = fileURL
+            showingExportSheet = true
+        }
     }
 }
 

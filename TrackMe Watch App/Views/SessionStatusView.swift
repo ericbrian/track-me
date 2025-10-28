@@ -129,7 +129,7 @@ struct SessionStatusView: View {
             }
         }
         .padding(12)
-        .background(Color(.systemGray6))
+        .background(Color.gray.opacity(0.15))
         .cornerRadius(12)
     }
     
@@ -151,7 +151,7 @@ struct SessionStatusView: View {
                 .multilineTextAlignment(.center)
         }
         .padding(20)
-        .background(Color(.systemGray6))
+        .background(Color.gray.opacity(0.15))
         .cornerRadius(12)
     }
     
@@ -194,7 +194,7 @@ struct SessionStatusView: View {
             }
         }
         .padding(12)
-        .background(Color(.systemGray6))
+        .background(Color.gray.opacity(0.15))
         .cornerRadius(12)
     }
     

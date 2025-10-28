@@ -18,6 +18,7 @@
 		7C8E9F422B4A1C3000123456 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F412B4A1C3000123456 /* HistoryView.swift */; };
 		7C8E9F442B4A1C4000123456 /* TripMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F432B4A1C4000123456 /* TripMapView.swift */; };
 		7C8E9F462B4A1C5000123456 /* PhoneConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F452B4A1C5000123456 /* PhoneConnectivityManager.swift */; };
+		7C8E9F482B4A1C6000123456 /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F472B4A1C6000123456 /* ExportService.swift */; };
 		7C8E9F502B4A1D1000123456 /* TrackMe_Watch_AppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F4F2B4A1D1000123456 /* TrackMe_Watch_AppApp.swift */; };
 	7C8E9F522B4A1D1000123456 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F512B4A1D1000123456 /* ContentView.swift */; };
 	7C8E9F542B4A1D1000123456 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8E9F532B4A1D1000123456 /* Assets.xcassets */; };
@@ -52,7 +53,8 @@
 		7C8E9F412B4A1C3000123456 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		7C8E9F432B4A1C4000123456 /* TripMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripMapView.swift; sourceTree = "<group>"; };
 		7C8E9F452B4A1C5000123456 /* PhoneConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneConnectivityManager.swift; sourceTree = "<group>"; };
-		7C8E9F472B4A1C6000123456 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7C8E9F472B4A1C6000123456 /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
+		7C8E9F492B4A1C6100123456 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7C8E9F4F2B4A1D1000123456 /* TrackMe_Watch_AppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMe_Watch_AppApp.swift; sourceTree = "<group>"; };
 	7C8E9F512B4A1D1000123456 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 	7C8E9F532B4A1D1000123456 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 			children = (
 				7C8E9F3D2B4A1C1000123456 /* LocationManager.swift */,
 				7C8E9F452B4A1C5000123456 /* PhoneConnectivityManager.swift */,
+				7C8E9F472B4A1C6000123456 /* ExportService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -351,6 +354,7 @@
 				7C8E9F422B4A1C3000123456 /* HistoryView.swift in Sources */,
 				7C8E9F442B4A1C4000123456 /* TripMapView.swift in Sources */,
 				7C8E9F462B4A1C5000123456 /* PhoneConnectivityManager.swift in Sources */,
+				7C8E9F482B4A1C6000123456 /* ExportService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
