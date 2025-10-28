@@ -183,10 +183,15 @@ class LocationManager: NSObject, ObservableObject {
             return
         }
 
-        // Enable background location updates only when tracking and on real device
-        // Simulator has limitations with background location
+
+        // Enable background location updates only if background mode is enabled and authorizedAlways is granted
         #if !targetEnvironment(simulator)
-        locationManager.allowsBackgroundLocationUpdates = true
+        if Bundle.main.infoDictionary?["UIBackgroundModes"] as? [String] ?? [].contains("location") &&
+            authorizationStatus == .authorizedAlways {
+            locationManager.allowsBackgroundLocationUpdates = true
+        } else {
+            locationManager.allowsBackgroundLocationUpdates = false
+        }
         #endif
 
         // Start location updates
