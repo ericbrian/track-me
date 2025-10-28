@@ -6,6 +6,7 @@ import CoreLocation
 import CoreData
 @testable import TrackMe
 
+class IntegrationTests: XCTestCase {
     var persistenceController: PersistenceController!
     var locationManager: LocationManager!
     
