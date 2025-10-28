@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -27,9 +27,20 @@
 		7C8E9F5D2B4A1D4000123456 /* SessionStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F5C2B4A1D4000123456 /* SessionStatusView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		07216F4C2EB170870091E25F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7C8E9F1E2B4A1B3C00123456 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7C8E9F252B4A1B3C00123456;
+			remoteInfo = TrackMe;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		070366E42EB14C8600C2E1F4 /* TrackMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrackMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		070366E62EB14C8600C2E1F4 /* TrackMe Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TrackMe Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		07216F482EB170870091E25F /* TrackMeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackMeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C8E9F292B4A1B3C00123456 /* TrackMeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMeApp.swift; sourceTree = "<group>"; };
 		7C8E9F2B2B4A1B3C00123456 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7C8E9F2D2B4A1B3D00123456 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -51,7 +62,18 @@
 		7C8E9F5C2B4A1D4000123456 /* SessionStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStatusView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		07216F492EB170870091E25F /* TrackMeTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TrackMeTests; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
+		07216F452EB170870091E25F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7C8E9F232B4A1B3C00123456 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -74,6 +96,7 @@
 			children = (
 				7C8E9F272B4A1B3C00123456 /* TrackMe */,
 				7C8E9F4D2B4A1D1000123456 /* TrackMe Watch App */,
+				07216F492EB170870091E25F /* TrackMeTests */,
 				070366E52EB14C8600C2E1F4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -83,6 +106,7 @@
 			children = (
 				070366E42EB14C8600C2E1F4 /* TrackMe.app */,
 				070366E62EB14C8600C2E1F4 /* TrackMe Watch App.app */,
+				07216F482EB170870091E25F /* TrackMeTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -179,6 +203,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		07216F472EB170870091E25F /* TrackMeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07216F502EB170870091E25F /* Build configuration list for PBXNativeTarget "TrackMeTests" */;
+			buildPhases = (
+				07216F442EB170870091E25F /* Sources */,
+				07216F452EB170870091E25F /* Frameworks */,
+				07216F462EB170870091E25F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				07216F4D2EB170870091E25F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				07216F492EB170870091E25F /* TrackMeTests */,
+			);
+			name = TrackMeTests;
+			packageProductDependencies = (
+			);
+			productName = TrackMeTests;
+			productReference = 07216F482EB170870091E25F /* TrackMeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		7C8E9F252B4A1B3C00123456 /* TrackMe */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7C8E9F392B4A1B3D00123456 /* Build configuration list for PBXNativeTarget "TrackMe" */;
@@ -220,9 +267,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1500;
+				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
+					07216F472EB170870091E25F = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = 7C8E9F252B4A1B3C00123456;
+					};
 					7C8E9F252B4A1B3C00123456 = {
 						CreatedOnToolsVersion = 15.0;
 					};
@@ -246,11 +297,19 @@
 			targets = (
 				7C8E9F252B4A1B3C00123456 /* TrackMe */,
 				7C8E9F4C2B4A1D1000123456 /* TrackMe Watch App */,
+				07216F472EB170870091E25F /* TrackMeTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		07216F462EB170870091E25F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7C8E9F242B4A1B3C00123456 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -272,6 +331,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		07216F442EB170870091E25F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7C8E9F222B4A1B3C00123456 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -302,7 +368,59 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		07216F4D2EB170870091E25F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7C8E9F252B4A1B3C00123456 /* TrackMe */;
+			targetProxy = 07216F4C2EB170870091E25F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		07216F4E2EB170870091E25F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+			CURRENT_PROJECT_VERSION = 1;
+			DEVELOPMENT_TEAM = ATXPKWAZ8W;
+			GENERATE_INFOPLIST_FILE = YES;
+			IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+			MARKETING_VERSION = 1.0;
+			PRODUCT_BUNDLE_IDENTIFIER = com.ericbrian.TrackMeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TrackMe.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TrackMe";
+			};
+			name = Debug;
+		};
+		07216F4F2EB170870091E25F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ATXPKWAZ8W;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ericbrian.TrackMeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TrackMe.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TrackMe";
+			};
+			name = Release;
+		};
 		7C8E9F372B4A1B3D00123456 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -559,6 +677,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		07216F502EB170870091E25F /* Build configuration list for PBXNativeTarget "TrackMeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07216F4E2EB170870091E25F /* Debug */,
+				07216F4F2EB170870091E25F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		7C8E9F212B4A1B3C00123456 /* Build configuration list for PBXProject "TrackMe" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
