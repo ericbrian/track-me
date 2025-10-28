@@ -20,6 +20,7 @@ class LocationManager: NSObject, ObservableObject {
     @Published var currentSession: TrackingSession?
     @Published var locationCount = 0
     @Published var trackingStartError: String?
+    @Published var trackingStopError: String?
     
     override init() {
         super.init()
@@ -241,8 +242,8 @@ class LocationManager: NSObject, ObservableObject {
             phoneConnectivity?.sendStatusUpdateToWatch()
         } catch {
             print("Error ending tracking session: \(error)")
+            trackingStopError = "Failed to end tracking session. Please try again."
             phoneConnectivity?.sendStatusUpdateToWatch()
-            // Optionally, add error feedback for the user here
             return
         }
 

@@ -8,6 +8,7 @@ struct TrackingView: View {
     @State private var appState = UIApplication.shared.applicationState
     @State private var showTrackingErrorAlert = false
     @State private var showSettingsAlert = false
+    @State private var showTrackingStopErrorAlert = false
     
     // Computed properties to simplify type-checking
     private var statusGradientColors: [Color] {
@@ -344,6 +345,11 @@ struct TrackingView: View {
                     showSettingsAlert = true
                 }
             }
+            .onReceive(locationManager.$trackingStopError) { err in
+                if err != nil {
+                    showTrackingStopErrorAlert = true
+                }
+            }
             .alert(isPresented: $showSettingsAlert) {
                 Alert(
                     title: Text("Enable 'Always' Location in Settings"),
@@ -356,6 +362,15 @@ struct TrackingView: View {
                     },
                     secondaryButton: .cancel {
                         locationManager.showSettingsSuggestion = false
+                    }
+                )
+            }
+            .alert(isPresented: $showTrackingStopErrorAlert) {
+                Alert(
+                    title: Text("Unable to Stop Tracking"),
+                    message: Text(locationManager.trackingStopError ?? "Unknown error"),
+                    dismissButton: .default(Text("OK")) {
+                        locationManager.trackingStopError = nil
                     }
                 )
             }
