@@ -7,6 +7,17 @@ struct TrackingView: View {
     @State private var showingNarrativeInput = false
     @State private var appState = UIApplication.shared.applicationState
     
+    // Computed properties to simplify type-checking
+    private var statusGradientColors: [Color] {
+        locationManager.isTracking ? 
+            [Color.green.opacity(0.3), Color.green.opacity(0.1)] : 
+            [Color.gray.opacity(0.3), Color.gray.opacity(0.1)]
+    }
+    
+    private var statusColor: Color {
+        locationManager.isTracking ? .green : .gray
+    }
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -18,10 +29,7 @@ struct TrackingView: View {
                             Circle()
                                 .fill(
                                     LinearGradient(
-                                        gradient: Gradient(colors: locationManager.isTracking ? 
-                                            [Color.green.opacity(0.3), Color.green.opacity(0.1)] : 
-                                            [Color.gray.opacity(0.3), Color.gray.opacity(0.1)]
-                                        ),
+                                        gradient: Gradient(colors: statusGradientColors),
                                         startPoint: .topLeading,
                                         endPoint: .bottomTrailing
                                     )
@@ -29,21 +37,18 @@ struct TrackingView: View {
                                 .frame(width: 140, height: 140)
                                 .overlay(
                                     Circle()
-                                        .stroke(
-                                            locationManager.isTracking ? Color.green : Color.gray,
-                                            lineWidth: 3
-                                        )
+                                        .stroke(statusColor, lineWidth: 3)
                                 )
                             
                             VStack(spacing: 8) {
                                 Image(systemName: locationManager.isTracking ? "location.fill" : "location")
                                     .font(.system(size: 40, weight: .medium))
-                                    .foregroundColor(locationManager.isTracking ? .green : .gray)
+                                    .foregroundColor(statusColor)
                                 
                                 Text(locationManager.isTracking ? "ACTIVE" : "STOPPED")
                                     .font(.caption)
                                     .fontWeight(.semibold)
-                                    .foregroundColor(locationManager.isTracking ? .green : .gray)
+                                    .foregroundColor(statusColor)
                             }
                         }
                         .scaleEffect(locationManager.isTracking ? 1.0 : 0.9)
