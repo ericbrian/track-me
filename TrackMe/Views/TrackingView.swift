@@ -172,13 +172,6 @@ struct TrackingView: View {
                             }
                         }
                     }
-                    
-                    .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
-                        appState = .background
-                    }
-                    .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-                        appState = .active
-                    }
                 
                 // Current Location Display
                 if let location = locationManager.currentLocation {
@@ -322,6 +315,12 @@ struct TrackingView: View {
                     locationManager.startTracking(with: narrative)
                     narrative = ""
                 }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
+                appState = .background
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                appState = .active
             }
         }
     }
