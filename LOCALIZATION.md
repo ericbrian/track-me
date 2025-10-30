@@ -2,10 +2,48 @@
 
 ## Supported Languages
 
-TrackMe currently supports the following languages:
+TrackMe currently supports the following languages covering major iPhone markets worldwide:
 
 - **English** (en) - Base language
+- **Japanese** (ja) - 日本語 (70% iPhone market share in Japan)
+- **Mandarin Chinese** (zh-Hans) - 简体中文 (Simplified Chinese)
 - **German** (de) - Deutsch
+- **Spanish** (es) - Español
+- **French** (fr) - Français
+- **Italian** (it) - Italiano
+- **Portuguese** (pt) - Português
+
+## Potential Future Languages
+
+Based on iPhone market penetration and user demographics, might want to add:
+
+### High Priority (based on market share)
+
+- **Korean** (ko) - 한국어 - South Korea has high iPhone adoption (30-40% market share)
+- **Arabic** (ar) - العربية - Gulf states (UAE, Saudi Arabia) have high iPhone penetration and affluent markets
+- **Dutch** (nl) - Nederlands - Netherlands has strong iPhone presence and affluent market
+
+### Medium Priority (based on market share)
+
+- **Swedish** (sv) - Svenska - Scandinavia has high iPhone adoption
+- **Norwegian** (no/nb) - Norsk - Norway has high affluence and iPhone usage
+- **Danish** (da) - Dansk - Denmark has strong iPhone market
+- **Finnish** (fi) - Suomi - Finland has tech-savvy population
+- **Polish** (pl) - Polski - Growing Eastern European market
+- **Turkish** (tr) - Türkçe - Large and growing smartphone market
+- **Thai** (th) - ไทย - Strong Southeast Asian tourism destination
+- **Vietnamese** (vi) - Tiếng Việt - Fast-growing Southeast Asian market
+- **Indonesian** (id) - Bahasa Indonesia - Large population, growing smartphone adoption
+- **Hindi** (hi) - हिन्दी - India's growing iOS market (small % but huge population)
+
+### Lower Priority (based on market share)
+
+- **Greek** (el) - Ελληνικά - Tourism destination
+- **Czech** (cs) - Čeština - Central Europe
+- **Hungarian** (hu) - Magyar - Central Europe
+- **Hebrew** (he) - עברית - Israel has high tech adoption
+- **Malay** (ms) - Bahasa Melayu - Malaysia and Singapore
+- **Traditional Chinese** (zh-Hant) - 繁體中文 - Taiwan, Hong Kong
 
 ## Localization Files
 
@@ -16,9 +54,27 @@ TrackMe/
 ├── en.lproj/
 │   ├── InfoPlist.strings    # English Info.plist keys
 │   └── Localizable.strings  # English UI strings
-└── de.lproj/
-    ├── InfoPlist.strings    # German Info.plist keys
-    └── Localizable.strings  # German UI strings
+├── ja.lproj/
+│   ├── InfoPlist.strings    # Japanese Info.plist keys
+│   └── Localizable.strings  # Japanese UI strings
+├── zh-Hans.lproj/
+│   ├── InfoPlist.strings    # Simplified Chinese Info.plist keys
+│   └── Localizable.strings  # Simplified Chinese UI strings
+├── de.lproj/
+│   ├── InfoPlist.strings    # German Info.plist keys
+│   └── Localizable.strings  # German UI strings
+├── es.lproj/
+│   ├── InfoPlist.strings    # Spanish Info.plist keys
+│   └── Localizable.strings  # Spanish UI strings
+├── fr.lproj/
+│   ├── InfoPlist.strings    # French Info.plist keys
+│   └── Localizable.strings  # French UI strings
+├── it.lproj/
+│   ├── InfoPlist.strings    # Italian Info.plist keys
+│   └── Localizable.strings  # Italian UI strings
+└── pt.lproj/
+    ├── InfoPlist.strings    # Portuguese Info.plist keys
+    └── Localizable.strings  # Portuguese UI strings
 ```
 
 ### InfoPlist.strings
@@ -36,6 +92,7 @@ Contains all UI strings used throughout the app, organized by:
 - History View strings
 - Map View strings
 - Common strings (buttons, errors, units)
+- Travel-centric narrative suggestions (Road Trip, City Tour, Scenic Drive, etc.)
 
 ## Using Localized Strings in Code
 
@@ -155,16 +212,56 @@ Add launch argument:
 
 ```
 -AppleLanguages (de)
+-AppleLanguages (ja)
+-AppleLanguages (zh-Hans)
 ```
 
 ## Translation Notes
 
-### German Translations
+### Travel-Centric Narrative Suggestions
 
+All languages include localized travel-specific suggestions:
+- Road Trip / City Tour
+- Scenic Drive / Hiking Trail
+- Beach Walk / Mountain Adventure
+- Cycling Route / Ferry Crossing
+
+### Language-Specific Notes
+
+**German (de)**
 - Formal "Sie" form used throughout
 - Technical terms (GPS, Tracking) kept in English as commonly used
 - Units follow metric system (km, m)
-- Time format follows German conventions
+
+**Japanese (ja)**
+- Polite form (です/ます) used throughout
+- Natural Japanese phrasing for UI elements
+- Katakana used for technical terms (GPS, アプリ)
+
+**Mandarin Chinese (zh-Hans)**
+- Simplified Chinese characters
+- Formal tone appropriate for app UI
+- Technical terms translated with commonly used Chinese equivalents
+
+**Spanish (es)**
+- Formal "usted" form used for consistency
+- Latin American and European Spanish compatible
+- Units follow metric system
+
+**French (fr)**
+- Formal "vous" form used throughout
+- Proper French UI conventions followed
+- Some English terms kept (Road Trip) as commonly used
+
+**Italian (it)**
+- Formal "Lei" form used throughout
+- Natural Italian phrasing
+- Units follow metric system
+
+**Portuguese (pt)**
+- Brazilian Portuguese conventions
+- Formal "você" form
+- Units follow metric system
 
 ### Plural Forms
 
