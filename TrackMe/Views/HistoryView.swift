@@ -28,7 +28,7 @@ struct HistoryView: View {
         entity: TrackingSession.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \TrackingSession.startDate, ascending: false)],
         predicate: nil,
-        animation: .default
+        animation: nil  // Disable animation to prevent collection view conflicts
     )
     private var sessions: FetchedResults<TrackingSession>
     
@@ -36,6 +36,18 @@ struct HistoryView: View {
     @State private var showingSessionDetail = false
     @State private var showingMapView = false
     @State private var refreshID = UUID()
+    @State private var sessionSnapshots: [UUID: SessionSnapshot] = [:]
+    
+    // Snapshot to prevent mid-update issues
+    private struct SessionSnapshot: Identifiable {
+        let id: UUID
+        let narrative: String?
+        let startDate: Date?
+        let endDate: Date?
+        let locationCount: Int
+        let isActive: Bool
+        let objectID: NSManagedObjectID
+    }
     
     var body: some View {
         NavigationView {
@@ -78,7 +90,7 @@ struct HistoryView: View {
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
                     } else {
-                        ForEach(sessions, id: \.id) { session in
+                        ForEach(Array(sessions.enumerated()), id: \.element.objectID) { index, session in
                             ModernSessionRowView(
                                 session: session,
                                 onTapSession: {
@@ -92,6 +104,7 @@ struct HistoryView: View {
                             )
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
+                            .id(session.objectID)  // Use objectID for stable identity
                         }
                         .onDelete(perform: deleteSessions)
                     }
@@ -116,7 +129,14 @@ struct HistoryView: View {
             }
             .id(refreshID) // Force view reload when refreshID changes
             .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("HistoryShouldRefresh"))) { _ in
-                refreshID = UUID()
+                // Use animation transaction to smooth the refresh
+                withAnimation(.default) {
+                    refreshID = UUID()
+                }
+            }
+            .onAppear {
+                // Refresh context to sync with latest changes
+                viewContext.refreshAllObjects()
             }
         }
     }
