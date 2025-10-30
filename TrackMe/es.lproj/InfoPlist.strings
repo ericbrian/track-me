@@ -1,0 +1,11 @@
+/* 
+  InfoPlist.strings
+  TrackMe - Spanish Localization
+*/
+
+/* Location Permission Descriptions */
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "TrackMe necesita acceso a tu ubicación para rastrear tus viajes. Concede permiso 'Permitir Siempre' para habilitar el seguimiento en segundo plano.";
+
+"NSLocationAlwaysUsageDescription" = "TrackMe requiere acceso a la ubicación 'Siempre' para rastrear tus viajes incluso cuando la aplicación esté en segundo plano.";
+
+"NSLocationWhenInUseUsageDescription" = "TrackMe necesita acceso a tu ubicación para rastrear tus viajes mientras usas la aplicación.";

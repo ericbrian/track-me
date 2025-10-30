@@ -1,0 +1,175 @@
+/* 
+  Localizable.strings
+  TrackMe - Simplified Chinese Localization
+*/
+
+/* MARK: - Tracking View */
+
+/* Status Messages */
+"GPS Tracking Active" = "GPS跟踪已激活";
+"GPS Tracking Stopped" = "GPS跟踪已停止";
+"Running in Background" = "后台运行中";
+"Active in Foreground" = "前台运行中";
+
+/* Navigation */
+"GPS Tracker" = "GPS跟踪器";
+"Track" = "跟踪";
+"History" = "历史记录";
+"Map" = "地图";
+
+/* Permission Messages */
+"'Always' Location Permission Required" = "需要"始终允许"位置权限";
+"TrackMe requires 'Always Allow' location access to function correctly, including background tracking. Please grant 'Always' permission when prompted, or enable it in Settings > Privacy > Location Services > TrackMe." = "TrackMe需要"始终允许"位置访问权限才能正常运行，包括后台跟踪。请在提示时授予"始终"权限，或在设置 > 隐私 > 定位服务 > TrackMe中启用。";
+
+/* Buttons */
+"Stop Tracking" = "停止跟踪";
+"Start Tracking" = "开始跟踪";
+"OK" = "确定";
+"Cancel" = "取消";
+"Done" = "完成";
+"Open Settings" = "打开设置";
+
+/* Session Info */
+"Current Session" = "当前会话";
+"Current Location" = "当前位置";
+"No active session" = "没有活动会话";
+
+/* Location Display */
+"Latitude" = "纬度";
+"Longitude" = "经度";
+"Lat: %.6f, Long: %.6f" = "纬度：%.6f，经度：%.6f";
+"Accuracy: ±%dm" = "精度：±%d米";
+"Speed: %.1f km/h" = "速度：%.1f 公里/小时";
+"Altitude: %.1fm" = "海拔：%.1f米";
+
+/* Stats Labels */
+"Locations" = "位置";
+"Duration" = "持续时间";
+"Start Time" = "开始时间";
+"Points" = "点";
+"points" = "个点";
+
+/* Alerts */
+"Unable to Start Tracking" = "无法开始跟踪";
+"Unable to Stop Tracking" = "无法停止跟踪";
+"Enable 'Always' Location in Settings" = "在设置中启用"始终"位置";
+"You've denied 'Always' location permission multiple times. Please enable it manually in Settings > Privacy > Location Services > TrackMe." = "您已多次拒绝"始终"位置权限。请在设置 > 隐私 > 定位服务 > TrackMe中手动启用。";
+
+/* Background Tracking */
+"Background Tracking Active" = "后台跟踪已激活";
+"This app continues tracking your location when:" = "此应用程序在以下情况下继续跟踪您的位置：";
+"To enable background tracking, select 'Allow While Using the App' first, then accept the next prompt for 'Always Allow'." = "要启用后台跟踪，请先选择"使用应用程序期间"，然后接受下一个"始终允许"的提示。";
+
+/* Permission Prompts */
+"Location Permission Required" = "需要位置权限";
+"Background Access Needed" = "需要后台访问权限";
+"Please allow 'Always' location access for background tracking. After selecting 'Allow While Using the App', accept the next prompt for 'Always Allow', or enable 'Always' in Settings." = "请允许"始终"位置访问以进行后台跟踪。选择"使用应用程序期间"后，接受下一个"始终允许"的提示，或在设置中启用"始终"。";
+"Location permission granted" = "已授予位置权限";
+
+/* Narrative Input */
+"Describe Your Journey" = "描述您的旅程";
+"Add a description to help you remember this tracking session" = "添加描述以帮助您记住此跟踪会话";
+"Description" = "描述";
+"Enter a description for this tracking session..." = "输入此跟踪会话的描述...";
+"Suggestions" = "建议";
+
+/* Narrative Suggestions */
+"Road Trip" = "自驾游";
+"City Tour" = "城市游览";
+"Scenic Drive" = "风景驾驶";
+"Hiking Trail" = "徒步小径";
+"Beach Walk" = "海滩漫步";
+"Mountain Adventure" = "登山探险";
+"Cycling Route" = "骑行路线";
+"Ferry Crossing" = "轮渡过江";
+
+/* MARK: - History View */
+
+/* Empty State */
+"No tracking sessions yet" = "尚无跟踪会话";
+"Start tracking from the Track tab to see your location history here." = "从跟踪标签开始跟踪，以在此处查看您的位置历史记录。";
+
+/* Session List */
+"%d locations" = "%d个位置";
+"Started: %@" = "开始：%@";
+"• Ended: %@" = "• 结束：%@";
+"Active" = "活动中";
+
+/* Session Details */
+"Session Details" = "会话详情";
+"Statistics" = "统计信息";
+"Location Data (%d most recent)" = "位置数据（最近%d个）";
+"Choose a format to export this tracking session" = "选择格式以导出此跟踪会话";
+
+/* Export Formats */
+"Export as GPX" = "导出为GPX";
+"Export as KML" = "导出为KML";
+"Export as CSV" = "导出为CSV";
+"Export as GeoJSON" = "导出为GeoJSON";
+
+/* Statistics */
+"Total Distance" = "总距离";
+"Average Speed" = "平均速度";
+"Max Speed" = "最高速度";
+"Average Accuracy" = "平均精度";
+
+/* Time Formatting */
+"h" = "小时";
+"min" = "分钟";
+"sec" = "秒";
+
+/* MARK: - Map View */
+
+"Location Details" = "位置详情";
+
+/* MARK: - Common */
+
+"Error" = "错误";
+"Warning" = "警告";
+"Info" = "信息";
+"Loading..." = "加载中...";
+"Saving..." = "保存中...";
+"Delete" = "删除";
+"Edit" = "编辑";
+"Share" = "分享";
+"Export" = "导出";
+"Settings" = "设置";
+"About" = "关于";
+"Help" = "帮助";
+"Close" = "关闭";
+
+/* Time units */
+"hour" = "小时";
+"hours" = "小时";
+"minute" = "分钟";
+"minutes" = "分钟";
+"second" = "秒";
+"seconds" = "秒";
+
+/* Distance units */
+"meters" = "米";
+"kilometers" = "公里";
+"km" = "公里";
+"m" = "米";
+
+/* Speed units */
+"km/h" = "公里/小时";
+"m/s" = "米/秒";
+
+/* Dates */
+"Today" = "今天";
+"Yesterday" = "昨天";
+"This Week" = "本周";
+"This Month" = "本月";
+
+/* Error Messages */
+"An error occurred" = "发生错误";
+"Please try again" = "请重试";
+"Location services are disabled" = "定位服务已禁用";
+"Unable to save data" = "无法保存数据";
+"Unable to load data" = "无法加载数据";
+
+/* Success Messages */
+"Saved successfully" = "保存成功";
+"Exported successfully" = "导出成功";
+"Deleted successfully" = "删除成功";

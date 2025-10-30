@@ -1,0 +1,175 @@
+/* 
+  Localizable.strings
+  TrackMe - Portuguese Localization
+*/
+
+/* MARK: - Tracking View */
+
+/* Status Messages */
+"GPS Tracking Active" = "Rastreamento GPS Ativo";
+"GPS Tracking Stopped" = "Rastreamento GPS Parado";
+"Running in Background" = "Executando em Segundo Plano";
+"Active in Foreground" = "Ativo em Primeiro Plano";
+
+/* Navigation */
+"GPS Tracker" = "Rastreador GPS";
+"Track" = "Rastrear";
+"History" = "Histórico";
+"Map" = "Mapa";
+
+/* Permission Messages */
+"'Always' Location Permission Required" = "Permissão de Localização 'Sempre' Necessária";
+"TrackMe requires 'Always Allow' location access to function correctly, including background tracking. Please grant 'Always' permission when prompted, or enable it in Settings > Privacy > Location Services > TrackMe." = "O TrackMe requer acesso à localização 'Permitir Sempre' para funcionar corretamente, incluindo rastreamento em segundo plano. Conceda a permissão 'Sempre' quando solicitado, ou ative em Ajustes > Privacidade > Serviços de Localização > TrackMe.";
+
+/* Buttons */
+"Stop Tracking" = "Parar Rastreamento";
+"Start Tracking" = "Iniciar Rastreamento";
+"OK" = "OK";
+"Cancel" = "Cancelar";
+"Done" = "Concluído";
+"Open Settings" = "Abrir Ajustes";
+
+/* Session Info */
+"Current Session" = "Sessão Atual";
+"Current Location" = "Localização Atual";
+"No active session" = "Nenhuma sessão ativa";
+
+/* Location Display */
+"Latitude" = "Latitude";
+"Longitude" = "Longitude";
+"Lat: %.6f, Long: %.6f" = "Lat: %.6f, Long: %.6f";
+"Accuracy: ±%dm" = "Precisão: ±%dm";
+"Speed: %.1f km/h" = "Velocidade: %.1f km/h";
+"Altitude: %.1fm" = "Altitude: %.1fm";
+
+/* Stats Labels */
+"Locations" = "Localizações";
+"Duration" = "Duração";
+"Start Time" = "Horário de Início";
+"Points" = "Pontos";
+"points" = "pontos";
+
+/* Alerts */
+"Unable to Start Tracking" = "Não Foi Possível Iniciar o Rastreamento";
+"Unable to Stop Tracking" = "Não Foi Possível Parar o Rastreamento";
+"Enable 'Always' Location in Settings" = "Ativar Localização 'Sempre' nos Ajustes";
+"You've denied 'Always' location permission multiple times. Please enable it manually in Settings > Privacy > Location Services > TrackMe." = "Você negou a permissão de localização 'Sempre' várias vezes. Ative-a manualmente em Ajustes > Privacidade > Serviços de Localização > TrackMe.";
+
+/* Background Tracking */
+"Background Tracking Active" = "Rastreamento em Segundo Plano Ativo";
+"This app continues tracking your location when:" = "Este app continua rastreando sua localização quando:";
+"To enable background tracking, select 'Allow While Using the App' first, then accept the next prompt for 'Always Allow'." = "Para habilitar o rastreamento em segundo plano, selecione 'Permitir ao Usar o App' primeiro, depois aceite a próxima solicitação para 'Permitir Sempre'.";
+
+/* Permission Prompts */
+"Location Permission Required" = "Permissão de Localização Necessária";
+"Background Access Needed" = "Acesso em Segundo Plano Necessário";
+"Please allow 'Always' location access for background tracking. After selecting 'Allow While Using the App', accept the next prompt for 'Always Allow', or enable 'Always' in Settings." = "Permita o acesso à localização 'Sempre' para rastreamento em segundo plano. Após selecionar 'Permitir ao Usar o App', aceite a próxima solicitação para 'Permitir Sempre', ou ative 'Sempre' nos Ajustes.";
+"Location permission granted" = "Permissão de localização concedida";
+
+/* Narrative Input */
+"Describe Your Journey" = "Descreva Sua Viagem";
+"Add a description to help you remember this tracking session" = "Adicione uma descrição para ajudá-lo a lembrar desta sessão de rastreamento";
+"Description" = "Descrição";
+"Enter a description for this tracking session..." = "Digite uma descrição para esta sessão de rastreamento...";
+"Suggestions" = "Sugestões";
+
+/* Narrative Suggestions */
+"Road Trip" = "Viagem de Carro";
+"City Tour" = "Tour pela Cidade";
+"Scenic Drive" = "Rota Panorâmica";
+"Hiking Trail" = "Trilha de Caminhada";
+"Beach Walk" = "Caminhada na Praia";
+"Mountain Adventure" = "Aventura na Montanha";
+"Cycling Route" = "Rota de Ciclismo";
+"Ferry Crossing" = "Travessia de Balsa";
+
+/* MARK: - History View */
+
+/* Empty State */
+"No tracking sessions yet" = "Nenhuma sessão de rastreamento ainda";
+"Start tracking from the Track tab to see your location history here." = "Inicie o rastreamento na aba Rastrear para ver seu histórico de localização aqui.";
+
+/* Session List */
+"%d locations" = "%d localizações";
+"Started: %@" = "Iniciado: %@";
+"• Ended: %@" = "• Finalizado: %@";
+"Active" = "Ativo";
+
+/* Session Details */
+"Session Details" = "Detalhes da Sessão";
+"Statistics" = "Estatísticas";
+"Location Data (%d most recent)" = "Dados de Localização (%d mais recentes)";
+"Choose a format to export this tracking session" = "Escolha um formato para exportar esta sessão de rastreamento";
+
+/* Export Formats */
+"Export as GPX" = "Exportar como GPX";
+"Export as KML" = "Exportar como KML";
+"Export as CSV" = "Exportar como CSV";
+"Export as GeoJSON" = "Exportar como GeoJSON";
+
+/* Statistics */
+"Total Distance" = "Distância Total";
+"Average Speed" = "Velocidade Média";
+"Max Speed" = "Velocidade Máxima";
+"Average Accuracy" = "Precisão Média";
+
+/* Time Formatting */
+"h" = "h";
+"min" = "min";
+"sec" = "seg";
+
+/* MARK: - Map View */
+
+"Location Details" = "Detalhes da Localização";
+
+/* MARK: - Common */
+
+"Error" = "Erro";
+"Warning" = "Aviso";
+"Info" = "Info";
+"Loading..." = "Carregando...";
+"Saving..." = "Salvando...";
+"Delete" = "Excluir";
+"Edit" = "Editar";
+"Share" = "Compartilhar";
+"Export" = "Exportar";
+"Settings" = "Ajustes";
+"About" = "Sobre";
+"Help" = "Ajuda";
+"Close" = "Fechar";
+
+/* Time units */
+"hour" = "hora";
+"hours" = "horas";
+"minute" = "minuto";
+"minutes" = "minutos";
+"second" = "segundo";
+"seconds" = "segundos";
+
+/* Distance units */
+"meters" = "metros";
+"kilometers" = "quilômetros";
+"km" = "km";
+"m" = "m";
+
+/* Speed units */
+"km/h" = "km/h";
+"m/s" = "m/s";
+
+/* Dates */
+"Today" = "Hoje";
+"Yesterday" = "Ontem";
+"This Week" = "Esta Semana";
+"This Month" = "Este Mês";
+
+/* Error Messages */
+"An error occurred" = "Ocorreu um erro";
+"Please try again" = "Por favor, tente novamente";
+"Location services are disabled" = "Os serviços de localização estão desativados";
+"Unable to save data" = "Não foi possível salvar os dados";
+"Unable to load data" = "Não foi possível carregar os dados";
+
+/* Success Messages */
+"Saved successfully" = "Salvo com sucesso";
+"Exported successfully" = "Exportado com sucesso";
+"Deleted successfully" = "Excluído com sucesso";

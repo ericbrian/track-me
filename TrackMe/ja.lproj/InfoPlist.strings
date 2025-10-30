@@ -1,0 +1,11 @@
+/* 
+  InfoPlist.strings
+  TrackMe - Japanese Localization
+*/
+
+/* Location Permission Descriptions */
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "TrackMeは旅行の追跡のために位置情報へのアクセスが必要です。バックグラウンド追跡を有効にするには、「常に許可」の権限を付与してください。";
+
+"NSLocationAlwaysUsageDescription" = "TrackMeは、アプリがバックグラウンドにある場合でも旅行を追跡するために、「常に」位置情報アクセスが必要です。";
+
+"NSLocationWhenInUseUsageDescription" = "TrackMeは、アプリの使用中に旅行を追跡するために位置情報へのアクセスが必要です。";

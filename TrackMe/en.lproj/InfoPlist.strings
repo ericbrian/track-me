@@ -1,0 +1,12 @@
+/* 
+  InfoPlist.strings
+  TrackMe - English Localization
+*/
+
+/* Location Permission Descriptions */
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "This app needs location access to track your movements and provide accurate GPS tracking data.";
+"NSLocationAlwaysUsageDescription" = "This app needs always location access to track your movements even when the app is in the background.";
+"NSLocationWhenInUseUsageDescription" = "This app needs location access to track your movements when you're using the app.";
+
+/* App Display Name */
+"CFBundleDisplayName" = "TrackMe";

@@ -1,0 +1,11 @@
+/* 
+  InfoPlist.strings
+  TrackMe - Simplified Chinese Localization
+*/
+
+/* Location Permission Descriptions */
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "TrackMe需要访问您的位置以跟踪您的旅程。请授予"始终允许"权限以启用后台跟踪。";
+
+"NSLocationAlwaysUsageDescription" = "TrackMe需要"始终"位置访问权限，以便在应用程序处于后台时跟踪您的旅程。";
+
+"NSLocationWhenInUseUsageDescription" = "TrackMe需要访问您的位置，以便在您使用应用程序时跟踪您的旅程。";

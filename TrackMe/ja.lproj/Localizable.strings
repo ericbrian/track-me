@@ -1,0 +1,175 @@
+/* 
+  Localizable.strings
+  TrackMe - Japanese Localization
+*/
+
+/* MARK: - Tracking View */
+
+/* Status Messages */
+"GPS Tracking Active" = "GPS追跡が有効です";
+"GPS Tracking Stopped" = "GPS追跡が停止しました";
+"Running in Background" = "バックグラウンドで実行中";
+"Active in Foreground" = "フォアグラウンドで有効";
+
+/* Navigation */
+"GPS Tracker" = "GPSトラッカー";
+"Track" = "追跡";
+"History" = "履歴";
+"Map" = "地図";
+
+/* Permission Messages */
+"'Always' Location Permission Required" = "「常に許可」の位置情報権限が必要です";
+"TrackMe requires 'Always Allow' location access to function correctly, including background tracking. Please grant 'Always' permission when prompted, or enable it in Settings > Privacy > Location Services > TrackMe." = "TrackMeは、バックグラウンド追跡を含めて正しく機能するために「常に許可」の位置情報アクセスが必要です。プロンプトが表示されたら「常に」の権限を付与するか、設定 > プライバシー > 位置情報サービス > TrackMeで有効にしてください。";
+
+/* Buttons */
+"Stop Tracking" = "追跡を停止";
+"Start Tracking" = "追跡を開始";
+"OK" = "OK";
+"Cancel" = "キャンセル";
+"Done" = "完了";
+"Open Settings" = "設定を開く";
+
+/* Session Info */
+"Current Session" = "現在のセッション";
+"Current Location" = "現在地";
+"No active session" = "アクティブなセッションがありません";
+
+/* Location Display */
+"Latitude" = "緯度";
+"Longitude" = "経度";
+"Lat: %.6f, Long: %.6f" = "緯度：%.6f、経度：%.6f";
+"Accuracy: ±%dm" = "精度：±%dm";
+"Speed: %.1f km/h" = "速度：%.1f km/h";
+"Altitude: %.1fm" = "高度：%.1fm";
+
+/* Stats Labels */
+"Locations" = "位置";
+"Duration" = "期間";
+"Start Time" = "開始時刻";
+"Points" = "ポイント";
+"points" = "ポイント";
+
+/* Alerts */
+"Unable to Start Tracking" = "追跡を開始できません";
+"Unable to Stop Tracking" = "追跡を停止できません";
+"Enable 'Always' Location in Settings" = "設定で「常に」位置情報を有効にする";
+"You've denied 'Always' location permission multiple times. Please enable it manually in Settings > Privacy > Location Services > TrackMe." = "「常に」位置情報の権限を複数回拒否しました。設定 > プライバシー > 位置情報サービス > TrackMeで手動で有効にしてください。";
+
+/* Background Tracking */
+"Background Tracking Active" = "バックグラウンド追跡が有効です";
+"This app continues tracking your location when:" = "このアプリは次の場合に位置情報の追跡を続けます：";
+"To enable background tracking, select 'Allow While Using the App' first, then accept the next prompt for 'Always Allow'." = "バックグラウンド追跡を有効にするには、まず「このAppの使用中のみ許可」を選択し、次に「常に許可」のプロンプトを承諾してください。";
+
+/* Permission Prompts */
+"Location Permission Required" = "位置情報の権限が必要です";
+"Background Access Needed" = "バックグラウンドアクセスが必要です";
+"Please allow 'Always' location access for background tracking. After selecting 'Allow While Using the App', accept the next prompt for 'Always Allow', or enable 'Always' in Settings." = "バックグラウンド追跡のために「常に」位置情報アクセスを許可してください。「このAppの使用中のみ許可」を選択した後、次の「常に許可」のプロンプトを承諾するか、設定で「常に」を有効にしてください。";
+"Location permission granted" = "位置情報の権限が付与されました";
+
+/* Narrative Input */
+"Describe Your Journey" = "旅の説明";
+"Add a description to help you remember this tracking session" = "この追跡セッションを思い出すための説明を追加してください";
+"Description" = "説明";
+"Enter a description for this tracking session..." = "この追跡セッションの説明を入力してください...";
+"Suggestions" = "候補";
+
+/* Narrative Suggestions */
+"Road Trip" = "ドライブ旅行";
+"City Tour" = "市内観光";
+"Scenic Drive" = "景色の良いドライブ";
+"Hiking Trail" = "ハイキングコース";
+"Beach Walk" = "海辺の散歩";
+"Mountain Adventure" = "山の冒険";
+"Cycling Route" = "サイクリングルート";
+"Ferry Crossing" = "フェリー乗船";
+
+/* MARK: - History View */
+
+/* Empty State */
+"No tracking sessions yet" = "まだ追跡セッションがありません";
+"Start tracking from the Track tab to see your location history here." = "追跡タブから追跡を開始すると、ここに位置情報の履歴が表示されます。";
+
+/* Session List */
+"%d locations" = "%d個の位置";
+"Started: %@" = "開始：%@";
+"• Ended: %@" = "• 終了：%@";
+"Active" = "アクティブ";
+
+/* Session Details */
+"Session Details" = "セッション詳細";
+"Statistics" = "統計";
+"Location Data (%d most recent)" = "位置情報データ（最新%d件）";
+"Choose a format to export this tracking session" = "この追跡セッションをエクスポートする形式を選択してください";
+
+/* Export Formats */
+"Export as GPX" = "GPXでエクスポート";
+"Export as KML" = "KMLでエクスポート";
+"Export as CSV" = "CSVでエクスポート";
+"Export as GeoJSON" = "GeoJSONでエクスポート";
+
+/* Statistics */
+"Total Distance" = "総距離";
+"Average Speed" = "平均速度";
+"Max Speed" = "最高速度";
+"Average Accuracy" = "平均精度";
+
+/* Time Formatting */
+"h" = "時間";
+"min" = "分";
+"sec" = "秒";
+
+/* MARK: - Map View */
+
+"Location Details" = "位置情報の詳細";
+
+/* MARK: - Common */
+
+"Error" = "エラー";
+"Warning" = "警告";
+"Info" = "情報";
+"Loading..." = "読み込み中...";
+"Saving..." = "保存中...";
+"Delete" = "削除";
+"Edit" = "編集";
+"Share" = "共有";
+"Export" = "エクスポート";
+"Settings" = "設定";
+"About" = "アプリについて";
+"Help" = "ヘルプ";
+"Close" = "閉じる";
+
+/* Time units */
+"hour" = "時間";
+"hours" = "時間";
+"minute" = "分";
+"minutes" = "分";
+"second" = "秒";
+"seconds" = "秒";
+
+/* Distance units */
+"meters" = "メートル";
+"kilometers" = "キロメートル";
+"km" = "km";
+"m" = "m";
+
+/* Speed units */
+"km/h" = "km/h";
+"m/s" = "m/s";
+
+/* Dates */
+"Today" = "今日";
+"Yesterday" = "昨日";
+"This Week" = "今週";
+"This Month" = "今月";
+
+/* Error Messages */
+"An error occurred" = "エラーが発生しました";
+"Please try again" = "もう一度お試しください";
+"Location services are disabled" = "位置情報サービスが無効になっています";
+"Unable to save data" = "データを保存できません";
+"Unable to load data" = "データを読み込めません";
+
+/* Success Messages */
+"Saved successfully" = "正常に保存されました";
+"Exported successfully" = "正常にエクスポートされました";
+"Deleted successfully" = "正常に削除されました";

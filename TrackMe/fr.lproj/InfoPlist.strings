@@ -1,0 +1,11 @@
+/* 
+  InfoPlist.strings
+  TrackMe - French Localization
+*/
+
+/* Location Permission Descriptions */
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "TrackMe a besoin d'accéder à votre position pour suivre vos voyages. Accordez l'autorisation 'Toujours autoriser' pour activer le suivi en arrière-plan.";
+
+"NSLocationAlwaysUsageDescription" = "TrackMe nécessite un accès 'Toujours' à la localisation pour suivre vos voyages même lorsque l'application est en arrière-plan.";
+
+"NSLocationWhenInUseUsageDescription" = "TrackMe a besoin d'accéder à votre position pour suivre vos voyages pendant que vous utilisez l'application.";

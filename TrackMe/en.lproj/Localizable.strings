@@ -1,0 +1,175 @@
+/* 
+  Localizable.strings
+  TrackMe - English Localization
+*/
+
+/* MARK: - Tracking View */
+
+/* Status Messages */
+"GPS Tracking Active" = "GPS Tracking Active";
+"GPS Tracking Stopped" = "GPS Tracking Stopped";
+"Running in Background" = "Running in Background";
+"Active in Foreground" = "Active in Foreground";
+
+/* Navigation */
+"GPS Tracker" = "GPS Tracker";
+"Track" = "Track";
+"History" = "History";
+"Map" = "Map";
+
+/* Permission Messages */
+"'Always' Location Permission Required" = "'Always' Location Permission Required";
+"TrackMe requires 'Always Allow' location access to function correctly, including background tracking. Please grant 'Always' permission when prompted, or enable it in Settings > Privacy > Location Services > TrackMe." = "TrackMe requires 'Always Allow' location access to function correctly, including background tracking. Please grant 'Always' permission when prompted, or enable it in Settings > Privacy > Location Services > TrackMe.";
+
+/* Buttons */
+"Stop Tracking" = "Stop Tracking";
+"Start Tracking" = "Start Tracking";
+"OK" = "OK";
+"Cancel" = "Cancel";
+"Done" = "Done";
+"Open Settings" = "Open Settings";
+
+/* Session Info */
+"Current Session" = "Current Session";
+"Current Location" = "Current Location";
+"No active session" = "No active session";
+
+/* Location Display */
+"Latitude" = "Latitude";
+"Longitude" = "Longitude";
+"Lat: %.6f, Long: %.6f" = "Lat: %.6f, Long: %.6f";
+"Accuracy: ±%dm" = "Accuracy: ±%dm";
+"Speed: %.1f km/h" = "Speed: %.1f km/h";
+"Altitude: %.1fm" = "Altitude: %.1fm";
+
+/* Stats Labels */
+"Locations" = "Locations";
+"Duration" = "Duration";
+"Start Time" = "Start Time";
+"Points" = "Points";
+"points" = "points";
+
+/* Alerts */
+"Unable to Start Tracking" = "Unable to Start Tracking";
+"Unable to Stop Tracking" = "Unable to Stop Tracking";
+"Enable 'Always' Location in Settings" = "Enable 'Always' Location in Settings";
+"You've denied 'Always' location permission multiple times. Please enable it manually in Settings > Privacy > Location Services > TrackMe." = "You've denied 'Always' location permission multiple times. Please enable it manually in Settings > Privacy > Location Services > TrackMe.";
+
+/* Background Tracking */
+"Background Tracking Active" = "Background Tracking Active";
+"This app continues tracking your location when:" = "This app continues tracking your location when:";
+"To enable background tracking, select 'Allow While Using the App' first, then accept the next prompt for 'Always Allow'." = "To enable background tracking, select 'Allow While Using the App' first, then accept the next prompt for 'Always Allow'.";
+
+/* Permission Prompts */
+"Location Permission Required" = "Location Permission Required";
+"Background Access Needed" = "Background Access Needed";
+"Please allow 'Always' location access for background tracking. After selecting 'Allow While Using the App', accept the next prompt for 'Always Allow', or enable 'Always' in Settings." = "Please allow 'Always' location access for background tracking. After selecting 'Allow While Using the App', accept the next prompt for 'Always Allow', or enable 'Always' in Settings.";
+"Location permission granted" = "Location permission granted";
+
+/* Narrative Input */
+"Describe Your Journey" = "Describe Your Journey";
+"Add a description to help you remember this tracking session" = "Add a description to help you remember this tracking session";
+"Description" = "Description";
+"Enter a description for this tracking session..." = "Enter a description for this tracking session...";
+"Suggestions" = "Suggestions";
+
+/* Narrative Suggestions */
+"Road Trip" = "Road Trip";
+"City Tour" = "City Tour";
+"Scenic Drive" = "Scenic Drive";
+"Hiking Trail" = "Hiking Trail";
+"Beach Walk" = "Beach Walk";
+"Mountain Adventure" = "Mountain Adventure";
+"Cycling Route" = "Cycling Route";
+"Ferry Crossing" = "Ferry Crossing";
+
+/* MARK: - History View */
+
+/* Empty State */
+"No tracking sessions yet" = "No tracking sessions yet";
+"Start tracking from the Track tab to see your location history here." = "Start tracking from the Track tab to see your location history here.";
+
+/* Session List */
+"%d locations" = "%d locations";
+"Started: %@" = "Started: %@";
+"• Ended: %@" = "• Ended: %@";
+"Active" = "Active";
+
+/* Session Details */
+"Session Details" = "Session Details";
+"Statistics" = "Statistics";
+"Location Data (%d most recent)" = "Location Data (%d most recent)";
+"Choose a format to export this tracking session" = "Choose a format to export this tracking session";
+
+/* Export Formats */
+"Export as GPX" = "Export as GPX";
+"Export as KML" = "Export as KML";
+"Export as CSV" = "Export as CSV";
+"Export as GeoJSON" = "Export as GeoJSON";
+
+/* Statistics */
+"Total Distance" = "Total Distance";
+"Average Speed" = "Average Speed";
+"Max Speed" = "Max Speed";
+"Average Accuracy" = "Average Accuracy";
+
+/* Time Formatting */
+"h" = "h";
+"min" = "min";
+"sec" = "sec";
+
+/* MARK: - Map View */
+
+"Location Details" = "Location Details";
+
+/* MARK: - Common */
+
+"Error" = "Error";
+"Warning" = "Warning";
+"Info" = "Info";
+"Loading..." = "Loading...";
+"Saving..." = "Saving...";
+"Delete" = "Delete";
+"Edit" = "Edit";
+"Share" = "Share";
+"Export" = "Export";
+"Settings" = "Settings";
+"About" = "About";
+"Help" = "Help";
+"Close" = "Close";
+
+/* Time units */
+"hour" = "hour";
+"hours" = "hours";
+"minute" = "minute";
+"minutes" = "minutes";
+"second" = "second";
+"seconds" = "seconds";
+
+/* Distance units */
+"meters" = "meters";
+"kilometers" = "kilometers";
+"km" = "km";
+"m" = "m";
+
+/* Speed units */
+"km/h" = "km/h";
+"m/s" = "m/s";
+
+/* Dates */
+"Today" = "Today";
+"Yesterday" = "Yesterday";
+"This Week" = "This Week";
+"This Month" = "This Month";
+
+/* Error Messages */
+"An error occurred" = "An error occurred";
+"Please try again" = "Please try again";
+"Location services are disabled" = "Location services are disabled";
+"Unable to save data" = "Unable to save data";
+"Unable to load data" = "Unable to load data";
+
+/* Success Messages */
+"Saved successfully" = "Saved successfully";
+"Exported successfully" = "Exported successfully";
+"Deleted successfully" = "Deleted successfully";
