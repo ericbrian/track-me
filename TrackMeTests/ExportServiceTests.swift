@@ -376,3 +376,503 @@ class ExportServiceTests: XCTestCase {
         }
     }
 }
+
+// MARK: - Export Error Handling Tests
+
+class ExportServiceErrorHandlingTests: XCTestCase {
+    var exportService: ExportService!
+    var persistenceController: PersistenceController!
+    var testSession: TrackingSession!
+    var testLocations: [LocationEntry]!
+    
+    override func setUp() {
+        super.setUp()
+        exportService = ExportService.shared
+        persistenceController = PersistenceController(inMemory: true)
+        
+        let context = persistenceController.container.viewContext
+        testSession = TrackingSession(context: context)
+        testSession.id = UUID()
+        testSession.narrative = "Error Test Session"
+        testSession.startDate = Date()
+        testSession.endDate = Date().addingTimeInterval(3600)
+        
+        testLocations = []
+        for i in 0..<5 {
+            let location = LocationEntry(context: context)
+            location.id = UUID()
+            location.latitude = 37.7749 + Double(i) * 0.001
+            location.longitude = -122.4194
+            location.timestamp = Date()
+            location.session = testSession
+            testLocations.append(location)
+        }
+        
+        try? context.save()
+    }
+    
+    override func tearDown() {
+        testLocations = nil
+        testSession = nil
+        persistenceController = nil
+        exportService = nil
+        super.tearDown()
+    }
+    
+    // MARK: - File Write Error Tests
+    
+    func testSaveToInvalidPath() {
+        // Try to save to a path that doesn't exist (without creating directories)
+        let invalidURL = URL(fileURLWithPath: "/nonexistent/directory/that/does/not/exist/test.gpx")
+        let content = "Test content"
+        
+        do {
+            try content.write(to: invalidURL, atomically: true, encoding: .utf8)
+            XCTFail("Should have thrown an error for invalid path")
+        } catch {
+            // Expected to fail
+            XCTAssertNotNil(error)
+        }
+    }
+    
+    func testSaveToReadOnlyDirectory() {
+        // Test attempting to save to a read-only location
+        // This simulates permission denied scenarios
+        let readOnlyPath = "/System/test_file.gpx"
+        let readOnlyURL = URL(fileURLWithPath: readOnlyPath)
+        let content = "Test content"
+        
+        do {
+            try content.write(to: readOnlyURL, atomically: true, encoding: .utf8)
+            XCTFail("Should have thrown an error for read-only directory")
+        } catch {
+            // Expected to fail due to permissions
+            XCTAssertNotNil(error)
+        }
+    }
+    
+    func testSaveWithNilContentReturnsURL() {
+        // Empty content should still save successfully
+        let content = ""
+        let filename = "empty_test.gpx"
+        
+        let fileURL = exportService.saveToTemporaryFile(content: content, filename: filename)
+        
+        XCTAssertNotNil(fileURL, "Should be able to save empty content")
+        
+        // Clean up
+        if let url = fileURL {
+            try? FileManager.default.removeItem(at: url)
+        }
+    }
+    
+    func testSaveToTemporaryDirectorySuccess() {
+        let content = exportService.exportToGPX(session: testSession, locations: testLocations)
+        let filename = "test_success.gpx"
+        
+        let fileURL = exportService.saveToTemporaryFile(content: content, filename: filename)
+        
+        XCTAssertNotNil(fileURL, "Should successfully save to temporary directory")
+        
+        if let url = fileURL {
+            XCTAssertTrue(FileManager.default.fileExists(atPath: url.path))
+            
+            // Verify content
+            let readContent = try? String(contentsOf: url, encoding: .utf8)
+            XCTAssertEqual(readContent, content)
+            
+            // Clean up
+            try? FileManager.default.removeItem(at: url)
+        }
+    }
+    
+    // MARK: - Large File Handling Tests
+    
+    func testExportVeryLargeDataset() {
+        // Create a very large dataset (10,000 locations)
+        let context = persistenceController.container.viewContext
+        var largeLocationSet: [LocationEntry] = []
+        
+        for i in 0..<10000 {
+            let location = LocationEntry(context: context)
+            location.id = UUID()
+            location.latitude = 37.7749 + Double(i) * 0.0001
+            location.longitude = -122.4194 + Double(i) * 0.0001
+            location.altitude = 100.0 + Double(i)
+            location.speed = 5.0 + Double(i % 100)
+            location.timestamp = Date().addingTimeInterval(TimeInterval(i))
+            largeLocationSet.append(location)
+        }
+        
+        // Test GPX export with large dataset
+        let gpx = exportService.exportToGPX(session: testSession, locations: largeLocationSet)
+        
+        XCTAssertFalse(gpx.isEmpty)
+        XCTAssertGreaterThan(gpx.count, 100000) // Should be a large string
+        
+        // Test that it can be saved
+        let filename = exportService.generateFilename(session: testSession, format: .gpx)
+        let fileURL = exportService.saveToTemporaryFile(content: gpx, filename: filename)
+        
+        XCTAssertNotNil(fileURL, "Should be able to save large dataset")
+        
+        // Clean up
+        if let url = fileURL {
+            let attributes = try? FileManager.default.attributesOfItem(atPath: url.path)
+            let fileSize = attributes?[.size] as? Int64 ?? 0
+            XCTAssertGreaterThan(fileSize, 100000, "Large file should have significant size")
+            
+            try? FileManager.default.removeItem(at: url)
+        }
+    }
+    
+    func testExportMemoryEfficiency() {
+        // Test that export doesn't cause memory issues with moderate dataset
+        let context = persistenceController.container.viewContext
+        var locations: [LocationEntry] = []
+        
+        for i in 0..<5000 {
+            let location = LocationEntry(context: context)
+            location.id = UUID()
+            location.latitude = 37.7749 + Double(i) * 0.0001
+            location.longitude = -122.4194
+            location.timestamp = Date()
+            locations.append(location)
+        }
+        
+        // Export in all formats to test memory usage
+        _ = exportService.exportToGPX(session: testSession, locations: locations)
+        _ = exportService.exportToKML(session: testSession, locations: locations)
+        _ = exportService.exportToCSV(session: testSession, locations: locations)
+        _ = exportService.exportToGeoJSON(session: testSession, locations: locations)
+        
+        // If we get here without crashing, memory handling is adequate
+        XCTAssertTrue(true)
+    }
+    
+    // MARK: - Invalid Data Handling Tests
+    
+    func testExportWithInvalidCoordinates() {
+        let context = persistenceController.container.viewContext
+        let location = LocationEntry(context: context)
+        location.id = UUID()
+        location.latitude = 9999.0 // Invalid latitude
+        location.longitude = 9999.0 // Invalid longitude
+        location.timestamp = Date()
+        
+        let gpx = exportService.exportToGPX(session: testSession, locations: [location])
+        
+        // Should still generate valid XML structure
+        XCTAssertTrue(gpx.contains("<?xml"))
+        XCTAssertTrue(gpx.contains("<gpx"))
+        XCTAssertTrue(gpx.contains("9999.0")) // Invalid coords should still be exported
+    }
+    
+    func testExportWithNegativeAltitude() {
+        let context = persistenceController.container.viewContext
+        let location = LocationEntry(context: context)
+        location.id = UUID()
+        location.latitude = 37.7749
+        location.longitude = -122.4194
+        location.altitude = -100.0 // Below sea level
+        location.timestamp = Date()
+        
+        let kml = exportService.exportToKML(session: testSession, locations: [location])
+        
+        XCTAssertTrue(kml.contains("-100"))
+        XCTAssertTrue(kml.contains("<coordinates>"))
+    }
+    
+    func testExportWithExtremeValues() {
+        let context = persistenceController.container.viewContext
+        let location = LocationEntry(context: context)
+        location.id = UUID()
+        location.latitude = 89.9999 // Near north pole
+        location.longitude = 179.9999 // Near date line
+        location.altitude = 8848.0 // Mt. Everest height
+        location.speed = 300.0 // Very fast (m/s)
+        location.accuracy = 0.1 // Very accurate
+        location.timestamp = Date()
+        
+        let csv = exportService.exportToCSV(session: testSession, locations: [location])
+        
+        XCTAssertTrue(csv.contains("89.9999"))
+        XCTAssertTrue(csv.contains("179.9999"))
+        XCTAssertTrue(csv.contains("8848"))
+        XCTAssertTrue(csv.contains("300"))
+    }
+    
+    // MARK: - Concurrent Export Tests
+    
+    func testConcurrentExports() {
+        let expectation = XCTestExpectation(description: "Concurrent exports complete")
+        expectation.expectedFulfillmentCount = 4
+        
+        let queue = DispatchQueue(label: "test.concurrent.export", attributes: .concurrent)
+        
+        // Export in multiple formats concurrently
+        queue.async {
+            _ = self.exportService.exportToGPX(session: self.testSession, locations: self.testLocations)
+            expectation.fulfill()
+        }
+        
+        queue.async {
+            _ = self.exportService.exportToKML(session: self.testSession, locations: self.testLocations)
+            expectation.fulfill()
+        }
+        
+        queue.async {
+            _ = self.exportService.exportToCSV(session: self.testSession, locations: self.testLocations)
+            expectation.fulfill()
+        }
+        
+        queue.async {
+            _ = self.exportService.exportToGeoJSON(session: self.testSession, locations: self.testLocations)
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 5.0)
+    }
+    
+    func testConcurrentFileSaves() {
+        let expectation = XCTestExpectation(description: "Concurrent saves complete")
+        expectation.expectedFulfillmentCount = 10
+        
+        let queue = DispatchQueue(label: "test.concurrent.save", attributes: .concurrent)
+        
+        for i in 0..<10 {
+            queue.async {
+                let content = "Test content \(i)"
+                let filename = "concurrent_test_\(i).txt"
+                let fileURL = self.exportService.saveToTemporaryFile(content: content, filename: filename)
+                XCTAssertNotNil(fileURL)
+                
+                // Clean up
+                if let url = fileURL {
+                    try? FileManager.default.removeItem(at: url)
+                }
+                
+                expectation.fulfill()
+            }
+        }
+        
+        wait(for: [expectation], timeout: 10.0)
+    }
+    
+    // MARK: - Filename Edge Cases
+    
+    func testFilenameWithInvalidCharacters() {
+        let context = persistenceController.container.viewContext
+        let session = TrackingSession(context: context)
+        session.id = UUID()
+        session.narrative = "Test/Session With Spaces" // Test / and space sanitization
+        session.startDate = Date()
+        
+        let filename = exportService.generateFilename(session: session, format: .gpx)
+        
+        // Should sanitize forward slashes and spaces
+        XCTAssertFalse(filename.contains("/"), "Forward slash should be sanitized")
+        XCTAssertTrue(filename.contains("-"), "Forward slash should be replaced with dash")
+        XCTAssertTrue(filename.contains("_"), "Spaces should be replaced with underscores")
+        XCTAssertTrue(filename.hasSuffix(".gpx"))
+        XCTAssertTrue(filename.hasPrefix("TrackMe_"))
+    }
+    
+    func testFilenameWithUnicodeCharacters() {
+        let context = persistenceController.container.viewContext
+        let session = TrackingSession(context: context)
+        session.id = UUID()
+        session.narrative = "Test 日本語 Émojis 🚶‍♂️" // Unicode characters
+        session.startDate = Date()
+        
+        let filename = exportService.generateFilename(session: session, format: .gpx)
+        
+        // Should handle unicode gracefully
+        XCTAssertFalse(filename.isEmpty)
+        XCTAssertTrue(filename.hasSuffix(".gpx"))
+    }
+    
+    func testFilenameWithOnlySpaces() {
+        let context = persistenceController.container.viewContext
+        let session = TrackingSession(context: context)
+        session.id = UUID()
+        session.narrative = "     " // Only spaces
+        session.startDate = Date()
+        
+        let filename = exportService.generateFilename(session: session, format: .gpx)
+        
+        // Should handle spaces-only narrative
+        XCTAssertFalse(filename.isEmpty)
+        XCTAssertTrue(filename.hasSuffix(".gpx"))
+        XCTAssertTrue(filename.contains("TrackMe_"))
+    }
+    
+    // MARK: - Export Format Validation
+    
+    func testGPXXMLValidation() {
+        let gpx = exportService.exportToGPX(session: testSession, locations: testLocations)
+        
+        // Verify well-formed XML
+        XCTAssertTrue(gpx.hasPrefix("<?xml"))
+        
+        // Count opening and closing tags should match
+        let trkptOpen = gpx.components(separatedBy: "<trkpt").count - 1
+        let trkptClose = gpx.components(separatedBy: "</trkpt>").count - 1
+        XCTAssertEqual(trkptOpen, trkptClose, "Opening and closing trkpt tags should match")
+        
+        // Verify essential elements are present
+        XCTAssertTrue(gpx.contains("</gpx>"), "Should have closing gpx tag")
+        XCTAssertTrue(gpx.contains("</trk>"), "Should have closing trk tag")
+        XCTAssertTrue(gpx.contains("</trkseg>"), "Should have closing trkseg tag")
+    }
+    
+    func testKMLXMLValidation() {
+        let kml = exportService.exportToKML(session: testSession, locations: testLocations)
+        
+        // Verify well-formed XML
+        XCTAssertTrue(kml.hasPrefix("<?xml"))
+        
+        // Verify essential KML elements
+        XCTAssertTrue(kml.contains("</kml>"), "Should have closing kml tag")
+        XCTAssertTrue(kml.contains("</Document>"), "Should have closing Document tag")
+        XCTAssertTrue(kml.contains("</Placemark>"), "Should have closing Placemark tag")
+        XCTAssertTrue(kml.contains("</LineString>"), "Should have closing LineString tag")
+        XCTAssertTrue(kml.contains("</coordinates>"), "Should have closing coordinates tag")
+    }
+    
+    func testCSVFormatValidation() {
+        let csv = exportService.exportToCSV(session: testSession, locations: testLocations)
+        
+        let lines = csv.components(separatedBy: "\n").filter { !$0.isEmpty }
+        
+        // Header + data rows
+        XCTAssertGreaterThanOrEqual(lines.count, testLocations.count + 1)
+        
+        // Each data row should have same number of columns as header
+        let headerColumns = lines[0].components(separatedBy: ",").count
+        
+        for i in 1..<min(lines.count, testLocations.count + 1) {
+            let rowColumns = lines[i].components(separatedBy: ",").count
+            XCTAssertEqual(rowColumns, headerColumns, "Row \(i) should have same number of columns as header")
+        }
+    }
+    
+    func testGeoJSONValidation() {
+        let geojson = exportService.exportToGeoJSON(session: testSession, locations: testLocations)
+        
+        // Should be valid JSON
+        guard let jsonData = geojson.data(using: .utf8),
+              let json = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any] else {
+            XCTFail("GeoJSON should be valid JSON")
+            return
+        }
+        
+        // Verify GeoJSON structure
+        XCTAssertEqual(json["type"] as? String, "Feature")
+        XCTAssertNotNil(json["properties"])
+        XCTAssertNotNil(json["geometry"])
+        
+        if let geometry = json["geometry"] as? [String: Any] {
+            XCTAssertEqual(geometry["type"] as? String, "LineString")
+            XCTAssertNotNil(geometry["coordinates"])
+        }
+    }
+    
+    // MARK: - Edge Case Timestamps
+    
+    func testExportWithDistantPastTimestamp() {
+        let context = persistenceController.container.viewContext
+        let location = LocationEntry(context: context)
+        location.id = UUID()
+        location.latitude = 37.7749
+        location.longitude = -122.4194
+        location.timestamp = Date(timeIntervalSince1970: 0) // Unix epoch
+        
+        let gpx = exportService.exportToGPX(session: testSession, locations: [location])
+        
+        XCTAssertTrue(gpx.contains("<time>"))
+        XCTAssertTrue(gpx.contains("1970"))
+    }
+    
+    func testExportWithFutureTimestamp() {
+        let context = persistenceController.container.viewContext
+        let location = LocationEntry(context: context)
+        location.id = UUID()
+        location.latitude = 37.7749
+        location.longitude = -122.4194
+        location.timestamp = Date().addingTimeInterval(86400 * 365 * 10) // 10 years in future
+        
+        let gpx = exportService.exportToGPX(session: testSession, locations: [location])
+        
+        XCTAssertTrue(gpx.contains("<time>"))
+        // Should still export future dates
+    }
+    
+    func testExportWithNilTimestamp() {
+        let context = persistenceController.container.viewContext
+        let location = LocationEntry(context: context)
+        location.id = UUID()
+        location.latitude = 37.7749
+        location.longitude = -122.4194
+        location.timestamp = nil
+        
+        let gpx = exportService.exportToGPX(session: testSession, locations: [location])
+        
+        // Should handle nil timestamp gracefully
+        XCTAssertTrue(gpx.contains("<trkpt"))
+        XCTAssertTrue(gpx.contains("</trkpt>"))
+    }
+    
+    // MARK: - File Cleanup Tests
+    
+    func testTemporaryFileCleanup() {
+        var fileURLs: [URL] = []
+        
+        // Create multiple temporary files
+        for i in 0..<5 {
+            let content = "Test content \(i)"
+            let filename = "cleanup_test_\(i).txt"
+            if let url = exportService.saveToTemporaryFile(content: content, filename: filename) {
+                fileURLs.append(url)
+            }
+        }
+        
+        XCTAssertEqual(fileURLs.count, 5)
+        
+        // Verify all files exist
+        for url in fileURLs {
+            XCTAssertTrue(FileManager.default.fileExists(atPath: url.path))
+        }
+        
+        // Clean up all files
+        for url in fileURLs {
+            do {
+                try FileManager.default.removeItem(at: url)
+                XCTAssertFalse(FileManager.default.fileExists(atPath: url.path))
+            } catch {
+                XCTFail("Should be able to delete temporary file: \(error)")
+            }
+        }
+    }
+    
+    // MARK: - Performance Under Error Conditions
+    
+    func testExportPerformanceWithInvalidData() {
+        let context = persistenceController.container.viewContext
+        var locations: [LocationEntry] = []
+        
+        // Create locations with some invalid data
+        for i in 0..<1000 {
+            let location = LocationEntry(context: context)
+            location.id = UUID()
+            location.latitude = (i % 2 == 0) ? 37.7749 : 9999.0 // Mix valid and invalid
+            location.longitude = (i % 3 == 0) ? -122.4194 : 9999.0
+            location.timestamp = Date()
+            locations.append(location)
+        }
+        
+        measure {
+            _ = exportService.exportToGPX(session: testSession, locations: locations)
+        }
+    }
+}
