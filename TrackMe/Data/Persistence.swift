@@ -40,17 +40,21 @@ struct PersistenceController {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
         
-        let semaphore = DispatchSemaphore(value: 0)
+        // For in-memory stores (tests), load synchronously
+        // For production, load synchronously to ensure container is ready
+        // but we move the entire initialization off the main thread in TrackMeApp
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
-                // Replace this implementation with code to handle the error appropriately.
+                // Log error but don't crash in production
+                print("⚠️ Core Data error: \(error), \(error.userInfo)")
+                #if DEBUG
                 fatalError("Unresolved error \(error), \(error.userInfo)")
+                #endif
             }
-            semaphore.signal()
         })
-        semaphore.wait()
         
         container.viewContext.automaticallyMergesChangesFromParent = true
+        container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
     }
 }
 

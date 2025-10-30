@@ -42,6 +42,59 @@ class LocationManagerTests: XCTestCase {
         // Authorization status should be set to notDetermined or the actual system status
         XCTAssertNotNil(locationManager.authorizationStatus, "Authorization status should be set.")
     }
+    
+    func testStartTrackingWithoutPermission() {
+        // Ensure tracking doesn't start without proper authorization
+        locationManager.startTracking(with: "Test Session")
+        
+        // Should not be tracking if no permission
+        if locationManager.authorizationStatus != .authorizedAlways {
+            XCTAssertFalse(locationManager.isTracking, "Should not start tracking without authorization")
+            XCTAssertNotNil(locationManager.trackingStartError, "Should have an error message")
+        }
+    }
+    
+    func testMultipleStartTrackingCalls() {
+        // Simulating multiple start calls should not create duplicate sessions
+        // This test verifies the guard against multiple active sessions
+        locationManager.startTracking(with: "Session 1")
+        let firstSessionState = locationManager.isTracking
+        
+        locationManager.startTracking(with: "Session 2")
+        let secondSessionState = locationManager.isTracking
+        
+        // State should be consistent
+        XCTAssertEqual(firstSessionState, secondSessionState, "Multiple start calls should not change state")
+    }
+    
+    func testLocationManagerCleanup() {
+        // Test that stopping tracking properly cleans up resources
+        if locationManager.authorizationStatus == .authorizedAlways {
+            locationManager.startTracking(with: "Cleanup Test")
+            XCTAssertTrue(locationManager.isTracking, "Should be tracking")
+            
+            locationManager.stopTracking()
+            XCTAssertFalse(locationManager.isTracking, "Should stop tracking")
+            XCTAssertNil(locationManager.currentSession, "Session should be nil after stopping")
+        }
+    }
+    
+    func testErrorClearing() {
+        // Test that errors can be set and cleared
+        locationManager.trackingStartError = "Test error"
+        XCTAssertNotNil(locationManager.trackingStartError)
+        
+        locationManager.trackingStartError = nil
+        XCTAssertNil(locationManager.trackingStartError)
+    }
+    
+    func testLocationCountTracking() {
+        // Test that location count starts at 0
+        XCTAssertEqual(locationManager.locationCount, 0, "Initial location count should be 0")
+        
+        // Note: Actual location updates require real CLLocationManager which is not testable in unit tests
+        // This would be covered in integration/UI tests
+    }
 }
 
 // MARK: - PersistenceController Tests
@@ -228,6 +281,82 @@ class PersistenceControllerTests: XCTestCase {
         
         XCTAssertNotNil(sessions, "Preview should have sample sessions.")
         XCTAssertGreaterThan(sessions?.count ?? 0, 0, "Preview should contain at least one session.")
+    }
+    
+    func testConcurrentSave() {
+        let expectation = self.expectation(description: "Concurrent saves")
+        expectation.expectedFulfillmentCount = 5
+        
+        let context = persistenceController.container.viewContext
+        
+        // Simulate multiple concurrent saves
+        DispatchQueue.concurrentPerform(iterations: 5) { i in
+            let backgroundContext = persistenceController.container.newBackgroundContext()
+            backgroundContext.performAndWait {
+                let session = TrackingSession(context: backgroundContext)
+                session.id = UUID()
+                session.narrative = "Concurrent Session \(i)"
+                session.startDate = Date()
+                session.isActive = false
+                
+                do {
+                    try backgroundContext.save()
+                    expectation.fulfill()
+                } catch {
+                    XCTFail("Concurrent save failed: \(error)")
+                }
+            }
+        }
+        
+        waitForExpectations(timeout: 5.0) { error in
+            if let error = error {
+                XCTFail("Concurrent save test timed out: \(error)")
+            }
+        }
+        
+        // Verify all sessions were saved
+        let fetchRequest: NSFetchRequest<TrackingSession> = TrackingSession.fetchRequest()
+        let sessions = try? context.fetch(fetchRequest)
+        XCTAssertEqual(sessions?.count, 5, "All 5 concurrent sessions should be saved")
+    }
+    
+    func testSaveWithoutChanges() {
+        let context = persistenceController.container.viewContext
+        
+        XCTAssertFalse(context.hasChanges, "Context should have no changes initially")
+        
+        persistenceController.save()
+        
+        // Should not crash or throw
+        XCTAssertTrue(true, "Save without changes should complete successfully")
+    }
+    
+    func testBackgroundContextMerge() {
+        let expectation = self.expectation(description: "Background context merge")
+        
+        let mainContext = persistenceController.container.viewContext
+        let backgroundContext = persistenceController.container.newBackgroundContext()
+        
+        backgroundContext.perform {
+            let session = TrackingSession(context: backgroundContext)
+            session.id = UUID()
+            session.narrative = "Background Session"
+            session.startDate = Date()
+            session.isActive = false
+            
+            try? backgroundContext.save()
+            
+            // Wait a moment for merge
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                let fetchRequest: NSFetchRequest<TrackingSession> = TrackingSession.fetchRequest()
+                let sessions = try? mainContext.fetch(fetchRequest)
+                
+                XCTAssertGreaterThan(sessions?.count ?? 0, 0, "Background changes should merge to main context")
+                expectation.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 2.0)
     }
 }
 

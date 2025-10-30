@@ -13,6 +13,7 @@ class LocationManager: NSObject, ObservableObject {
     private let locationManager = CLLocationManager()
     private var persistenceController = PersistenceController.shared
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
+    private var hasSetupObservers = false
     
     @Published var isTracking = false
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
@@ -224,20 +225,23 @@ class LocationManager: NSObject, ObservableObject {
         // Schedule background tasks
         scheduleBackgroundLocationTask()
 
-        // Add app lifecycle observers
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(appDidEnterBackground),
-            name: UIApplication.didEnterBackgroundNotification,
-            object: nil
-        )
+        // Add app lifecycle observers (only once)
+        if !hasSetupObservers {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(appDidEnterBackground),
+                name: UIApplication.didEnterBackgroundNotification,
+                object: nil
+            )
 
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(appWillEnterForeground),
-            name: UIApplication.willEnterForegroundNotification,
-            object: nil
-        )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(appWillEnterForeground),
+                name: UIApplication.willEnterForegroundNotification,
+                object: nil
+            )
+            hasSetupObservers = true
+        }
     }
     
     func stopTracking() {
@@ -278,8 +282,18 @@ class LocationManager: NSObject, ObservableObject {
         endBackgroundTask()
 
         // Remove observers
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
+        if hasSetupObservers {
+            NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
+            hasSetupObservers = false
+        }
+    }
+    
+    deinit {
+        // Clean up observers on deallocation
+        if hasSetupObservers {
+            NotificationCenter.default.removeObserver(self)
+        }
     }
     
     @objc private func appDidEnterBackground() {
@@ -301,34 +315,50 @@ class LocationManager: NSObject, ObservableObject {
     private func saveLocation(_ location: CLLocation) {
         guard let session = currentSession else { return }
         
+        // Filter out inaccurate locations
+        guard location.horizontalAccuracy > 0 && location.horizontalAccuracy < 100 else {
+            print("Location filtered out due to poor accuracy: \(location.horizontalAccuracy)m")
+            return
+        }
+        
         // Begin background task for database operation
         let taskId = UIApplication.shared.beginBackgroundTask {
             print("Background task for location save expired")
         }
         
-        let context = persistenceController.container.viewContext
-        let locationEntry = LocationEntry(context: context)
-        
-        locationEntry.id = UUID()
-        locationEntry.latitude = location.coordinate.latitude
-        locationEntry.longitude = location.coordinate.longitude
-        locationEntry.timestamp = location.timestamp
-        locationEntry.accuracy = location.horizontalAccuracy
-        locationEntry.altitude = location.altitude
-        locationEntry.speed = location.speed
-        locationEntry.course = location.course
-        locationEntry.session = session
-        
-        do {
-            try context.save()
-            DispatchQueue.main.async {
-                self.locationCount += 1
-                // Notify Watch about location count change
-                NotificationCenter.default.post(name: NSNotification.Name("LocationCountChanged"), object: nil)
+        // Use background context for thread safety
+        let context = persistenceController.container.newBackgroundContext()
+        context.performAndWait {
+            // Fetch the session in this context
+            guard let sessionID = session.objectID as? NSManagedObjectID,
+                  let sessionInContext = try? context.existingObject(with: sessionID) as? TrackingSession else {
+                UIApplication.shared.endBackgroundTask(taskId)
+                return
             }
-            print("Location saved successfully in background")
-        } catch {
-            print("Error saving location: \(error)")
+            
+            let locationEntry = LocationEntry(context: context)
+        
+            locationEntry.id = UUID()
+            locationEntry.latitude = location.coordinate.latitude
+            locationEntry.longitude = location.coordinate.longitude
+            locationEntry.timestamp = location.timestamp
+            locationEntry.accuracy = location.horizontalAccuracy
+            locationEntry.altitude = location.altitude
+            locationEntry.speed = location.speed >= 0 ? location.speed : 0
+            locationEntry.course = location.course >= 0 ? location.course : 0
+            locationEntry.session = sessionInContext
+            
+            do {
+                try context.save()
+                DispatchQueue.main.async {
+                    self.locationCount += 1
+                    // Notify Watch about location count change
+                    NotificationCenter.default.post(name: NSNotification.Name("LocationCountChanged"), object: nil)
+                }
+                print("Location saved successfully in background")
+            } catch {
+                print("Error saving location: \(error)")
+            }
         }
         
         UIApplication.shared.endBackgroundTask(taskId)
