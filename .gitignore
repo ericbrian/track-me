@@ -132,3 +132,4 @@ Temporary Items
 
 # Simulator files
 *.trace
+TestResults.xcresult/*
