@@ -56,6 +56,13 @@ TrackMe is a privacy-first iOS app for real-time GPS tracking, session managemen
 - `TrackMe.xcdatamodeld/`
 - `TrackMeTests/` - Unit tests for all major components
 
+# Critical Directives:
+
+- Before fixing bugs and the like, create a unit test that reproduces the issue. Then fix the issue and ensure the test passes.
+- Ensure all new features have corresponding unit tests.
+- After adding a unit test, run the full test suite to ensure no regressions and then update the code coverage report.
+
+
 ---
 
 For questions, review the README or inspect the above files for implementation patterns. Run unit tests to validate changes.
