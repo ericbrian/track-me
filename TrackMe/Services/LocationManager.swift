@@ -31,7 +31,6 @@ class LocationManager: NSObject, ObservableObject {
     /// Call this after UI appears to perform heavy setup
     func asyncSetup() {
         setupLocationManager()
-        setupBackgroundTasks()
         DispatchQueue.main.async {
             self.authorizationStatus = self.locationManager.authorizationStatus
         }
@@ -89,41 +88,8 @@ class LocationManager: NSObject, ObservableObject {
         // and after authorization is granted
     }
     
-    private func setupBackgroundTasks() {
-        // Register background tasks
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.ericbrian.TrackMe.background-location", using: nil) { task in
-            self.handleBackgroundLocationTask(task: task as! BGAppRefreshTask)
-        }
-        
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.ericbrian.TrackMe.data-sync", using: nil) { task in
-            self.handleDataSyncTask(task: task as! BGProcessingTask)
-        }
-    }
-    
-    private func handleBackgroundLocationTask(task: BGAppRefreshTask) {
-        // Schedule next background task
-        scheduleBackgroundLocationTask()
-        
-        task.expirationHandler = {
-            task.setTaskCompleted(success: false)
-        }
-        
-        // Perform background location work
-        if isTracking && authorizationStatus == .authorizedAlways {
-            locationManager.requestLocation()
-        }
-        
-        task.setTaskCompleted(success: true)
-    }
-    
-    private func handleDataSyncTask(task: BGProcessingTask) {
-        task.expirationHandler = {
-            task.setTaskCompleted(success: false)
-        }
-        
-        // Perform any data maintenance or sync
-        task.setTaskCompleted(success: true)
-    }
+    // Background task registration is centralized in TrackMeApp.registerBackgroundTasks().
+    // This class only schedules requests when appropriate.
     
     private func scheduleBackgroundLocationTask() {
         let request = BGAppRefreshTaskRequest(identifier: "com.ericbrian.TrackMe.background-location")
