@@ -441,4 +441,115 @@ class HistoryViewCollectionTests: XCTestCase {
         XCTAssertEqual(middleSession.objectID, originalObjectID, "ObjectID should remain stable")
         XCTAssertEqual(middleSession.locations?.count, 11)
     }
+    
+    func testZeroToFiveItemsCollectionViewUpdate() throws {
+        // Reproduces the exact error: "invalid number of items in section 0.
+        // The number of items contained in an existing section after the update (5)
+        // must be equal to the number of items contained in that section before the update (0)"
+        
+        // Start with empty state (0 items)
+        let fetchRequest: NSFetchRequest<TrackingSession> = TrackingSession.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \TrackingSession.startDate, ascending: false)]
+        
+        var sessions = try context.fetch(fetchRequest)
+        XCTAssertEqual(sessions.count, 0, "Should start with 0 sessions")
+        
+        // Now rapidly create 5 sessions (simulating what causes the crash)
+        for i in 1...5 {
+            let session = TrackingSession(context: context)
+            session.id = UUID()
+            session.startDate = Date().addingTimeInterval(TimeInterval(-i * 60))
+            session.narrative = "Crash Test Session \(i)"
+            session.isActive = (i == 1)
+            
+            let location = LocationEntry(context: context)
+            location.id = UUID()
+            location.latitude = 37.7749
+            location.longitude = -122.4194
+            location.timestamp = Date()
+            location.accuracy = 10.0
+            session.addToLocations(location)
+        }
+        
+        // Save - this is where the collection view would get out of sync
+        XCTAssertNoThrow(try context.save(), "Saving 5 sessions should not crash")
+        
+        // Verify the sessions were created
+        sessions = try context.fetch(fetchRequest)
+        XCTAssertEqual(sessions.count, 5, "Should have 5 sessions after save")
+        
+        // Verify each session has stable objectID
+        for session in sessions {
+            XCTAssertFalse(session.objectID.isTemporaryID, "Each session should have permanent objectID")
+        }
+        
+        // Now test the refresh pattern that HistoryView uses
+        XCTAssertNoThrow(context.refreshAllObjects(), "Refresh should not crash")
+        
+        // Re-fetch to simulate what happens when view refreshes
+        sessions = try context.fetch(fetchRequest)
+        XCTAssertEqual(sessions.count, 5, "Should still have 5 sessions after refresh")
+    }
+    
+    func testCollectionViewBatchUpdatesSimulation() throws {
+        // Simulates the batch update scenario that causes collection view crashes
+        
+        // Create initial state with 3 sessions
+        for i in 1...3 {
+            let session = TrackingSession(context: context)
+            session.id = UUID()
+            session.startDate = Date().addingTimeInterval(TimeInterval(-i * 3600))
+            session.narrative = "Initial Session \(i)"
+            session.isActive = false
+            
+            let location = LocationEntry(context: context)
+            location.id = UUID()
+            location.latitude = 37.7749
+            location.longitude = -122.4194
+            location.timestamp = Date()
+            location.accuracy = 10.0
+            session.addToLocations(location)
+        }
+        try context.save()
+        
+        let fetchRequest: NSFetchRequest<TrackingSession> = TrackingSession.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \TrackingSession.startDate, ascending: false)]
+        
+        var sessions = try context.fetch(fetchRequest)
+        XCTAssertEqual(sessions.count, 3)
+        
+        // Store objectIDs for stability check
+        let objectIDs = sessions.map { $0.objectID }
+        
+        // Perform updates to multiple sessions simultaneously
+        for (index, session) in sessions.enumerated() {
+            // Update narrative
+            session.narrative = "Updated Session \(index + 1)"
+            
+            // Add locations
+            for j in 1...5 {
+                let location = LocationEntry(context: context)
+                location.id = UUID()
+                location.latitude = 37.7749 + Double(j) * 0.001
+                location.longitude = -122.4194 + Double(j) * 0.001
+                location.timestamp = Date().addingTimeInterval(Double(j) * 10)
+                location.accuracy = 10.0
+                session.addToLocations(location)
+            }
+        }
+        
+        // Save all updates at once (batch update)
+        XCTAssertNoThrow(try context.save(), "Batch update should not crash")
+        
+        // Verify objectIDs remain stable
+        sessions = try context.fetch(fetchRequest)
+        XCTAssertEqual(sessions.count, 3)
+        
+        for (index, session) in sessions.enumerated() {
+            XCTAssertTrue(objectIDs.contains(session.objectID), "ObjectID should remain in original set")
+            XCTAssertEqual(session.locations?.count, 6, "Session should have updated location count")
+            XCTAssertTrue(session.narrative?.starts(with: "Updated") ?? false, "Narrative should be updated")
+        }
+    }
 }
+

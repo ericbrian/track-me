@@ -35,19 +35,6 @@ struct HistoryView: View {
     @State private var selectedSession: TrackingSession?
     @State private var showingSessionDetail = false
     @State private var showingMapView = false
-    @State private var refreshID = UUID()
-    @State private var sessionSnapshots: [UUID: SessionSnapshot] = [:]
-    
-    // Snapshot to prevent mid-update issues
-    private struct SessionSnapshot: Identifiable {
-        let id: UUID
-        let narrative: String?
-        let startDate: Date?
-        let endDate: Date?
-        let locationCount: Int
-        let isActive: Bool
-        let objectID: NSManagedObjectID
-    }
     
     var body: some View {
         NavigationView {
@@ -60,37 +47,35 @@ struct HistoryView: View {
                 )
                 .ignoresSafeArea()
                 
-                List {
-                    if sessions.isEmpty {
-                        VStack(spacing: 20) {
-                            Image(systemName: "clock.arrow.circlepath")
-                                .font(.system(size: 60))
-                                .foregroundStyle(
-                                    LinearGradient(
-                                        gradient: Gradient(colors: [.blue, .purple]),
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    )
+                if sessions.isEmpty {
+                    VStack(spacing: 20) {
+                        Image(systemName: "clock.arrow.circlepath")
+                            .font(.system(size: 60))
+                            .foregroundStyle(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [.blue, .purple]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
                                 )
+                            )
+                        
+                        VStack(spacing: 8) {
+                            Text("No tracking sessions yet")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .foregroundColor(.primary)
                             
-                            VStack(spacing: 8) {
-                                Text("No tracking sessions yet")
-                                    .font(.title2)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.primary)
-                                
-                                Text("Start tracking from the Track tab to see your location history here.")
-                                    .font(.body)
-                                    .foregroundColor(.secondary)
-                                    .multilineTextAlignment(.center)
-                            }
+                            Text("Start tracking from the Track tab to see your location history here.")
+                                .font(.body)
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.center)
                         }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 80)
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                    } else {
-                        ForEach(Array(sessions.enumerated()), id: \.element.objectID) { index, session in
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(.vertical, 80)
+                } else {
+                    List {
+                        ForEach(sessions, id: \.objectID) { session in
                             ModernSessionRowView(
                                 session: session,
                                 onTapSession: {
@@ -104,12 +89,11 @@ struct HistoryView: View {
                             )
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
-                            .id(session.objectID)  // Use objectID for stable identity
                         }
                         .onDelete(perform: deleteSessions)
                     }
+                    .listStyle(PlainListStyle())
                 }
-                .listStyle(PlainListStyle())
             }
             .navigationTitle("Tracking History")
             .toolbar {
@@ -127,31 +111,20 @@ struct HistoryView: View {
                     TripMapView(session: session)
                 }
             }
-            .id(refreshID) // Force view reload when refreshID changes
-            .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("HistoryShouldRefresh"))) { _ in
-                // Use animation transaction to smooth the refresh
-                withAnimation(.default) {
-                    refreshID = UUID()
-                }
-            }
-            .onAppear {
-                // Refresh context to sync with latest changes
-                viewContext.refreshAllObjects()
-            }
         }
     }
     
     private func deleteSessions(offsets: IndexSet) {
-        print("[DEBUG] Sessions before delete: \(sessions.count)")
-        withAnimation {
+        // Disable implicit animation from @FetchRequest
+        withAnimation(.default) {
             offsets.map { sessions[$0] }.forEach(viewContext.delete)
-            do {
-                try viewContext.save()
-            } catch {
-                print("Error deleting sessions: \(error)")
-            }
         }
-        print("[DEBUG] Sessions after delete: \(sessions.count)")
+        
+        do {
+            try viewContext.save()
+        } catch {
+            print("Error deleting sessions: \(error.localizedDescription)")
+        }
     }
 }
 
