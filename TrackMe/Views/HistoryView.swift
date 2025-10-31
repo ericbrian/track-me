@@ -3,6 +3,47 @@ import CoreData
 import CoreLocation
 import UIKit
 
+// MARK: - View Model (inline to avoid target file inclusion issues)
+
+final class HistoryViewModel: NSObject, ObservableObject {
+    @Published var sessions: [TrackingSession] = []
+
+    private var fetchedResultsController: NSFetchedResultsController<TrackingSession>?
+    private var isConfigured = false
+
+    func attach(context: NSManagedObjectContext) {
+        guard !isConfigured else { return }
+        isConfigured = true
+
+        let request: NSFetchRequest<TrackingSession> = TrackingSession.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \TrackingSession.startDate, ascending: false)]
+
+        let frc = NSFetchedResultsController(
+            fetchRequest: request,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+        frc.delegate = self
+        fetchedResultsController = frc
+
+        do {
+            try frc.performFetch()
+            sessions = frc.fetchedObjects ?? []
+        } catch {
+            print("HistoryViewModel: Failed to perform fetch: \(error)")
+            sessions = []
+        }
+    }
+}
+
+extension HistoryViewModel: NSFetchedResultsControllerDelegate {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        guard let frc = fetchedResultsController else { return }
+        sessions = frc.fetchedObjects ?? []
+    }
+}
+
 // MARK: - ActivityViewController
 
 struct ActivityViewController: UIViewControllerRepresentable {
@@ -24,19 +65,7 @@ struct ActivityViewController: UIViewControllerRepresentable {
 
 struct HistoryView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    // Use an explicit NSFetchRequest to guarantee the entity is set
-    @FetchRequest(
-        fetchRequest: HistoryView.sessionsFetchRequest(),
-        animation: nil  // Disable animation to prevent collection view conflicts
-    )
-    private var sessions: FetchedResults<TrackingSession>
-
-    // Explicit fetch request builder to ensure entity is present
-    private static func sessionsFetchRequest() -> NSFetchRequest<TrackingSession> {
-        let request: NSFetchRequest<TrackingSession> = TrackingSession.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \\TrackingSession.startDate, ascending: false)]
-        return request
-    }
+    @StateObject private var viewModel = HistoryViewModel()
     
     @State private var selectedSession: TrackingSession?
     @State private var showingSessionDetail = false
@@ -55,7 +84,7 @@ struct HistoryView: View {
                 
                 // Always keep List in hierarchy to prevent UICollectionView inconsistency
                 List {
-                    if sessions.isEmpty {
+                    if viewModel.sessions.isEmpty {
                         VStack(spacing: 20) {
                             Image(systemName: "clock.arrow.circlepath")
                                 .font(.system(size: 60))
@@ -85,7 +114,7 @@ struct HistoryView: View {
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
                     } else {
-                        ForEach(sessions, id: \.objectID) { session in
+                        ForEach(viewModel.sessions, id: \.objectID) { session in
                             ModernSessionRowView(
                                 session: session,
                                 onTapSession: {
@@ -123,17 +152,22 @@ struct HistoryView: View {
                         .environment(\.managedObjectContext, viewContext)
                 }
             }
+            .onAppear {
+                viewModel.attach(context: viewContext)
+            }
         }
     }
     
     private func deleteSessions(offsets: IndexSet) {
         // Disable implicit animation from @FetchRequest
         withAnimation(.default) {
-            offsets.map { sessions[$0] }.forEach(viewContext.delete)
+            offsets.map { viewModel.sessions[$0] }.forEach(viewContext.delete)
         }
         
         do {
             try viewContext.save()
+            // Refresh the list
+            viewModel.attach(context: viewContext)
         } catch {
             print("Error deleting sessions: \(error.localizedDescription)")
         }

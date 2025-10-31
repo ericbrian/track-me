@@ -21,17 +21,30 @@ struct TrackMeApp: App {
                         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didFinishLaunchingNotification)) { _ in
                             registerBackgroundTasks()
                         }
+                } else {
+                    VStack(spacing: 16) {
+                        Text("Unable to initialize data store")
+                            .font(.headline)
+                            .foregroundColor(.primary)
+                        Text("Please try again. If the problem persists, reinstall the app.")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        Button("Retry") {
+                            let controller = PersistenceController()
+                            self.persistenceController = controller
+                            self.isLoading = false
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                    .padding()
                 }
             }
             .onAppear {
                 if persistenceController == nil {
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        let controller = PersistenceController()
-                        DispatchQueue.main.async {
-                            self.persistenceController = controller
-                            self.isLoading = false
-                        }
-                    }
+                    // Initialize Core Data synchronously on the main thread to ensure UI becomes ready
+                    let controller = PersistenceController()
+                    self.persistenceController = controller
+                    self.isLoading = false
                 }
             }
         }
