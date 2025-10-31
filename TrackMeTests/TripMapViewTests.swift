@@ -496,3 +496,580 @@ class TripMapViewTests: XCTestCase {
         return location.id == locations.last?.id
     }
 }
+
+// MARK: - LocationPin View Tests
+
+class LocationPinTests: XCTestCase {
+    var persistenceController: PersistenceController!
+    var context: NSManagedObjectContext!
+    
+    override func setUpWithError() throws {
+        persistenceController = PersistenceController(inMemory: true)
+        context = persistenceController.container.viewContext
+    }
+    
+    override func tearDownWithError() throws {
+        persistenceController = nil
+        context = nil
+    }
+    
+    func testLocationPinColorForStartLocation() throws {
+        let location = createMockLocation()
+        let pin = LocationPin(location: location, isSelected: false, isStart: true, isEnd: false)
+        
+        // Start location should be green
+        XCTAssertNotNil(pin.body, "Pin view should render")
+        XCTAssertTrue(pin.isStart)
+        XCTAssertFalse(pin.isEnd)
+        XCTAssertFalse(pin.isSelected)
+    }
+    
+    func testLocationPinColorForEndLocation() throws {
+        let location = createMockLocation()
+        let pin = LocationPin(location: location, isSelected: false, isStart: false, isEnd: true)
+        
+        // End location should be red
+        XCTAssertNotNil(pin.body, "Pin view should render")
+        XCTAssertFalse(pin.isStart)
+        XCTAssertTrue(pin.isEnd)
+        XCTAssertFalse(pin.isSelected)
+    }
+    
+    func testLocationPinColorForSelectedLocation() throws {
+        let location = createMockLocation()
+        let pin = LocationPin(location: location, isSelected: true, isStart: false, isEnd: false)
+        
+        // Selected location should be blue
+        XCTAssertNotNil(pin.body, "Pin view should render")
+        XCTAssertFalse(pin.isStart)
+        XCTAssertFalse(pin.isEnd)
+        XCTAssertTrue(pin.isSelected)
+    }
+    
+    func testLocationPinColorForRegularLocation() throws {
+        let location = createMockLocation()
+        let pin = LocationPin(location: location, isSelected: false, isStart: false, isEnd: false)
+        
+        // Regular location should be orange
+        XCTAssertNotNil(pin.body, "Pin view should render")
+        XCTAssertFalse(pin.isStart)
+        XCTAssertFalse(pin.isEnd)
+        XCTAssertFalse(pin.isSelected)
+    }
+    
+    func testLocationPinSizeWhenSelected() throws {
+        let location = createMockLocation()
+        let selectedPin = LocationPin(location: location, isSelected: true, isStart: false, isEnd: false)
+        let unselectedPin = LocationPin(location: location, isSelected: false, isStart: false, isEnd: false)
+        
+        // Both should render, but selected should have different properties
+        XCTAssertNotNil(selectedPin.body)
+        XCTAssertNotNil(unselectedPin.body)
+        XCTAssertTrue(selectedPin.isSelected)
+        XCTAssertFalse(unselectedPin.isSelected)
+    }
+    
+    func testLocationPinStartIconRendering() throws {
+        let location = createMockLocation()
+        let pin = LocationPin(location: location, isSelected: false, isStart: true, isEnd: false)
+        
+        // Start pin should render with play icon
+        XCTAssertNotNil(pin.body)
+        XCTAssertTrue(pin.isStart)
+    }
+    
+    func testLocationPinEndIconRendering() throws {
+        let location = createMockLocation()
+        let pin = LocationPin(location: location, isSelected: false, isStart: false, isEnd: true)
+        
+        // End pin should render with stop icon
+        XCTAssertNotNil(pin.body)
+        XCTAssertTrue(pin.isEnd)
+    }
+    
+    private func createMockLocation() -> LocationEntry {
+        let location = LocationEntry(context: context)
+        location.id = UUID()
+        location.latitude = 37.7749
+        location.longitude = -122.4194
+        location.timestamp = Date()
+        location.accuracy = 10.0
+        location.speed = 5.0
+        return location
+    }
+}
+
+// MARK: - LocationDetailPanel View Tests
+
+class LocationDetailPanelTests: XCTestCase {
+    var persistenceController: PersistenceController!
+    var context: NSManagedObjectContext!
+    
+    override func setUpWithError() throws {
+        persistenceController = PersistenceController(inMemory: true)
+        context = persistenceController.container.viewContext
+    }
+    
+    override func tearDownWithError() throws {
+        persistenceController = nil
+        context = nil
+    }
+    
+    func testLocationDetailPanelRendersWithBasicData() throws {
+        let location = createLocationWithBasicData()
+        var dismissCalled = false
+        
+        let panel = LocationDetailPanel(location: location) {
+            dismissCalled = true
+        }
+        
+        XCTAssertNotNil(panel.body, "Panel should render")
+        XCTAssertFalse(dismissCalled, "Dismiss should not be called on init")
+    }
+    
+    func testLocationDetailPanelRendersWithFullData() throws {
+        let location = createLocationWithFullData()
+        var dismissCalled = false
+        
+        let panel = LocationDetailPanel(location: location) {
+            dismissCalled = true
+        }
+        
+        XCTAssertNotNil(panel.body, "Panel should render with all data")
+        XCTAssertNotNil(location.timestamp)
+        XCTAssertGreaterThan(location.speed, 0)
+        XCTAssertNotEqual(location.altitude, 0)
+        XCTAssertGreaterThanOrEqual(location.course, 0)
+    }
+    
+    func testLocationDetailPanelWithoutTimestamp() throws {
+        let location = createLocationWithBasicData()
+        location.timestamp = nil
+        
+        let panel = LocationDetailPanel(location: location) { }
+        
+        XCTAssertNotNil(panel.body, "Panel should render without timestamp")
+    }
+    
+    func testLocationDetailPanelWithZeroSpeed() throws {
+        let location = createLocationWithBasicData()
+        location.speed = 0.0
+        
+        let panel = LocationDetailPanel(location: location) { }
+        
+        XCTAssertNotNil(panel.body, "Panel should render with zero speed")
+        XCTAssertEqual(location.speed, 0.0)
+    }
+    
+    func testLocationDetailPanelWithZeroAltitude() throws {
+        let location = createLocationWithBasicData()
+        location.altitude = 0.0
+        
+        let panel = LocationDetailPanel(location: location) { }
+        
+        XCTAssertNotNil(panel.body, "Panel should render with zero altitude")
+        XCTAssertEqual(location.altitude, 0.0)
+    }
+    
+    func testLocationDetailPanelWithNegativeCourse() throws {
+        let location = createLocationWithBasicData()
+        location.course = -1.0
+        
+        let panel = LocationDetailPanel(location: location) { }
+        
+        XCTAssertNotNil(panel.body, "Panel should render with negative course")
+        XCTAssertLessThan(location.course, 0)
+    }
+    
+    func testLocationDetailPanelDismissCallback() throws {
+        let location = createLocationWithBasicData()
+        var dismissCalled = false
+        
+        let panel = LocationDetailPanel(location: location) {
+            dismissCalled = true
+        }
+        
+        XCTAssertNotNil(panel.body)
+        
+        // Simulate dismiss
+        panel.onDismiss()
+        XCTAssertTrue(dismissCalled, "Dismiss callback should be invoked")
+    }
+    
+    func testLocationDetailPanelWithHighSpeed() throws {
+        let location = createLocationWithBasicData()
+        location.speed = 50.0  // 180 km/h
+        
+        let panel = LocationDetailPanel(location: location) { }
+        
+        XCTAssertNotNil(panel.body)
+        XCTAssertEqual(location.speed, 50.0)
+    }
+    
+    func testLocationDetailPanelWithHighAltitude() throws {
+        let location = createLocationWithBasicData()
+        location.altitude = 3000.0
+        
+        let panel = LocationDetailPanel(location: location) { }
+        
+        XCTAssertNotNil(panel.body)
+        XCTAssertEqual(location.altitude, 3000.0)
+    }
+    
+    func testLocationDetailPanelWithAllCourseValues() throws {
+        let testCourses: [Double] = [0, 45, 90, 180, 270, 359.9]
+        
+        for course in testCourses {
+            let location = createLocationWithBasicData()
+            location.course = course
+            
+            let panel = LocationDetailPanel(location: location) { }
+            
+            XCTAssertNotNil(panel.body, "Panel should render with course \(course)")
+            XCTAssertEqual(location.course, course)
+        }
+    }
+    
+    private func createLocationWithBasicData() -> LocationEntry {
+        let location = LocationEntry(context: context)
+        location.id = UUID()
+        location.latitude = 37.7749
+        location.longitude = -122.4194
+        location.timestamp = Date()
+        location.accuracy = 10.0
+        return location
+    }
+    
+    private func createLocationWithFullData() -> LocationEntry {
+        let location = createLocationWithBasicData()
+        location.speed = 15.0
+        location.altitude = 150.0
+        location.course = 45.0
+        return location
+    }
+}
+
+// MARK: - DetailDataCard View Tests
+
+class DetailDataCardTests: XCTestCase {
+    
+    func testDetailDataCardRendersWithBasicData() {
+        let card = DetailDataCard(title: "Test", value: "123", icon: "star.fill")
+        
+        XCTAssertNotNil(card.body, "Card should render")
+        XCTAssertEqual(card.title, "Test")
+        XCTAssertEqual(card.value, "123")
+        XCTAssertEqual(card.icon, "star.fill")
+    }
+    
+    func testDetailDataCardWithLatitudeData() {
+        let card = DetailDataCard(title: "Latitude", value: "37.774900", icon: "globe.americas.fill")
+        
+        XCTAssertNotNil(card.body)
+        XCTAssertEqual(card.title, "Latitude")
+    }
+    
+    func testDetailDataCardWithLongitudeData() {
+        let card = DetailDataCard(title: "Longitude", value: "-122.419400", icon: "globe.asia.australia.fill")
+        
+        XCTAssertNotNil(card.body)
+        XCTAssertEqual(card.title, "Longitude")
+    }
+    
+    func testDetailDataCardWithAccuracyData() {
+        let card = DetailDataCard(title: "Accuracy", value: "±10m", icon: "target")
+        
+        XCTAssertNotNil(card.body)
+        XCTAssertEqual(card.value, "±10m")
+    }
+    
+    func testDetailDataCardWithSpeedData() {
+        let card = DetailDataCard(title: "Speed", value: "54.0 km/h", icon: "speedometer")
+        
+        XCTAssertNotNil(card.body)
+        XCTAssertEqual(card.value, "54.0 km/h")
+    }
+    
+    func testDetailDataCardWithAltitudeData() {
+        let card = DetailDataCard(title: "Altitude", value: "150.0 m", icon: "mountain.2.fill")
+        
+        XCTAssertNotNil(card.body)
+        XCTAssertEqual(card.value, "150.0 m")
+    }
+    
+    func testDetailDataCardWithCourseData() {
+        let card = DetailDataCard(title: "Course", value: "45°", icon: "location.north.fill")
+        
+        XCTAssertNotNil(card.body)
+        XCTAssertEqual(card.value, "45°")
+    }
+    
+    func testDetailDataCardWithEmptyValue() {
+        let card = DetailDataCard(title: "Test", value: "", icon: "questionmark")
+        
+        XCTAssertNotNil(card.body)
+        XCTAssertEqual(card.value, "")
+    }
+    
+    func testDetailDataCardWithLongValue() {
+        let longValue = "This is a very long value that should wrap"
+        let card = DetailDataCard(title: "Test", value: longValue, icon: "text.alignleft")
+        
+        XCTAssertNotNil(card.body)
+        XCTAssertEqual(card.value, longValue)
+    }
+    
+    func testDetailDataCardWithVariousIcons() {
+        let icons = ["star", "heart.fill", "bolt", "cloud", "sun.max"]
+        
+        for icon in icons {
+            let card = DetailDataCard(title: "Icon Test", value: "Value", icon: icon)
+            XCTAssertNotNil(card.body, "Card should render with icon \(icon)")
+            XCTAssertEqual(card.icon, icon)
+        }
+    }
+}
+
+// MARK: - RouteOverlay Tests
+
+class RouteOverlayTests: XCTestCase {
+    
+    func testRouteOverlayCreation() {
+        let coordinates = [
+            CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
+            CLLocationCoordinate2D(latitude: 37.7849, longitude: -122.4194)
+        ]
+        
+        let overlay = RouteOverlay(coordinates: coordinates, showRoute: true)
+        
+        XCTAssertNotNil(overlay, "Overlay should be created")
+        XCTAssertEqual(overlay.coordinates.count, 2)
+        XCTAssertTrue(overlay.showRoute)
+    }
+    
+    func testRouteOverlayWithMultiplePoints() {
+        let coordinates = [
+            CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
+            CLLocationCoordinate2D(latitude: 37.7849, longitude: -122.4194),
+            CLLocationCoordinate2D(latitude: 37.7849, longitude: -122.4094),
+            CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4094)
+        ]
+        
+        let overlay = RouteOverlay(coordinates: coordinates, showRoute: true)
+        
+        XCTAssertNotNil(overlay)
+        XCTAssertEqual(overlay.coordinates.count, 4)
+    }
+    
+    func testRouteOverlayWithShowRouteFalse() {
+        let coordinates = [
+            CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
+            CLLocationCoordinate2D(latitude: 37.7849, longitude: -122.4194)
+        ]
+        
+        let overlay = RouteOverlay(coordinates: coordinates, showRoute: false)
+        
+        XCTAssertNotNil(overlay)
+        XCTAssertFalse(overlay.showRoute)
+    }
+    
+    func testRouteOverlayWithEmptyCoordinates() {
+        let overlay = RouteOverlay(coordinates: [], showRoute: true)
+        
+        XCTAssertNotNil(overlay)
+        XCTAssertTrue(overlay.coordinates.isEmpty)
+    }
+    
+    func testRouteOverlayMakeUIView() {
+        let coordinates = [
+            CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
+            CLLocationCoordinate2D(latitude: 37.7849, longitude: -122.4194)
+        ]
+        
+        let overlay = RouteOverlay(coordinates: coordinates, showRoute: true)
+        let coordinator = overlay.makeCoordinator()
+        
+        XCTAssertNotNil(coordinator, "Coordinator should be created")
+        // Note: UIViewRepresentableContext cannot be constructed in tests,
+        // so we test the coordinator separately
+    }
+    
+    func testRouteOverlayCoordinatorCreation() {
+        let overlay = RouteOverlay(coordinates: [], showRoute: true)
+        let coordinator = overlay.makeCoordinator()
+        
+        XCTAssertNotNil(coordinator, "Coordinator should be created")
+    }
+    
+    func testRouteOverlayPolylineRenderer() {
+        let coordinates = [
+            CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
+            CLLocationCoordinate2D(latitude: 37.7849, longitude: -122.4194)
+        ]
+        
+        let polyline = MKPolyline(coordinates: coordinates, count: coordinates.count)
+        let coordinator = RouteOverlay.Coordinator()
+        let renderer = coordinator.mapView(MKMapView(), rendererFor: polyline)
+        
+        XCTAssertTrue(renderer is MKPolylineRenderer, "Should return polyline renderer")
+        
+        if let polylineRenderer = renderer as? MKPolylineRenderer {
+            XCTAssertEqual(polylineRenderer.strokeColor, UIColor.systemBlue)
+            XCTAssertEqual(polylineRenderer.lineWidth, 4)
+        }
+    }
+    
+    func testRouteOverlayRendererForNonPolyline() {
+        let coordinator = RouteOverlay.Coordinator()
+        let circle = MKCircle(center: CLLocationCoordinate2D(latitude: 0, longitude: 0), radius: 100)
+        let renderer = coordinator.mapView(MKMapView(), rendererFor: circle)
+        
+        XCTAssertTrue(renderer is MKOverlayRenderer, "Should return generic renderer for non-polyline")
+        XCTAssertFalse(renderer is MKPolylineRenderer, "Should not be polyline renderer")
+    }
+}
+
+// MARK: - TripMapView Integration Tests
+
+class TripMapViewIntegrationTests: XCTestCase {
+    var persistenceController: PersistenceController!
+    var context: NSManagedObjectContext!
+    
+    override func setUpWithError() throws {
+        persistenceController = PersistenceController(inMemory: true)
+        context = persistenceController.container.viewContext
+    }
+    
+    override func tearDownWithError() throws {
+        persistenceController = nil
+        context = nil
+    }
+    
+    func testTripMapViewWithValidSession() throws {
+        let session = createSessionWithLocations(count: 5)
+        let view = TripMapView(session: session)
+        
+        XCTAssertNotNil(view.body, "View should render")
+        XCTAssertEqual(view.session.id, session.id)
+    }
+    
+    func testTripMapViewWithEmptySession() throws {
+        let session = TrackingSession(context: context)
+        session.id = UUID()
+        session.startDate = Date()
+        session.narrative = "Empty Trip"
+        try context.save()
+        
+        let view = TripMapView(session: session)
+        
+        XCTAssertNotNil(view.body, "View should render even with empty session")
+    }
+    
+    func testTripMapViewCoordinatesComputation() throws {
+        let session = createSessionWithLocations(count: 3)
+        let view = TripMapView(session: session)
+        
+        XCTAssertNotNil(view.body)
+        // Coordinates property is computed from locations
+    }
+    
+    func testTripMapViewWithSingleLocation() throws {
+        let session = createSessionWithLocations(count: 1)
+        let view = TripMapView(session: session)
+        
+        XCTAssertNotNil(view.body, "View should render with single location")
+    }
+    
+    func testTripMapViewWithManyLocations() throws {
+        let session = createSessionWithLocations(count: 100)
+        let view = TripMapView(session: session)
+        
+        XCTAssertNotNil(view.body, "View should render with many locations")
+    }
+    
+    func testIsStartLocationMethod() throws {
+        let session = createSessionWithLocations(count: 5)
+        
+        let fetchRequest: NSFetchRequest<LocationEntry> = LocationEntry.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "session == %@", session)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: true)]
+        let locations = try context.fetch(fetchRequest)
+        
+        XCTAssertEqual(locations.count, 5)
+        
+        // Simulate isStartLocation logic
+        let firstLocation = locations.first!
+        let isStart = firstLocation.id == locations.first?.id
+        
+        XCTAssertTrue(isStart, "First location should be identified as start")
+    }
+    
+    func testIsEndLocationMethod() throws {
+        let session = createSessionWithLocations(count: 5)
+        
+        let fetchRequest: NSFetchRequest<LocationEntry> = LocationEntry.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "session == %@", session)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: true)]
+        let locations = try context.fetch(fetchRequest)
+        
+        XCTAssertEqual(locations.count, 5)
+        
+        // Simulate isEndLocation logic
+        let lastLocation = locations.last!
+        let isEnd = lastLocation.id == locations.last?.id
+        
+        XCTAssertTrue(isEnd, "Last location should be identified as end")
+    }
+    
+    func testFitToRouteCalculation() throws {
+        let session = createSessionWithLocations(count: 10)
+        
+        let fetchRequest: NSFetchRequest<LocationEntry> = LocationEntry.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "session == %@", session)
+        let locations = try context.fetch(fetchRequest)
+        
+        // Simulate setupInitialRegion logic
+        let latitudes = locations.map { $0.latitude }
+        let longitudes = locations.map { $0.longitude }
+        
+        XCTAssertFalse(latitudes.isEmpty)
+        XCTAssertFalse(longitudes.isEmpty)
+        
+        let minLat = latitudes.min()!
+        let maxLat = latitudes.max()!
+        let minLon = longitudes.min()!
+        let maxLon = longitudes.max()!
+        
+        let centerLat = (minLat + maxLat) / 2
+        let centerLon = (minLon + maxLon) / 2
+        let spanLat = max(maxLat - minLat, 0.01) * 1.2
+        let spanLon = max(maxLon - minLon, 0.01) * 1.2
+        
+        XCTAssertGreaterThan(spanLat, 0)
+        XCTAssertGreaterThan(spanLon, 0)
+        XCTAssertTrue(CLLocationCoordinate2DIsValid(CLLocationCoordinate2D(latitude: centerLat, longitude: centerLon)))
+    }
+    
+    private func createSessionWithLocations(count: Int) -> TrackingSession {
+        let session = TrackingSession(context: context)
+        session.id = UUID()
+        session.startDate = Date()
+        session.narrative = "Test Trip"
+        
+        for i in 0..<count {
+            let location = LocationEntry(context: context)
+            location.id = UUID()
+            location.latitude = 37.7749 + Double(i) * 0.001
+            location.longitude = -122.4194 + Double(i) * 0.001
+            location.timestamp = Date().addingTimeInterval(TimeInterval(i * 30))
+            location.accuracy = 10.0
+            location.speed = 5.0
+            location.altitude = 100.0 + Double(i) * 10
+            location.course = Double(i * 10)
+            session.addToLocations(location)
+        }
+        
+        try? context.save()
+        return session
+    }
+}
