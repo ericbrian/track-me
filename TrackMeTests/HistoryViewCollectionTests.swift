@@ -551,5 +551,237 @@ class HistoryViewCollectionTests: XCTestCase {
             XCTAssertTrue(session.narrative?.starts(with: "Updated") ?? false, "Narrative should be updated")
         }
     }
+    
+    func testDeleteAllSessionsThenViewTransition() throws {
+        // Reproduces the exact crash scenario: delete all sessions, switch tabs, switch back
+        // This tests the empty -> non-empty -> empty transition
+        
+        // Create initial sessions
+        for i in 1...5 {
+            let session = TrackingSession(context: context)
+            session.id = UUID()
+            session.startDate = Date().addingTimeInterval(TimeInterval(-i * 60))
+            session.narrative = "Session \(i)"
+            session.isActive = false
+            
+            let location = LocationEntry(context: context)
+            location.id = UUID()
+            location.latitude = 37.7749
+            location.longitude = -122.4194
+            location.timestamp = Date()
+            location.accuracy = 10.0
+            session.addToLocations(location)
+        }
+        try context.save()
+        
+        let fetchRequest: NSFetchRequest<TrackingSession> = TrackingSession.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \TrackingSession.startDate, ascending: false)]
+        
+        var sessions = try context.fetch(fetchRequest)
+        XCTAssertEqual(sessions.count, 5, "Should start with 5 sessions")
+        
+        // Step 1: Delete all sessions (simulating user deleting all in History tab)
+        for session in sessions {
+            context.delete(session)
+        }
+        XCTAssertNoThrow(try context.save(), "Deleting all sessions should not crash")
+        
+        // Verify they're deleted
+        sessions = try context.fetch(fetchRequest)
+        XCTAssertEqual(sessions.count, 0, "All sessions should be deleted")
+        
+        // Step 2: Simulate tab switch by refreshing context (like switching to Tracker tab)
+        context.refreshAllObjects()
+        
+        // Step 3: Simulate switching back to History tab by fetching again
+        sessions = try context.fetch(fetchRequest)
+        XCTAssertEqual(sessions.count, 0, "Should still have 0 sessions after tab switch")
+        
+        // Step 4: Add new sessions after empty state (simulating new tracking)
+        for i in 1...3 {
+            let session = TrackingSession(context: context)
+            session.id = UUID()
+            session.startDate = Date().addingTimeInterval(TimeInterval(-i * 60))
+            session.narrative = "New Session \(i)"
+            session.isActive = false
+            
+            let location = LocationEntry(context: context)
+            location.id = UUID()
+            location.latitude = 37.7749
+            location.longitude = -122.4194
+            location.timestamp = Date()
+            location.accuracy = 10.0
+            session.addToLocations(location)
+        }
+        XCTAssertNoThrow(try context.save(), "Adding sessions after empty state should not crash")
+        
+        // Verify new sessions
+        sessions = try context.fetch(fetchRequest)
+        XCTAssertEqual(sessions.count, 3, "Should have 3 new sessions")
+    }
+    
+    func testEmptyToNonEmptyTransition() throws {
+        // Test the specific transition from empty to non-empty state
+        
+        let fetchRequest: NSFetchRequest<TrackingSession> = TrackingSession.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \TrackingSession.startDate, ascending: false)]
+        
+        // Verify starting empty
+        var sessions = try context.fetch(fetchRequest)
+        XCTAssertEqual(sessions.count, 0, "Should start empty")
+        
+        // Add sessions one by one (simulating real-time additions)
+        for i in 1...5 {
+            let session = TrackingSession(context: context)
+            session.id = UUID()
+            session.startDate = Date().addingTimeInterval(TimeInterval(-i * 60))
+            session.narrative = "Session \(i)"
+            session.isActive = false
+            
+            let location = LocationEntry(context: context)
+            location.id = UUID()
+            location.latitude = 37.7749
+            location.longitude = -122.4194
+            location.timestamp = Date()
+            location.accuracy = 10.0
+            session.addToLocations(location)
+            
+            // Save after each addition
+            XCTAssertNoThrow(try context.save(), "Adding session \(i) should not crash")
+            
+            // Verify count increases
+            sessions = try context.fetch(fetchRequest)
+            XCTAssertEqual(sessions.count, i, "Should have \(i) sessions after adding session \(i)")
+        }
+    }
+    
+    func testActiveSessionUpdatingWhileViewingHistory() throws {
+        // Reproduces: Active tracker running, delete all sessions, switch tabs, locations still being added
+        
+        // Create an active session (simulating tracker running)
+        let activeSession = TrackingSession(context: context)
+        activeSession.id = UUID()
+        activeSession.startDate = Date()
+        activeSession.narrative = "Active Tracking"
+        activeSession.isActive = true
+        
+        let location1 = LocationEntry(context: context)
+        location1.id = UUID()
+        location1.latitude = 37.7749
+        location1.longitude = -122.4194
+        location1.timestamp = Date()
+        location1.accuracy = 10.0
+        activeSession.addToLocations(location1)
+        
+        try context.save()
+        
+        let fetchRequest: NSFetchRequest<TrackingSession> = TrackingSession.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \TrackingSession.startDate, ascending: false)]
+        
+        var sessions = try context.fetch(fetchRequest)
+        XCTAssertEqual(sessions.count, 1, "Should have 1 active session")
+        
+        // Delete the active session (user deletes in History while tracker is running)
+        context.delete(activeSession)
+        try context.save()
+        
+        sessions = try context.fetch(fetchRequest)
+        XCTAssertEqual(sessions.count, 0, "Should have 0 sessions after delete")
+        
+        // Simulate new session being created by active tracker after deletion
+        let newSession = TrackingSession(context: context)
+        newSession.id = UUID()
+        newSession.startDate = Date()
+        newSession.narrative = "New Active Tracking"
+        newSession.isActive = true
+        
+        // Rapidly add locations (simulating background updates)
+        for i in 1...10 {
+            let location = LocationEntry(context: context)
+            location.id = UUID()
+            location.latitude = 37.7749 + Double(i) * 0.0001
+            location.longitude = -122.4194 + Double(i) * 0.0001
+            location.timestamp = Date().addingTimeInterval(Double(i))
+            location.accuracy = 10.0
+            newSession.addToLocations(location)
+        }
+        
+        XCTAssertNoThrow(try context.save(), "Adding new session with locations should not crash")
+        
+        // Verify session was created
+        sessions = try context.fetch(fetchRequest)
+        XCTAssertEqual(sessions.count, 1, "Should have 1 new session")
+        XCTAssertTrue(sessions[0].isActive, "Session should be active")
+        XCTAssertEqual(sessions[0].locations?.count, 10, "Session should have 10 locations")
+    }
+    
+    func testConcurrentDeleteAndLocationAddition() throws {
+        // Tests the race condition: deleting session while locations are being added
+        
+        let session = TrackingSession(context: context)
+        session.id = UUID()
+        session.startDate = Date()
+        session.narrative = "Concurrent Test"
+        session.isActive = true
+        
+        // Add initial location
+        let location1 = LocationEntry(context: context)
+        location1.id = UUID()
+        location1.latitude = 37.7749
+        location1.longitude = -122.4194
+        location1.timestamp = Date()
+        location1.accuracy = 10.0
+        session.addToLocations(location1)
+        
+        try context.save()
+        let objectID = session.objectID
+        
+        // Simulate background context adding locations
+        let backgroundContext = persistenceController.container.newBackgroundContext()
+        let expectation = self.expectation(description: "Background updates")
+        
+        backgroundContext.perform {
+            do {
+                // Try to fetch session in background context
+                let bgSession = try? backgroundContext.existingObject(with: objectID) as? TrackingSession
+                
+                if let bgSession = bgSession {
+                    // Add locations in background
+                    for i in 2...5 {
+                        let location = LocationEntry(context: backgroundContext)
+                        location.id = UUID()
+                        location.latitude = 37.7749 + Double(i) * 0.001
+                        location.longitude = -122.4194 + Double(i) * 0.001
+                        location.timestamp = Date().addingTimeInterval(Double(i))
+                        location.accuracy = 10.0
+                        bgSession.addToLocations(location)
+                    }
+                    
+                    try backgroundContext.save()
+                }
+                expectation.fulfill()
+            } catch {
+                // Expected - object may have been deleted
+                expectation.fulfill()
+            }
+        }
+        
+        // Meanwhile, delete in main context (simulating user action)
+        context.delete(session)
+        
+        do {
+            try context.save()
+        } catch {
+            // It's OK if this fails due to concurrent modification
+            // The important thing is it doesn't crash the app
+            print("Expected error during concurrent modification: \(error)")
+        }
+        
+        wait(for: [expectation], timeout: 5.0)
+        
+        // Verify system is still stable - no crash is the success criteria
+        let fetchRequest: NSFetchRequest<TrackingSession> = TrackingSession.fetchRequest()
+        XCTAssertNoThrow(try context.fetch(fetchRequest), "Fetch should not crash after concurrent operations")
+    }
 }
 
