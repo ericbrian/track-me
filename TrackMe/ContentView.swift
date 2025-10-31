@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var locationManager = LocationManager()
-    @StateObject private var phoneConnectivity = PhoneConnectivityManager()
+    @EnvironmentObject private var phoneConnectivity: PhoneConnectivityManager
     
     var body: some View {
         TabView {
