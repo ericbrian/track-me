@@ -121,6 +121,8 @@
 /* MARK: - Map View */
 
 "Location Details" = "位置详情";
+"No Location Data" = "无位置数据";
+"This session has no recorded locations." = "此会话没有记录的位置。";
 
 /* MARK: - Common */
 

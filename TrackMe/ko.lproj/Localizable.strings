@@ -1,0 +1,177 @@
+/* 
+  Localizable.strings
+  TrackMe - Korean Localization
+*/
+
+/* MARK: - Tracking View */
+
+/* Status Messages */
+"GPS Tracking Active" = "GPS 추적 활성화";
+"GPS Tracking Stopped" = "GPS 추적 중지됨";
+"Running in Background" = "백그라운드 실행 중";
+"Active in Foreground" = "포그라운드 활성화";
+
+/* Navigation */
+"GPS Tracker" = "GPS 추적기";
+"Track" = "추적";
+"History" = "기록";
+"Map" = "지도";
+
+/* Permission Messages */
+"'Always' Location Permission Required" = "'항상 허용' 위치 권한 필요";
+"TrackMe requires 'Always Allow' location access to function correctly, including background tracking. Please grant 'Always' permission when prompted, or enable it in Settings > Privacy > Location Services > TrackMe." = "TrackMe는 백그라운드 추적을 포함하여 올바르게 작동하려면 '항상 허용' 위치 접근 권한이 필요합니다. 메시지가 표시되면 '항상 허용' 권한을 부여하거나 설정 > 개인정보 보호 > 위치 서비스 > TrackMe에서 활성화하세요.";
+
+/* Buttons */
+"Stop Tracking" = "추적 중지";
+"Start Tracking" = "추적 시작";
+"OK" = "확인";
+"Cancel" = "취소";
+"Done" = "완료";
+"Open Settings" = "설정 열기";
+
+/* Session Info */
+"Current Session" = "현재 세션";
+"Current Location" = "현재 위치";
+"No active session" = "활성 세션 없음";
+
+/* Location Display */
+"Latitude" = "위도";
+"Longitude" = "경도";
+"Lat: %.6f, Long: %.6f" = "위도: %.6f, 경도: %.6f";
+"Accuracy: ±%dm" = "정확도: ±%dm";
+"Speed: %.1f km/h" = "속도: %.1f km/h";
+"Altitude: %.1fm" = "고도: %.1fm";
+
+/* Stats Labels */
+"Locations" = "위치";
+"Duration" = "기간";
+"Start Time" = "시작 시간";
+"Points" = "포인트";
+"points" = "포인트";
+
+/* Alerts */
+"Unable to Start Tracking" = "추적을 시작할 수 없음";
+"Unable to Stop Tracking" = "추적을 중지할 수 없음";
+"Enable 'Always' Location in Settings" = "설정에서 '항상 허용' 위치 활성화";
+"You've denied 'Always' location permission multiple times. Please enable it manually in Settings > Privacy > Location Services > TrackMe." = "'항상 허용' 위치 권한을 여러 번 거부하셨습니다. 설정 > 개인정보 보호 > 위치 서비스 > TrackMe에서 수동으로 활성화하세요.";
+
+/* Background Tracking */
+"Background Tracking Active" = "백그라운드 추적 활성화";
+"This app continues tracking your location when:" = "이 앱은 다음과 같은 경우 위치를 계속 추적합니다:";
+"To enable background tracking, select 'Allow While Using the App' first, then accept the next prompt for 'Always Allow'." = "백그라운드 추적을 활성화하려면 먼저 '앱 사용 중 허용'을 선택한 다음 '항상 허용' 메시지를 수락하세요.";
+
+/* Permission Prompts */
+"Location Permission Required" = "위치 권한 필요";
+"Background Access Needed" = "백그라운드 접근 필요";
+"Please allow 'Always' location access for background tracking. After selecting 'Allow While Using the App', accept the next prompt for 'Always Allow', or enable 'Always' in Settings." = "백그라운드 추적을 위해 '항상 허용' 위치 접근을 허용하세요. '앱 사용 중 허용'을 선택한 후 '항상 허용' 메시지를 수락하거나 설정에서 '항상 허용'을 활성화하세요.";
+"Location permission granted" = "위치 권한 부여됨";
+
+/* Narrative Input */
+"Describe Your Journey" = "여정 설명";
+"Add a description to help you remember this tracking session" = "이 추적 세션을 기억하는 데 도움이 되는 설명 추가";
+"Description" = "설명";
+"Enter a description for this tracking session..." = "이 추적 세션에 대한 설명을 입력하세요...";
+"Suggestions" = "제안";
+
+/* Narrative Suggestions */
+"Road Trip" = "로드 트립";
+"City Tour" = "도시 투어";
+"Scenic Drive" = "경치 좋은 드라이브";
+"Hiking Trail" = "하이킹 코스";
+"Beach Walk" = "해변 산책";
+"Mountain Adventure" = "산악 모험";
+"Cycling Route" = "자전거 경로";
+"Ferry Crossing" = "페리 횡단";
+
+/* MARK: - History View */
+
+/* Empty State */
+"No tracking sessions yet" = "아직 추적 세션 없음";
+"Start tracking from the Track tab to see your location history here." = "추적 탭에서 추적을 시작하여 여기에서 위치 기록을 확인하세요.";
+
+/* Session List */
+"%d locations" = "%d개 위치";
+"Started: %@" = "시작: %@";
+"• Ended: %@" = "• 종료: %@";
+"Active" = "활성";
+
+/* Session Details */
+"Session Details" = "세션 세부정보";
+"Statistics" = "통계";
+"Location Data (%d most recent)" = "위치 데이터 (최근 %d개)";
+"Choose a format to export this tracking session" = "이 추적 세션을 내보낼 형식 선택";
+
+/* Export Formats */
+"Export as GPX" = "GPX로 내보내기";
+"Export as KML" = "KML로 내보내기";
+"Export as CSV" = "CSV로 내보내기";
+"Export as GeoJSON" = "GeoJSON으로 내보내기";
+
+/* Statistics */
+"Total Distance" = "총 거리";
+"Average Speed" = "평균 속도";
+"Max Speed" = "최고 속도";
+"Average Accuracy" = "평균 정확도";
+
+/* Time Formatting */
+"h" = "시간";
+"min" = "분";
+"sec" = "초";
+
+/* MARK: - Map View */
+
+"Location Details" = "위치 세부정보";
+"No Location Data" = "위치 데이터 없음";
+"This session has no recorded locations." = "이 세션에는 기록된 위치가 없습니다.";
+
+/* MARK: - Common */
+
+"Error" = "오류";
+"Warning" = "경고";
+"Info" = "정보";
+"Loading..." = "로딩 중...";
+"Saving..." = "저장 중...";
+"Delete" = "삭제";
+"Edit" = "편집";
+"Share" = "공유";
+"Export" = "내보내기";
+"Settings" = "설정";
+"About" = "정보";
+"Help" = "도움말";
+"Close" = "닫기";
+
+/* Time units */
+"hour" = "시간";
+"hours" = "시간";
+"minute" = "분";
+"minutes" = "분";
+"second" = "초";
+"seconds" = "초";
+
+/* Distance units */
+"meters" = "미터";
+"kilometers" = "킬로미터";
+"km" = "km";
+"m" = "m";
+
+/* Speed units */
+"km/h" = "km/h";
+"m/s" = "m/s";
+
+/* Dates */
+"Today" = "오늘";
+"Yesterday" = "어제";
+"This Week" = "이번 주";
+"This Month" = "이번 달";
+
+/* Error Messages */
+"An error occurred" = "오류가 발생했습니다";
+"Please try again" = "다시 시도하세요";
+"Location services are disabled" = "위치 서비스가 비활성화됨";
+"Unable to save data" = "데이터를 저장할 수 없음";
+"Unable to load data" = "데이터를 로드할 수 없음";
+
+/* Success Messages */
+"Saved successfully" = "성공적으로 저장됨";
+"Exported successfully" = "성공적으로 내보냄";
+"Deleted successfully" = "성공적으로 삭제됨";

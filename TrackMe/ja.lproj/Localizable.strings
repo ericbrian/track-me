@@ -121,6 +121,8 @@
 /* MARK: - Map View */
 
 "Location Details" = "位置情報の詳細";
+"No Location Data" = "位置データなし";
+"This session has no recorded locations." = "このセッションには記録された位置がありません。";
 
 /* MARK: - Common */
 

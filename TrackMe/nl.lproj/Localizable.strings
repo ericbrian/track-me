@@ -1,0 +1,177 @@
+/* 
+  Localizable.strings
+  TrackMe - Dutch Localization
+*/
+
+/* MARK: - Tracking View */
+
+/* Status Messages */
+"GPS Tracking Active" = "GPS-tracking actief";
+"GPS Tracking Stopped" = "GPS-tracking gestopt";
+"Running in Background" = "Actief op de achtergrond";
+"Active in Foreground" = "Actief op de voorgrond";
+
+/* Navigation */
+"GPS Tracker" = "GPS-tracker";
+"Track" = "Volgen";
+"History" = "Geschiedenis";
+"Map" = "Kaart";
+
+/* Permission Messages */
+"'Always' Location Permission Required" = "Locatietoestemming 'Altijd' vereist";
+"TrackMe requires 'Always Allow' location access to function correctly, including background tracking. Please grant 'Always' permission when prompted, or enable it in Settings > Privacy > Location Services > TrackMe." = "TrackMe heeft locatietoegang 'Altijd toestaan' nodig om correct te functioneren, inclusief achtergrondvolgen. Verleen 'Altijd' toestemming wanneer daarom wordt gevraagd, of schakel dit in via Instellingen > Privacy > Locatievoorzieningen > TrackMe.";
+
+/* Buttons */
+"Stop Tracking" = "Stop volgen";
+"Start Tracking" = "Start volgen";
+"OK" = "OK";
+"Cancel" = "Annuleren";
+"Done" = "Klaar";
+"Open Settings" = "Open instellingen";
+
+/* Session Info */
+"Current Session" = "Huidige sessie";
+"Current Location" = "Huidige locatie";
+"No active session" = "Geen actieve sessie";
+
+/* Location Display */
+"Latitude" = "Breedtegraad";
+"Longitude" = "Lengtegraad";
+"Lat: %.6f, Long: %.6f" = "Breedte: %.6f, Lengte: %.6f";
+"Accuracy: ±%dm" = "Nauwkeurigheid: ±%dm";
+"Speed: %.1f km/h" = "Snelheid: %.1f km/u";
+"Altitude: %.1fm" = "Hoogte: %.1fm";
+
+/* Stats Labels */
+"Locations" = "Locaties";
+"Duration" = "Duur";
+"Start Time" = "Starttijd";
+"Points" = "Punten";
+"points" = "punten";
+
+/* Alerts */
+"Unable to Start Tracking" = "Kan volgen niet starten";
+"Unable to Stop Tracking" = "Kan volgen niet stoppen";
+"Enable 'Always' Location in Settings" = "Schakel 'Altijd' locatie in via instellingen";
+"You've denied 'Always' location permission multiple times. Please enable it manually in Settings > Privacy > Location Services > TrackMe." = "U heeft de locatietoestemming 'Altijd' meerdere keren geweigerd. Schakel dit handmatig in via Instellingen > Privacy > Locatievoorzieningen > TrackMe.";
+
+/* Background Tracking */
+"Background Tracking Active" = "Achtergrondvolgen actief";
+"This app continues tracking your location when:" = "Deze app blijft uw locatie volgen wanneer:";
+"To enable background tracking, select 'Allow While Using the App' first, then accept the next prompt for 'Always Allow'." = "Om achtergrondvolgen in te schakelen, selecteert u eerst 'Toestaan tijdens gebruik van de app' en accepteert u vervolgens de volgende prompt voor 'Altijd toestaan'.";
+
+/* Permission Prompts */
+"Location Permission Required" = "Locatietoestemming vereist";
+"Background Access Needed" = "Achtergrondtoegang nodig";
+"Please allow 'Always' location access for background tracking. After selecting 'Allow While Using the App', accept the next prompt for 'Always Allow', or enable 'Always' in Settings." = "Sta 'Altijd' locatietoegang toe voor achtergrondvolgen. Accepteer na het selecteren van 'Toestaan tijdens gebruik van de app' de volgende prompt voor 'Altijd toestaan', of schakel 'Altijd' in via Instellingen.";
+"Location permission granted" = "Locatietoestemming verleend";
+
+/* Narrative Input */
+"Describe Your Journey" = "Beschrijf uw reis";
+"Add a description to help you remember this tracking session" = "Voeg een beschrijving toe om deze volgsessie te onthouden";
+"Description" = "Beschrijving";
+"Enter a description for this tracking session..." = "Voer een beschrijving in voor deze volgsessie...";
+"Suggestions" = "Suggesties";
+
+/* Narrative Suggestions */
+"Road Trip" = "Roadtrip";
+"City Tour" = "Stadstour";
+"Scenic Drive" = "Mooie route";
+"Hiking Trail" = "Wandelpad";
+"Beach Walk" = "Strandwandeling";
+"Mountain Adventure" = "Bergavontuur";
+"Cycling Route" = "Fietsroute";
+"Ferry Crossing" = "Veerbootoversteek";
+
+/* MARK: - History View */
+
+/* Empty State */
+"No tracking sessions yet" = "Nog geen volgsessies";
+"Start tracking from the Track tab to see your location history here." = "Start het volgen vanaf het Volgen-tabblad om hier uw locatiegeschiedenis te zien.";
+
+/* Session List */
+"%d locations" = "%d locaties";
+"Started: %@" = "Gestart: %@";
+"• Ended: %@" = "• Beëindigd: %@";
+"Active" = "Actief";
+
+/* Session Details */
+"Session Details" = "Sessiedetails";
+"Statistics" = "Statistieken";
+"Location Data (%d most recent)" = "Locatiegegevens (%d meest recent)";
+"Choose a format to export this tracking session" = "Kies een formaat om deze volgsessie te exporteren";
+
+/* Export Formats */
+"Export as GPX" = "Exporteren als GPX";
+"Export as KML" = "Exporteren als KML";
+"Export as CSV" = "Exporteren als CSV";
+"Export as GeoJSON" = "Exporteren als GeoJSON";
+
+/* Statistics */
+"Total Distance" = "Totale afstand";
+"Average Speed" = "Gemiddelde snelheid";
+"Max Speed" = "Maximale snelheid";
+"Average Accuracy" = "Gemiddelde nauwkeurigheid";
+
+/* Time Formatting */
+"h" = "u";
+"min" = "min";
+"sec" = "sec";
+
+/* MARK: - Map View */
+
+"Location Details" = "Locatiedetails";
+"No Location Data" = "Geen locatiegegevens";
+"This session has no recorded locations." = "Deze sessie heeft geen opgenomen locaties.";
+
+/* MARK: - Common */
+
+"Error" = "Fout";
+"Warning" = "Waarschuwing";
+"Info" = "Info";
+"Loading..." = "Laden...";
+"Saving..." = "Opslaan...";
+"Delete" = "Verwijderen";
+"Edit" = "Bewerken";
+"Share" = "Delen";
+"Export" = "Exporteren";
+"Settings" = "Instellingen";
+"About" = "Over";
+"Help" = "Help";
+"Close" = "Sluiten";
+
+/* Time units */
+"hour" = "uur";
+"hours" = "uren";
+"minute" = "minuut";
+"minutes" = "minuten";
+"second" = "seconde";
+"seconds" = "seconden";
+
+/* Distance units */
+"meters" = "meters";
+"kilometers" = "kilometers";
+"km" = "km";
+"m" = "m";
+
+/* Speed units */
+"km/h" = "km/u";
+"m/s" = "m/s";
+
+/* Dates */
+"Today" = "Vandaag";
+"Yesterday" = "Gisteren";
+"This Week" = "Deze week";
+"This Month" = "Deze maand";
+
+/* Error Messages */
+"An error occurred" = "Er is een fout opgetreden";
+"Please try again" = "Probeer het opnieuw";
+"Location services are disabled" = "Locatievoorzieningen zijn uitgeschakeld";
+"Unable to save data" = "Kan gegevens niet opslaan";
+"Unable to load data" = "Kan gegevens niet laden";
+
+/* Success Messages */
+"Saved successfully" = "Succesvol opgeslagen";
+"Exported successfully" = "Succesvol geëxporteerd";
+"Deleted successfully" = "Succesvol verwijderd";

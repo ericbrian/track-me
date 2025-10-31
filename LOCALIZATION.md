@@ -17,12 +17,6 @@ TrackMe currently supports the following languages covering major iPhone markets
 
 Based on iPhone market penetration and user demographics, might want to add:
 
-### High Priority (based on market share)
-
-- **Korean** (ko) - 한국어 - South Korea has high iPhone adoption (30-40% market share)
-- **Arabic** (ar) - العربية - Gulf states (UAE, Saudi Arabia) have high iPhone penetration and affluent markets
-- **Dutch** (nl) - Nederlands - Netherlands has strong iPhone presence and affluent market
-
 ### Medium Priority (based on market share)
 
 - **Swedish** (sv) - Svenska - Scandinavia has high iPhone adoption
@@ -31,13 +25,13 @@ Based on iPhone market penetration and user demographics, might want to add:
 - **Finnish** (fi) - Suomi - Finland has tech-savvy population
 - **Polish** (pl) - Polski - Growing Eastern European market
 - **Turkish** (tr) - Türkçe - Large and growing smartphone market
-- **Thai** (th) - ไทย - Strong Southeast Asian tourism destination
 - **Vietnamese** (vi) - Tiếng Việt - Fast-growing Southeast Asian market
 - **Indonesian** (id) - Bahasa Indonesia - Large population, growing smartphone adoption
 - **Hindi** (hi) - हिन्दी - India's growing iOS market (small % but huge population)
 
 ### Lower Priority (based on market share)
 
+- **Thai** (th) - ไทย - Strong Southeast Asian tourism destination
 - **Greek** (el) - Ελληνικά - Tourism destination
 - **Czech** (cs) - Čeština - Central Europe
 - **Hungarian** (hu) - Magyar - Central Europe

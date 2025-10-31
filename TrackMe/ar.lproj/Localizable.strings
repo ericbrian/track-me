@@ -1,0 +1,177 @@
+/* 
+  Localizable.strings
+  TrackMe - Arabic Localization
+*/
+
+/* MARK: - Tracking View */
+
+/* Status Messages */
+"GPS Tracking Active" = "تتبع GPS نشط";
+"GPS Tracking Stopped" = "توقف تتبع GPS";
+"Running in Background" = "يعمل في الخلفية";
+"Active in Foreground" = "نشط في المقدمة";
+
+/* Navigation */
+"GPS Tracker" = "متتبع GPS";
+"Track" = "تتبع";
+"History" = "السجل";
+"Map" = "الخريطة";
+
+/* Permission Messages */
+"'Always' Location Permission Required" = "مطلوب إذن الموقع 'دائماً'";
+"TrackMe requires 'Always Allow' location access to function correctly, including background tracking. Please grant 'Always' permission when prompted, or enable it in Settings > Privacy > Location Services > TrackMe." = "يتطلب TrackMe إذن الوصول إلى الموقع 'السماح دائماً' للعمل بشكل صحيح، بما في ذلك التتبع في الخلفية. يرجى منح إذن 'دائماً' عند المطالبة، أو تفعيله في الإعدادات > الخصوصية > خدمات الموقع > TrackMe.";
+
+/* Buttons */
+"Stop Tracking" = "إيقاف التتبع";
+"Start Tracking" = "بدء التتبع";
+"OK" = "موافق";
+"Cancel" = "إلغاء";
+"Done" = "تم";
+"Open Settings" = "فتح الإعدادات";
+
+/* Session Info */
+"Current Session" = "الجلسة الحالية";
+"Current Location" = "الموقع الحالي";
+"No active session" = "لا توجد جلسة نشطة";
+
+/* Location Display */
+"Latitude" = "خط العرض";
+"Longitude" = "خط الطول";
+"Lat: %.6f, Long: %.6f" = "العرض: %.6f، الطول: %.6f";
+"Accuracy: ±%dm" = "الدقة: ±%d م";
+"Speed: %.1f km/h" = "السرعة: %.1f كم/س";
+"Altitude: %.1fm" = "الارتفاع: %.1f م";
+
+/* Stats Labels */
+"Locations" = "المواقع";
+"Duration" = "المدة";
+"Start Time" = "وقت البدء";
+"Points" = "النقاط";
+"points" = "نقاط";
+
+/* Alerts */
+"Unable to Start Tracking" = "تعذر بدء التتبع";
+"Unable to Stop Tracking" = "تعذر إيقاف التتبع";
+"Enable 'Always' Location in Settings" = "تفعيل الموقع 'دائماً' في الإعدادات";
+"You've denied 'Always' location permission multiple times. Please enable it manually in Settings > Privacy > Location Services > TrackMe." = "لقد رفضت إذن الموقع 'دائماً' عدة مرات. يرجى تفعيله يدوياً في الإعدادات > الخصوصية > خدمات الموقع > TrackMe.";
+
+/* Background Tracking */
+"Background Tracking Active" = "التتبع في الخلفية نشط";
+"This app continues tracking your location when:" = "يستمر هذا التطبيق في تتبع موقعك عندما:";
+"To enable background tracking, select 'Allow While Using the App' first, then accept the next prompt for 'Always Allow'." = "لتفعيل التتبع في الخلفية، اختر 'السماح أثناء استخدام التطبيق' أولاً، ثم اقبل المطالبة التالية لـ 'السماح دائماً'.";
+
+/* Permission Prompts */
+"Location Permission Required" = "مطلوب إذن الموقع";
+"Background Access Needed" = "الوصول إلى الخلفية مطلوب";
+"Please allow 'Always' location access for background tracking. After selecting 'Allow While Using the App', accept the next prompt for 'Always Allow', or enable 'Always' in Settings." = "يرجى السماح بالوصول إلى الموقع 'دائماً' للتتبع في الخلفية. بعد اختيار 'السماح أثناء استخدام التطبيق'، اقبل المطالبة التالية لـ 'السماح دائماً'، أو فعّل 'دائماً' في الإعدادات.";
+"Location permission granted" = "تم منح إذن الموقع";
+
+/* Narrative Input */
+"Describe Your Journey" = "وصف رحلتك";
+"Add a description to help you remember this tracking session" = "أضف وصفاً لمساعدتك على تذكر جلسة التتبع هذه";
+"Description" = "الوصف";
+"Enter a description for this tracking session..." = "أدخل وصفاً لجلسة التتبع هذه...";
+"Suggestions" = "اقتراحات";
+
+/* Narrative Suggestions */
+"Road Trip" = "رحلة برية";
+"City Tour" = "جولة في المدينة";
+"Scenic Drive" = "قيادة ذات مناظر خلابة";
+"Hiking Trail" = "مسار المشي لمسافات طويلة";
+"Beach Walk" = "المشي على الشاطئ";
+"Mountain Adventure" = "مغامرة جبلية";
+"Cycling Route" = "مسار الدراجات";
+"Ferry Crossing" = "عبور العبارة";
+
+/* MARK: - History View */
+
+/* Empty State */
+"No tracking sessions yet" = "لا توجد جلسات تتبع بعد";
+"Start tracking from the Track tab to see your location history here." = "ابدأ التتبع من علامة تبويب التتبع لرؤية سجل موقعك هنا.";
+
+/* Session List */
+"%d locations" = "%d مواقع";
+"Started: %@" = "البدء: %@";
+"• Ended: %@" = "• الانتهاء: %@";
+"Active" = "نشط";
+
+/* Session Details */
+"Session Details" = "تفاصيل الجلسة";
+"Statistics" = "الإحصائيات";
+"Location Data (%d most recent)" = "بيانات الموقع (أحدث %d)";
+"Choose a format to export this tracking session" = "اختر تنسيقاً لتصدير جلسة التتبع هذه";
+
+/* Export Formats */
+"Export as GPX" = "تصدير كـ GPX";
+"Export as KML" = "تصدير كـ KML";
+"Export as CSV" = "تصدير كـ CSV";
+"Export as GeoJSON" = "تصدير كـ GeoJSON";
+
+/* Statistics */
+"Total Distance" = "المسافة الإجمالية";
+"Average Speed" = "السرعة المتوسطة";
+"Max Speed" = "السرعة القصوى";
+"Average Accuracy" = "الدقة المتوسطة";
+
+/* Time Formatting */
+"h" = "س";
+"min" = "د";
+"sec" = "ث";
+
+/* MARK: - Map View */
+
+"Location Details" = "تفاصيل الموقع";
+"No Location Data" = "لا توجد بيانات موقع";
+"This session has no recorded locations." = "لا تحتوي هذه الجلسة على مواقع مسجلة.";
+
+/* MARK: - Common */
+
+"Error" = "خطأ";
+"Warning" = "تحذير";
+"Info" = "معلومات";
+"Loading..." = "جارٍ التحميل...";
+"Saving..." = "جارٍ الحفظ...";
+"Delete" = "حذف";
+"Edit" = "تحرير";
+"Share" = "مشاركة";
+"Export" = "تصدير";
+"Settings" = "الإعدادات";
+"About" = "حول";
+"Help" = "مساعدة";
+"Close" = "إغلاق";
+
+/* Time units */
+"hour" = "ساعة";
+"hours" = "ساعات";
+"minute" = "دقيقة";
+"minutes" = "دقائق";
+"second" = "ثانية";
+"seconds" = "ثواني";
+
+/* Distance units */
+"meters" = "أمتار";
+"kilometers" = "كيلومترات";
+"km" = "كم";
+"m" = "م";
+
+/* Speed units */
+"km/h" = "كم/س";
+"m/s" = "م/ث";
+
+/* Dates */
+"Today" = "اليوم";
+"Yesterday" = "أمس";
+"This Week" = "هذا الأسبوع";
+"This Month" = "هذا الشهر";
+
+/* Error Messages */
+"An error occurred" = "حدث خطأ";
+"Please try again" = "يرجى المحاولة مرة أخرى";
+"Location services are disabled" = "خدمات الموقع معطلة";
+"Unable to save data" = "تعذر حفظ البيانات";
+"Unable to load data" = "تعذر تحميل البيانات";
+
+/* Success Messages */
+"Saved successfully" = "تم الحفظ بنجاح";
+"Exported successfully" = "تم التصدير بنجاح";
+"Deleted successfully" = "تم الحذف بنجاح";

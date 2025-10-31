@@ -1,0 +1,12 @@
+/* 
+  InfoPlist.strings
+  TrackMe - Korean Localization
+*/
+
+/* Location Permission Descriptions */
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "이 앱은 이동 경로를 추적하고 정확한 GPS 추적 데이터를 제공하기 위해 위치 접근이 필요합니다.";
+"NSLocationAlwaysUsageDescription" = "이 앱은 백그라운드에서도 이동 경로를 추적하기 위해 항상 위치 접근이 필요합니다.";
+"NSLocationWhenInUseUsageDescription" = "이 앱은 사용 중에 이동 경로를 추적하기 위해 위치 접근이 필요합니다.";
+
+/* App Display Name */
+"CFBundleDisplayName" = "TrackMe";

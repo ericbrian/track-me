@@ -121,6 +121,8 @@
 /* MARK: - Map View */
 
 "Location Details" = "Dettagli della Posizione";
+"No Location Data" = "Nessun Dato di Posizione";
+"This session has no recorded locations." = "Questa sessione non ha posizioni registrate.";
 
 /* MARK: - Common */
 

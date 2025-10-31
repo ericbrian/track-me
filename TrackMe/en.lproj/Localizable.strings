@@ -121,6 +121,8 @@
 /* MARK: - Map View */
 
 "Location Details" = "Location Details";
+"No Location Data" = "No Location Data";
+"This session has no recorded locations." = "This session has no recorded locations.";
 
 /* MARK: - Common */
 

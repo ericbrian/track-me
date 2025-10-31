@@ -1,0 +1,12 @@
+/* 
+  InfoPlist.strings
+  TrackMe - Arabic Localization
+*/
+
+/* Location Permission Descriptions */
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "يحتاج هذا التطبيق إلى الوصول إلى الموقع لتتبع تحركاتك وتوفير بيانات تتبع GPS دقيقة.";
+"NSLocationAlwaysUsageDescription" = "يحتاج هذا التطبيق إلى الوصول إلى الموقع دائماً لتتبع تحركاتك حتى عندما يكون التطبيق في الخلفية.";
+"NSLocationWhenInUseUsageDescription" = "يحتاج هذا التطبيق إلى الوصول إلى الموقع لتتبع تحركاتك أثناء استخدام التطبيق.";
+
+/* App Display Name */
+"CFBundleDisplayName" = "TrackMe";

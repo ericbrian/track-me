@@ -1,0 +1,12 @@
+/* 
+  InfoPlist.strings
+  TrackMe - Dutch Localization
+*/
+
+/* Location Permission Descriptions */
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Deze app heeft locatietoegang nodig om uw bewegingen te volgen en nauwkeurige GPS-trackinggegevens te verstrekken.";
+"NSLocationAlwaysUsageDescription" = "Deze app heeft altijd locatietoegang nodig om uw bewegingen te volgen, zelfs wanneer de app op de achtergrond actief is.";
+"NSLocationWhenInUseUsageDescription" = "Deze app heeft locatietoegang nodig om uw bewegingen te volgen wanneer u de app gebruikt.";
+
+/* App Display Name */
+"CFBundleDisplayName" = "TrackMe";
