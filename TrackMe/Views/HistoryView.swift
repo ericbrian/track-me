@@ -24,13 +24,19 @@ struct ActivityViewController: UIViewControllerRepresentable {
 
 struct HistoryView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    // Use an explicit NSFetchRequest to guarantee the entity is set
     @FetchRequest(
-        entity: TrackingSession.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \TrackingSession.startDate, ascending: false)],
-        predicate: nil,
+        fetchRequest: HistoryView.sessionsFetchRequest(),
         animation: nil  // Disable animation to prevent collection view conflicts
     )
     private var sessions: FetchedResults<TrackingSession>
+
+    // Explicit fetch request builder to ensure entity is present
+    private static func sessionsFetchRequest() -> NSFetchRequest<TrackingSession> {
+        let request: NSFetchRequest<TrackingSession> = TrackingSession.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \\TrackingSession.startDate, ascending: false)]
+        return request
+    }
     
     @State private var selectedSession: TrackingSession?
     @State private var showingSessionDetail = false
