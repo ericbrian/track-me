@@ -358,6 +358,43 @@ class PersistenceControllerTests: XCTestCase {
         
         waitForExpectations(timeout: 2.0)
     }
+    
+    func testObjectIDTransferAcrossContexts() {
+        // Test that NSManagedObjectID can be used directly across contexts
+        // This validates the fix for the unnecessary conditional cast warning
+        let mainContext = persistenceController.container.viewContext
+        let backgroundContext = persistenceController.container.newBackgroundContext()
+        
+        // Create a session in main context
+        let session = TrackingSession(context: mainContext)
+        session.id = UUID()
+        session.narrative = "Test Session"
+        session.startDate = Date()
+        session.isActive = true
+        
+        try? mainContext.save()
+        
+        // Get the objectID (which is already NSManagedObjectID type)
+        let sessionID = session.objectID
+        XCTAssertNotNil(sessionID, "Object ID should not be nil")
+        
+        // Use the objectID directly in background context (no cast needed)
+        let expectation = self.expectation(description: "Background context retrieval")
+        backgroundContext.perform {
+            // This should work without conditional casting
+            guard let sessionInBackground = try? backgroundContext.existingObject(with: sessionID) as? TrackingSession else {
+                XCTFail("Should be able to retrieve object in background context using objectID directly")
+                expectation.fulfill()
+                return
+            }
+            
+            XCTAssertEqual(sessionInBackground.narrative, "Test Session", "Retrieved object should match original")
+            XCTAssertEqual(sessionInBackground.id, session.id, "IDs should match")
+            expectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 2.0)
+    }
 }
 
 // MARK: - Core Data Entity Tests

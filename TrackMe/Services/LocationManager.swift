@@ -330,8 +330,8 @@ class LocationManager: NSObject, ObservableObject {
         let context = persistenceController.container.newBackgroundContext()
         context.performAndWait {
             // Fetch the session in this context
-            guard let sessionID = session.objectID as? NSManagedObjectID,
-                  let sessionInContext = try? context.existingObject(with: sessionID) as? TrackingSession else {
+            let sessionID = session.objectID
+            guard let sessionInContext = try? context.existingObject(with: sessionID) as? TrackingSession else {
                 UIApplication.shared.endBackgroundTask(taskId)
                 return
             }
