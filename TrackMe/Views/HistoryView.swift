@@ -108,11 +108,13 @@ struct HistoryView: View {
             .sheet(isPresented: $showingSessionDetail) {
                 if let session = selectedSession {
                     SessionDetailView(session: session)
+                        .environment(\.managedObjectContext, viewContext)
                 }
             }
             .sheet(isPresented: $showingMapView) {
                 if let session = selectedSession {
                     TripMapView(session: session)
+                        .environment(\.managedObjectContext, viewContext)
                 }
             }
         }
@@ -231,6 +233,7 @@ struct SessionRowView: View {
 struct SessionDetailView: View {
     let session: TrackingSession
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.managedObjectContext) private var viewContext
     
     @State private var showingExportMenu = false
     @State private var showingExportSheet = false
@@ -321,6 +324,11 @@ struct SessionDetailView: View {
                     }
                 }
                 .padding()
+            }
+            .onAppear {
+                // Refresh session in current context to ensure data is accessible
+                viewContext.refresh(session, mergeChanges: true)
+                print("SessionDetailView: Loaded session '\(session.narrative ?? "Unnamed")' with \(locations.count) locations")
             }
             .navigationTitle("Session Details")
             .navigationBarItems(

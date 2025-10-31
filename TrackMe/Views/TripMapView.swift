@@ -7,6 +7,7 @@ struct TripMapView: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.managedObjectContext) private var viewContext
     @State private var region = MKCoordinateRegion()
+    @State private var mapPosition: MapCameraPosition = .automatic
     @State private var showingRoute = true
     @State private var selectedLocation: LocationEntry?
     @State private var locations: [LocationEntry] = []
@@ -18,30 +19,51 @@ struct TripMapView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                // Map View - Modern iOS 17+ API
-                Map(position: .constant(.region(region))) {
-                    ForEach(locations, id: \.id) { location in
-                        Annotation(
-                            "",
-                            coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
-                        ) {
-                            LocationPin(
-                                location: location,
-                                isSelected: selectedLocation?.id == location.id,
-                                isStart: isStartLocation(location),
-                                isEnd: isEndLocation(location)
-                            )
-                            .onTapGesture {
-                                selectedLocation = location
+                if locations.isEmpty {
+                    // Empty state view
+                    VStack(spacing: 20) {
+                        Image(systemName: "map.fill")
+                            .font(.system(size: 60))
+                            .foregroundColor(.gray)
+                        
+                        Text(NSLocalizedString("No Location Data", comment: "Empty map state title"))
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        
+                        Text(NSLocalizedString("This session has no recorded locations.", comment: "Empty map state description"))
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding()
+                } else {
+                    // Map View - Modern iOS 17+ API
+                    Map(position: $mapPosition) {
+                        ForEach(locations, id: \.id) { location in
+                            Annotation(
+                                "",
+                                coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
+                            ) {
+                                LocationPin(
+                                    location: location,
+                                    isSelected: selectedLocation?.id == location.id,
+                                    isStart: isStartLocation(location),
+                                    isEnd: isEndLocation(location)
+                                )
+                                .onTapGesture {
+                                    selectedLocation = location
+                                }
                             }
                         }
                     }
+                    .overlay(
+                        // Route overlay
+                        RouteOverlay(coordinates: coordinates, showRoute: showingRoute)
+                    )
                 }
-                .overlay(
-                    // Route overlay
-                    RouteOverlay(coordinates: coordinates, showRoute: showingRoute)
-                )
-                .onAppear {
+                
+                // Fetch locations when view appears
+                Color.clear.onAppear {
                     fetchLocations()
                 }
                 
@@ -154,11 +176,15 @@ struct TripMapView: View {
     }
 
     private func fetchLocations() {
+        // Refresh the session in the current context to ensure it's not faulted
+        viewContext.refresh(session, mergeChanges: true)
+        
         let fetchRequest: NSFetchRequest<LocationEntry> = LocationEntry.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "session == %@", session)
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: true)]
         do {
             let fetched = try viewContext.fetch(fetchRequest)
+            print("TripMapView: Fetched \(fetched.count) locations for session")
             self.locations = fetched
             setupInitialRegion()
         } catch {
@@ -168,7 +194,11 @@ struct TripMapView: View {
     }
     
     private func setupInitialRegion() {
-        guard !locations.isEmpty else { return }
+        guard !locations.isEmpty else {
+            print("TripMapView: No locations to display on map")
+            return
+        }
+        
         let latitudes = locations.map { $0.latitude }
         let longitudes = locations.map { $0.longitude }
         let minLat = latitudes.min() ?? 0
@@ -179,10 +209,15 @@ struct TripMapView: View {
         let centerLon = (minLon + maxLon) / 2
         let spanLat = max(maxLat - minLat, 0.01) * 1.2
         let spanLon = max(maxLon - minLon, 0.01) * 1.2
+        
         region = MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: centerLat, longitude: centerLon),
             span: MKCoordinateSpan(latitudeDelta: spanLat, longitudeDelta: spanLon)
         )
+        
+        // Update the map position binding
+        mapPosition = .region(region)
+        print("TripMapView: Set map region to center: \(centerLat), \(centerLon)")
     }
     
     private func fitToRoute() {

@@ -604,4 +604,110 @@ class HistoryViewTests: XCTestCase {
         let completedSessions = sessions?.filter { !$0.isActive }
         XCTAssertEqual(completedSessions?.count, 1)
     }
+    
+    // MARK: - Sheet Context Tests
+    
+    func testSessionAccessibleInDifferentContext() {
+        // This test simulates the sheet presentation scenario where a session
+        // from one context needs to be accessed in another context (like in a sheet)
+        
+        // Create session in main context
+        let session = TrackingSession(context: viewContext)
+        session.id = UUID()
+        session.narrative = "Test Session"
+        session.startDate = Date()
+        session.isActive = false
+        
+        // Add some locations
+        for i in 0..<5 {
+            let location = LocationEntry(context: viewContext)
+            location.id = UUID()
+            location.latitude = 37.7749 + Double(i) * 0.001
+            location.longitude = -122.4194 + Double(i) * 0.001
+            location.timestamp = Date().addingTimeInterval(TimeInterval(i * 60))
+            location.accuracy = 10.0
+            location.session = session
+        }
+        
+        try? viewContext.save()
+        
+        // Verify locations are accessible from session
+        XCTAssertEqual(session.locations?.count, 5, "Session should have 5 locations")
+        
+        // Simulate accessing the session in a different context (like a sheet would)
+        let backgroundContext = persistenceController.container.newBackgroundContext()
+        let expectation = self.expectation(description: "Background context access")
+        
+        backgroundContext.perform {
+            // Use objectID to fetch session in different context
+            let sessionID = session.objectID
+            
+            do {
+                let sessionInBgContext = try backgroundContext.existingObject(with: sessionID) as? TrackingSession
+                XCTAssertNotNil(sessionInBgContext, "Session should be accessible in background context")
+                XCTAssertEqual(sessionInBgContext?.narrative, "Test Session")
+                
+                // Verify locations are accessible
+                let locationCount = sessionInBgContext?.locations?.count ?? 0
+                XCTAssertEqual(locationCount, 5, "Locations should be accessible in background context")
+                
+                expectation.fulfill()
+            } catch {
+                XCTFail("Failed to access session in background context: \(error)")
+                expectation.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 2.0)
+    }
+    
+    func testLocationsFetchableViaPredicateInDifferentContext() {
+        // Test that locations can be fetched using a predicate even when
+        // the session object is from a different context
+        
+        // Create session in main context
+        let session = TrackingSession(context: viewContext)
+        session.id = UUID()
+        session.narrative = "Predicate Test Session"
+        session.startDate = Date()
+        
+        // Add locations
+        for i in 0..<10 {
+            let location = LocationEntry(context: viewContext)
+            location.id = UUID()
+            location.latitude = 37.7749 + Double(i) * 0.001
+            location.longitude = -122.4194 + Double(i) * 0.001
+            location.timestamp = Date().addingTimeInterval(TimeInterval(i * 60))
+            location.session = session
+        }
+        
+        try? viewContext.save()
+        
+        // Now simulate fetching locations in a different context using the session
+        let backgroundContext = persistenceController.container.newBackgroundContext()
+        let expectation = self.expectation(description: "Fetch locations with predicate")
+        
+        backgroundContext.perform {
+            // Get session in this context
+            do {
+                let sessionInBgContext = try backgroundContext.existingObject(with: session.objectID) as? TrackingSession
+                XCTAssertNotNil(sessionInBgContext)
+                
+                // Fetch locations using predicate (this is what TripMapView does)
+                let fetchRequest: NSFetchRequest<LocationEntry> = LocationEntry.fetchRequest()
+                fetchRequest.predicate = NSPredicate(format: "session == %@", sessionInBgContext!)
+                fetchRequest.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: true)]
+                
+                let locations = try backgroundContext.fetch(fetchRequest)
+                XCTAssertEqual(locations.count, 10, "Should fetch all 10 locations")
+                
+                expectation.fulfill()
+            } catch {
+                XCTFail("Failed to fetch locations: \(error)")
+                expectation.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 2.0)
+    }
 }
