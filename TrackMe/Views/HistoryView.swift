@@ -182,13 +182,18 @@ struct SessionDetailView: View {
     @State private var showingExportMenu = false
     @State private var showingExportSheet = false
     @State private var exportFileURL: URL?
+    @State private var cachedSortedLocations: [LocationEntry]?
     
     private var locations: [LocationEntry] {
         session.locations?.allObjects as? [LocationEntry] ?? []
     }
     
     private var sortedLocations: [LocationEntry] {
-        locations.sorted { ($0.timestamp ?? Date.distantPast) < ($1.timestamp ?? Date.distantPast) }
+        if let cached = cachedSortedLocations {
+            return cached
+        }
+        let sorted = locations.sorted { ($0.timestamp ?? Date.distantPast) < ($1.timestamp ?? Date.distantPast) }
+        return sorted
     }
     
     var body: some View {
@@ -272,6 +277,8 @@ struct SessionDetailView: View {
             .onAppear {
                 // Refresh session in current context to ensure data is accessible
                 viewContext.refresh(session, mergeChanges: true)
+                // Cache sorted locations once
+                cachedSortedLocations = locations.sorted { ($0.timestamp ?? Date.distantPast) < ($1.timestamp ?? Date.distantPast) }
                 print("SessionDetailView: Loaded session '\(session.narrative ?? "Unnamed")' with \(locations.count) locations")
             }
             .navigationTitle("Session Details")
@@ -446,7 +453,6 @@ struct ModernSessionRowView: View {
     let onTapSession: () -> Void
     let onTapMap: () -> Void
     
-    @Environment(\.managedObjectContext) private var viewContext
     @State private var showingExportMenu = false
     @State private var showingExportSheet = false
     @State private var exportFileURL: URL?
@@ -455,7 +461,7 @@ struct ModernSessionRowView: View {
         (session.locations?.count ?? 0) > 0
     }
     
-    private var sortedLocations: [LocationEntry] {
+    private func getSortedLocations() -> [LocationEntry] {
         let locations = session.locations?.allObjects as? [LocationEntry] ?? []
         return locations.sorted { ($0.timestamp ?? Date.distantPast) < ($1.timestamp ?? Date.distantPast) }
     }
@@ -645,6 +651,7 @@ struct ModernSessionRowView: View {
     
     private func exportSession(format: ExportFormat) {
         let exportService = ExportService.shared
+        let sortedLocations = getSortedLocations()
         let content: String
         
         switch format {
