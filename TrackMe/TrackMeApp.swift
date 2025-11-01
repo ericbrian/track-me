@@ -8,6 +8,12 @@ struct TrackMeApp: App {
     @StateObject private var phoneConnectivityManager = PhoneConnectivityManager.shared
     @State private var persistenceController: PersistenceController? = nil
     @State private var isLoading = true
+    
+    init() {
+        // Register background tasks IMMEDIATELY during app initialization
+        // This ensures handlers are registered before system tries to launch tasks
+        registerBackgroundTasks()
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -18,9 +24,6 @@ struct TrackMeApp: App {
                     ContentView()
                         .environment(\.managedObjectContext, persistenceController.container.viewContext)
                         .environmentObject(phoneConnectivityManager)
-                        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didFinishLaunchingNotification)) { _ in
-                            registerBackgroundTasks()
-                        }
                 } else {
                     VStack(spacing: 16) {
                         Text("Unable to initialize data store")
@@ -51,14 +54,36 @@ struct TrackMeApp: App {
     }
 
     private func registerBackgroundTasks() {
-        print("Registering background tasks...")
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.ericbrian.TrackMe.background-location", using: nil) { task in
-            print("Background location task triggered")
-            handleBackgroundLocationRefresh(task: task as! BGAppRefreshTask)
+        print("TrackMeApp: Registering background tasks...")
+        
+        // Register background location refresh task
+        let locationRegistered = BGTaskScheduler.shared.register(
+            forTaskWithIdentifier: "com.ericbrian.TrackMe.background-location",
+            using: nil
+        ) { task in
+            print("TrackMeApp: Background location task triggered")
+            self.handleBackgroundLocationRefresh(task: task as! BGAppRefreshTask)
         }
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.ericbrian.TrackMe.data-sync", using: nil) { task in
-            print("Background data sync task triggered")
-            handleBackgroundDataSync(task: task as! BGProcessingTask)
+        
+        if locationRegistered {
+            print("TrackMeApp: Background location task registered successfully")
+        } else {
+            print("TrackMeApp: Failed to register background location task")
+        }
+        
+        // Register background data sync task
+        let syncRegistered = BGTaskScheduler.shared.register(
+            forTaskWithIdentifier: "com.ericbrian.TrackMe.data-sync",
+            using: nil
+        ) { task in
+            print("TrackMeApp: Background data sync task triggered")
+            self.handleBackgroundDataSync(task: task as! BGProcessingTask)
+        }
+        
+        if syncRegistered {
+            print("TrackMeApp: Background data sync task registered successfully")
+        } else {
+            print("TrackMeApp: Failed to register background data sync task")
         }
     }
 
