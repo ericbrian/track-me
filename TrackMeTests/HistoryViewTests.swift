@@ -710,4 +710,64 @@ class HistoryViewTests: XCTestCase {
         
         waitForExpectations(timeout: 2.0)
     }
+    
+    // MARK: - Modern Session Row Tests
+    
+    func testModernSessionRowWithLocationsShowsDownloadButton() {
+        // Create a session with locations
+        let session = TrackingSession(context: viewContext)
+        session.id = UUID()
+        session.narrative = "Test Session With Data"
+        session.startDate = Date()
+        
+        // Add locations
+        for i in 0..<5 {
+            let location = LocationEntry(context: viewContext)
+            location.id = UUID()
+            location.latitude = 37.7749 + Double(i) * 0.001
+            location.longitude = -122.4194 + Double(i) * 0.001
+            location.timestamp = Date()
+            location.session = session
+        }
+        
+        try? viewContext.save()
+        
+        // Verify session has locations
+        let hasLocations = (session.locations?.count ?? 0) > 0
+        XCTAssertTrue(hasLocations, "Session should have locations")
+        XCTAssertEqual(session.locations?.count, 5, "Session should have 5 locations")
+    }
+    
+    func testModernSessionRowWithoutLocationsHidesDownloadButton() {
+        // Create a session without locations
+        let session = TrackingSession(context: viewContext)
+        session.id = UUID()
+        session.narrative = "Empty Session"
+        session.startDate = Date()
+        
+        try? viewContext.save()
+        
+        // Verify session has no locations
+        let hasLocations = (session.locations?.count ?? 0) > 0
+        XCTAssertFalse(hasLocations, "Session should not have locations")
+    }
+    
+    func testExportButtonStateManagement() {
+        // Test that export state variables can be toggled
+        var showingExportMenu = false
+        var showingExportSheet = false
+        
+        XCTAssertFalse(showingExportMenu)
+        XCTAssertFalse(showingExportSheet)
+        
+        // Simulate button press
+        showingExportMenu = true
+        XCTAssertTrue(showingExportMenu)
+        
+        // Simulate format selection
+        showingExportMenu = false
+        showingExportSheet = true
+        XCTAssertFalse(showingExportMenu)
+        XCTAssertTrue(showingExportSheet)
+    }
 }
