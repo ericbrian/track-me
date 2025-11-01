@@ -1,7 +1,5 @@
-
 import SwiftUI
 import BackgroundTasks
-
 
 @main
 struct TrackMeApp: App {
@@ -17,7 +15,7 @@ struct TrackMeApp: App {
 
     var body: some Scene {
         WindowGroup {
-            Group {
+            ZStack {
                 if isLoading {
                     SplashView()
                 } else if let persistenceController = persistenceController {
@@ -25,21 +23,24 @@ struct TrackMeApp: App {
                         .environment(\.managedObjectContext, persistenceController.container.viewContext)
                         .environmentObject(phoneConnectivityManager)
                 } else {
-                    VStack(spacing: 16) {
-                        Text("Unable to initialize data store")
-                            .font(.headline)
-                            .foregroundColor(.primary)
-                        Text("Please try again. If the problem persists, reinstall the app.")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                        Button("Retry") {
-                            let controller = PersistenceController()
-                            self.persistenceController = controller
-                            self.isLoading = false
+                    ZStack {
+                        Color(.systemBackground).ignoresSafeArea()
+                        VStack(spacing: 16) {
+                            Text("Unable to initialize data store")
+                                .font(.headline)
+                                .foregroundColor(.primary)
+                            Text("Please try again. If the problem persists, reinstall the app.")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                            Button("Retry") {
+                                let controller = PersistenceController()
+                                self.persistenceController = controller
+                                self.isLoading = false
+                            }
+                            .buttonStyle(.borderedProminent)
                         }
-                        .buttonStyle(.borderedProminent)
+                        .padding()
                     }
-                    .padding()
                 }
             }
             .onAppear {

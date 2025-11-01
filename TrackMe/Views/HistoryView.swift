@@ -156,6 +156,7 @@ struct HistoryView: View {
                 viewModel.attach(context: viewContext)
             }
         }
+        .navigationViewStyle(.stack)
     }
     
     private func deleteSessions(offsets: IndexSet) {

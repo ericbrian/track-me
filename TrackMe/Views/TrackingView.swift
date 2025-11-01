@@ -404,6 +404,7 @@ struct TrackingView: View {
                 appState = .active
             }
         }
+        .navigationViewStyle(.stack)
     }
     
     

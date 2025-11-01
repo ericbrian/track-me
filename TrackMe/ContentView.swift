@@ -19,6 +19,7 @@ struct ContentView: View {
                     Text("History")
                 }
         }
+        .ignoresSafeArea(.keyboard)
         .onAppear {
             phoneConnectivity.setLocationManager(locationManager)
             // Defer heavy setup until after UI appears
