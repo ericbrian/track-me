@@ -2,227 +2,155 @@ import SwiftUI
 import MapKit
 import CoreData
 
+/// A view that displays a map with the trip's route and location points.
 struct TripMapView: View {
-    let session: TrackingSession
     @Environment(\.managedObjectContext) private var viewContext
-    @State private var region = MKCoordinateRegion()
-    @State private var mapPosition: MapCameraPosition = .automatic
-    @State private var showingRoute = true
-    @State private var selectedLocation: LocationEntry?
-    @State private var locations: [LocationEntry] = []
+    @ObservedObject var session: TrackingSession
     
-    private var coordinates: [CLLocationCoordinate2D] {
-        locations.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
-    }
+    // State for the map's region and selected location
+    @State private var region = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
+        span: MKCoordinateSpan(latitudeDelta: 100, longitudeDelta: 100)
+    )
+    @State private var selectedLocation: LocationEntry?
+    @State private var showRoute = true
+    
+    // Location manager to get the user's current location for default region
+    private let locationManager = CLLocationManager()
+    
+    // Fetch request for the session's locations, sorted by timestamp
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \LocationEntry.timestamp, ascending: true)],
+        animation: .default)
+    private var locations: FetchedResults<LocationEntry>
     
     var body: some View {
-        ZStack {
-            if locations.isEmpty {
-                // Empty state view
-                VStack(spacing: 20) {
-                    Image(systemName: "map.fill")
-                        .font(.system(size: 60))
-                        .foregroundColor(.gray)
-                    
-                    Text(NSLocalizedString("No Location Data", comment: "Empty map state title"))
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    
-                    Text(NSLocalizedString("This session has no recorded locations.", comment: "Empty map state description"))
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                }
-                .padding()
-            } else {
-                // Map View - Modern iOS 17+ API
-                Map(position: $mapPosition) {
-                    ForEach(locations, id: \.id) { location in
-                        Annotation(
-                            "",
-                            coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
-                        ) {
-                            LocationPin(
-                                location: location,
-                                isSelected: selectedLocation?.id == location.id,
-                                isStart: isStartLocation(location),
-                                isEnd: isEndLocation(location)
-                            )
-                            .onTapGesture {
-                                selectedLocation = location
-                            }
+        Map(coordinateRegion: $region, interactionModes: .all, showsUserLocation: true) {
+            // Add annotations for each location point
+            ForEach(locations) { location in
+                Annotation(
+                    "",
+                    coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude),
+                    anchor: .center
+                ) {
+                    LocationPin(
+                        location: location,
+                        isSelected: selectedLocation?.id == location.id,
+                        isStart: isStartLocation(location),
+                        isEnd: isEndLocation(location)
+                    )
+                    .onTapGesture {
+                        withAnimation {
+                            selectedLocation = (selectedLocation?.id == location.id) ? nil : location
                         }
                     }
                 }
-                .overlay(
-                    // Route overlay
-                    RouteOverlay(coordinates: coordinates, showRoute: showingRoute)
-                )
             }
             
-            // Fetch locations when view appears
-            Color.clear.onAppear {
-                fetchLocations()
-            }
-            
-            // Control panel
-            VStack {
-                Spacer()
-                
-                HStack {
-                    Spacer()
-                    
-                    VStack(spacing: 16) {
-                        // Route toggle
-                        Button(action: {
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                showingRoute.toggle()
-                            }
-                        }) {
-                            Image(systemName: showingRoute ? "location.fill" : "location")
-                                .font(.title2)
-                                .foregroundColor(.white)
-                                .frame(width: 50, height: 50)
-                                .background(
-                                    Circle()
-                                        .fill(
-                                            LinearGradient(
-                                                gradient: Gradient(colors: showingRoute ? 
-                                                    [Color.blue, Color.blue.opacity(0.8)] : 
-                                                    [Color.gray, Color.gray.opacity(0.8)]
-                                                ),
-                                                startPoint: .topLeading,
-                                                endPoint: .bottomTrailing
-                                            )
-                                        )
-                                )
-                                .shadow(color: (showingRoute ? Color.blue : Color.gray).opacity(0.3), radius: 8, x: 0, y: 4)
-                        }
-                        .scaleEffect(showingRoute ? 1.0 : 0.9)
-                        .animation(.easeInOut(duration: 0.2), value: showingRoute)
-                        
-                        // Fit to route button
-                        Button(action: {
-                            withAnimation(.easeInOut(duration: 0.3)) {
-                                fitToRoute()
-                            }
-                        }) {
-                            Image(systemName: "arrow.up.left.and.arrow.down.right")
-                                .font(.title2)
-                                .foregroundColor(.white)
-                                .frame(width: 50, height: 50)
-                                .background(
-                                    Circle()
-                                        .fill(
-                                            LinearGradient(
-                                                gradient: Gradient(colors: [Color.green, Color.green.opacity(0.8)]),
-                                                startPoint: .topLeading,
-                                                endPoint: .bottomTrailing
-                                            )
-                                        )
-                                )
-                                .shadow(color: Color.green.opacity(0.3), radius: 8, x: 0, y: 4)
-                        }
-                    }
-                    .padding(.trailing, 20)
-                }
-                .padding(.bottom, 100)
-            }
-            
-            // Location details panel
-            if let selectedLocation = selectedLocation {
-                VStack {
-                    Spacer()
-                    LocationDetailPanel(location: selectedLocation) {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            self.selectedLocation = nil
-                        }
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 30)
-                }
+            // Add the route polyline if enabled
+            if showRoute, let polyline = routePolyline {
+                MapPolyline(polyline)
+                    .stroke(.blue, lineWidth: 4)
             }
         }
+        .overlay(alignment: .bottom) {
+            // Show detail panel for selected location
+            if let selectedLocation = selectedLocation {
+                LocationDetailPanel(location: selectedLocation) {
+                    withAnimation {
+                        self.selectedLocation = nil
+                    }
+                }
+                .padding()
+                .background(Color(.systemBackground))
+                .cornerRadius(16)
+                .shadow(radius: 5)
+                .transition(.move(edge: .bottom))
+            }
+        }
+        .mapControls {
+            MapUserLocationButton()
+            MapCompass()
+            MapScaleView()
+        }
+        .onAppear(perform: setupView)
         .navigationTitle("Trip Map")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            // Toolbar items for sharing and toggling the route
             ToolbarItem(placement: .navigationBarTrailing) {
-                HStack(spacing: 12) {
-                    VStack(alignment: .trailing, spacing: 2) {
-                        Text("\(locations.count)")
-                            .font(.headline)
-                            .fontWeight(.bold)
-                        Text("points")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
+                HStack {
+                    Button(action: { showRoute.toggle() }) {
+                        Image(systemName: showRoute ? "eye.slash.fill" : "eye.fill")
                     }
-                    
-                    Image(systemName: "location.circle.fill")
-                        .foregroundColor(.blue)
-                        .font(.title3)
+                    ShareLink(item: ExportService.shared.exportToCSV(session: session, locations: Array(locations)),
+                              subject: Text("TrackMe Session Data"),
+                              message: Text("Here is the data for my tracking session."),
+                              preview: SharePreview("Session Data",
+                                                    image: Image(systemName: "doc.text"),
+                                                    icon: Image(systemName: "plus")))
                 }
             }
         }
     }
-
-    private func fetchLocations() {
-        // Refresh the session in the current context to ensure it's not faulted
-        viewContext.refresh(session, mergeChanges: true)
-        
-        let fetchRequest: NSFetchRequest<LocationEntry> = LocationEntry.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "session == %@", session)
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: true)]
-        do {
-            let fetched = try viewContext.fetch(fetchRequest)
-            print("TripMapView: Fetched \(fetched.count) locations for session")
-            self.locations = fetched
-            setupInitialRegion()
-        } catch {
-            print("Failed to fetch locations for session: \(error)")
-            self.locations = []
-        }
-    }
     
-    private func setupInitialRegion() {
-        guard !locations.isEmpty else {
-            print("TripMapView: No locations to display on map")
-            return
-        }
-        
-        let latitudes = locations.map { $0.latitude }
-        let longitudes = locations.map { $0.longitude }
-        let minLat = latitudes.min() ?? 0
-        let maxLat = latitudes.max() ?? 0
-        let minLon = longitudes.min() ?? 0
-        let maxLon = longitudes.max() ?? 0
-        let centerLat = (minLat + maxLat) / 2
-        let centerLon = (minLon + maxLon) / 2
-        let spanLat = max(maxLat - minLat, 0.01) * 1.2
-        let spanLon = max(maxLon - minLon, 0.01) * 1.2
-        
-        region = MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: centerLat, longitude: centerLon),
-            span: MKCoordinateSpan(latitudeDelta: spanLat, longitudeDelta: spanLon)
-        )
-        
-        // Update the map position binding
-        mapPosition = .region(region)
-        print("TripMapView: Set map region to center: \(centerLat), \(centerLon)")
-    }
-    
-    private func fitToRoute() {
+    /// Sets up the view by configuring the fetch request and initial map region.
+    private func setupView() {
+        locations.nsPredicate = NSPredicate(format: "session == %@", session)
         setupInitialRegion()
     }
     
-    private func isStartLocation(_ location: LocationEntry) -> Bool {
-        return location.id == locations.first?.id
+    /// Calculates and sets the initial map region to fit the entire route.
+    private func setupInitialRegion() {
+        guard !locations.isEmpty else {
+            // If no locations, center on user's current location or a default
+            if let userLocation = locationManager.location?.coordinate {
+                region = MKCoordinateRegion(
+                    center: userLocation,
+                    span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                )
+            }
+            // The default region is already set in the @State property
+            return
+        }
+        
+        // Calculate bounding box
+        let latitudes = locations.map { $0.latitude }
+        let longitudes = locations.map { $0.longitude }
+        
+        let minLat = latitudes.min()!
+        let maxLat = latitudes.max()!
+        let minLon = longitudes.min()!
+        let maxLon = longitudes.max()!
+        
+        // Set region with padding
+        let center = CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2, longitude: (minLon + maxLon) / 2)
+        let span = MKCoordinateSpan(latitudeDelta: max(maxLat - minLat, 0.01) * 1.4, longitudeDelta: max(maxLon - minLon, 0.01) * 1.4)
+        
+        region = MKCoordinateRegion(center: center, span: span)
     }
     
+    /// A computed property that creates an `MKPolyline` from the session's locations.
+    private var routePolyline: MKPolyline? {
+        guard locations.count > 1 else { return nil }
+        let coordinates = locations.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
+        return MKPolyline(coordinates: coordinates, count: coordinates.count)
+    }
+    
+    /// Checks if a location is the first in the session.
+    private func isStartLocation(_ location: LocationEntry) -> Bool {
+        return locations.first?.id == location.id
+    }
+    
+    /// Checks if a location is the last in the session.
     private func isEndLocation(_ location: LocationEntry) -> Bool {
-        return location.id == locations.last?.id
+        return locations.last?.id == location.id
     }
 }
 
+// MARK: - Subviews for TripMapView
+
+/// A view for the map annotation pin.
 struct LocationPin: View {
     let location: LocationEntry
     let isSelected: Bool
@@ -255,45 +183,6 @@ struct LocationPin: View {
         if isEnd { return .red }
         if isSelected { return .blue }
         return .orange
-    }
-}
-
-struct RouteOverlay: UIViewRepresentable {
-    let coordinates: [CLLocationCoordinate2D]
-    let showRoute: Bool
-    
-    func makeUIView(context: Context) -> MKMapView {
-        let mapView = MKMapView()
-        mapView.isUserInteractionEnabled = false
-        mapView.delegate = context.coordinator
-        return mapView
-    }
-    
-    func updateUIView(_ mapView: MKMapView, context: Context) {
-        mapView.removeOverlays(mapView.overlays)
-        
-        if showRoute && coordinates.count > 1 {
-            let polyline = MKPolyline(coordinates: coordinates, count: coordinates.count)
-            mapView.addOverlay(polyline)
-        }
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator()
-    }
-    
-    class Coordinator: NSObject, MKMapViewDelegate {
-        func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-            if let polyline = overlay as? MKPolyline {
-                let renderer = MKPolylineRenderer(polyline: polyline)
-                renderer.strokeColor = UIColor.systemBlue
-                renderer.lineWidth = 4
-                renderer.lineCap = .round
-                renderer.lineJoin = .round
-                return renderer
-            }
-            return MKOverlayRenderer()
-        }
     }
 }
 

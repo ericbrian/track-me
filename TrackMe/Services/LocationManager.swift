@@ -14,6 +14,7 @@ class LocationManager: NSObject, ObservableObject {
     private var persistenceController = PersistenceController.shared
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     private var hasSetupObservers = false
+    var kalmanFilter: KalmanFilter?
     
     @Published var isTracking = false
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
@@ -144,6 +145,9 @@ class LocationManager: NSObject, ObservableObject {
         session.narrative = narrative
         session.startDate = Date()
         session.isActive = true
+        
+        // Initialize Kalman filter for this session
+        self.kalmanFilter = KalmanFilter()
 
         // Save the session
         do {
@@ -229,6 +233,7 @@ class LocationManager: NSObject, ObservableObject {
             try context.save()
             currentSession = nil
             isTracking = false
+            kalmanFilter = nil // Reset Kalman filter
             // Notify Watch about tracking state change
             NotificationCenter.default.post(name: NSNotification.Name("TrackingStateChanged"), object: nil)
             // Notify app to refresh history
