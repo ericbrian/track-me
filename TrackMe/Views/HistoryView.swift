@@ -67,10 +67,6 @@ struct HistoryView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @StateObject private var viewModel = HistoryViewModel()
     
-    // Drive sheet presentation with Identifiable items to avoid blank sheets
-    @State private var detailSession: TrackingSession?
-    @State private var mapSession: TrackingSession?
-    
     var body: some View {
         NavigationView {
             ZStack {
@@ -115,17 +111,9 @@ struct HistoryView: View {
                         .listRowSeparator(.hidden)
                     } else {
                         ForEach(viewModel.sessions, id: \.objectID) { session in
-                            ModernSessionRowView(
-                                session: session,
-                                onTapSession: {
-                                    detailSession = session
-                                },
-                                onTapMap: {
-                                    mapSession = session
-                                }
-                            )
-                            .listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
+                            ModernSessionRowView(session: session)
+                                .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
                         }
                         .onDelete(perform: deleteSessions)
                     }
@@ -137,15 +125,6 @@ struct HistoryView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
                 }
-            }
-            // Present sheets using item bindings to guarantee content exists when shown
-            .sheet(item: $detailSession) { session in
-                SessionDetailView(session: session)
-                    .environment(\.managedObjectContext, viewContext)
-            }
-            .sheet(item: $mapSession) { session in
-                TripMapView(session: session)
-                    .environment(\.managedObjectContext, viewContext)
             }
             .onAppear {
                 viewModel.attach(context: viewContext)
@@ -172,7 +151,6 @@ struct HistoryView: View {
 
 struct SessionDetailView: View {
     let session: TrackingSession
-    @Environment(\.presentationMode) var presentationMode
     @Environment(\.managedObjectContext) private var viewContext
     
     @State private var showingExportMenu = false
@@ -279,17 +257,11 @@ struct SessionDetailView: View {
         .navigationTitle("Session Details")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
+            ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     showingExportMenu = true
                 }) {
                     Label("Export", systemImage: "square.and.arrow.up")
-                }
-            }
-            
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Done") {
-                    presentationMode.wrappedValue.dismiss()
                 }
             }
         }
@@ -450,8 +422,6 @@ extension LocationEntry {
 
 struct ModernSessionRowView: View {
     let session: TrackingSession
-    let onTapSession: () -> Void
-    let onTapMap: () -> Void
     
     @State private var showingExportMenu = false
     @State private var showingExportSheet = false
@@ -488,82 +458,16 @@ struct ModernSessionRowView: View {
                 
                 // Content
                 VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(session.narrative ?? "Unnamed Session")
-                                .font(.headline)
-                                .fontWeight(.semibold)
-                                .lineLimit(1)
-                            
-                            if let startDate = session.startDate {
-                                Text(startDate.formatted(date: .abbreviated, time: .omitted))
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                        }
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(session.narrative ?? "Unnamed Session")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                            .lineLimit(1)
                         
-                        Spacer()
-                        
-                        // Action buttons
-                        HStack(spacing: 8) {
-                            if hasLocations {
-                                Button(action: onTapMap) {
-                                    Image(systemName: "map.fill")
-                                        .font(.title3)
-                                        .foregroundColor(.white)
-                                        .frame(width: 36, height: 36)
-                                        .background(
-                                            Circle()
-                                                .fill(
-                                                    LinearGradient(
-                                                        gradient: Gradient(colors: [.blue, .blue.opacity(0.8)]),
-                                                        startPoint: .topLeading,
-                                                        endPoint: .bottomTrailing
-                                                    )
-                                                )
-                                        )
-                                        .shadow(color: Color.blue.opacity(0.3), radius: 4, x: 0, y: 2)
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                                
-                                Button(action: { showingExportMenu = true }) {
-                                    Image(systemName: "square.and.arrow.down.fill")
-                                        .font(.title3)
-                                        .foregroundColor(.white)
-                                        .frame(width: 36, height: 36)
-                                        .background(
-                                            Circle()
-                                                .fill(
-                                                    LinearGradient(
-                                                        gradient: Gradient(colors: [.green, .green.opacity(0.8)]),
-                                                        startPoint: .topLeading,
-                                                        endPoint: .bottomTrailing
-                                                    )
-                                                )
-                                        )
-                                        .shadow(color: Color.green.opacity(0.3), radius: 4, x: 0, y: 2)
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                            }
-                            
-                            Button(action: onTapSession) {
-                                Image(systemName: "info.circle.fill")
-                                    .font(.title3)
-                                    .foregroundColor(.white)
-                                    .frame(width: 36, height: 36)
-                                    .background(
-                                        Circle()
-                                            .fill(
-                                                LinearGradient(
-                                                    gradient: Gradient(colors: [.purple, .purple.opacity(0.8)]),
-                                                    startPoint: .topLeading,
-                                                    endPoint: .bottomTrailing
-                                                )
-                                            )
-                                    )
-                                    .shadow(color: Color.purple.opacity(0.3), radius: 4, x: 0, y: 2)
-                            }
-                            .buttonStyle(PlainButtonStyle())
+                        if let startDate = session.startDate {
+                            Text(startDate.formatted(date: .abbreviated, time: .omitted))
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
                         }
                     }
                     
@@ -600,6 +504,88 @@ struct ModernSessionRowView: View {
                         }
                         
                         Spacer()
+                    }
+                    
+                    // Action buttons row at bottom
+                    HStack(spacing: 12) {
+                        if hasLocations {
+                            NavigationLink(destination: TripMapView(session: session)) {
+                                HStack(spacing: 6) {
+                                    Image(systemName: "map.fill")
+                                        .font(.body)
+                                    Text("Map")
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                }
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 44)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(
+                                            LinearGradient(
+                                                gradient: Gradient(colors: [.blue, .blue.opacity(0.8)]),
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            )
+                                        )
+                                )
+                                .shadow(color: Color.blue.opacity(0.3), radius: 4, x: 0, y: 2)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                        
+                        NavigationLink(destination: SessionDetailView(session: session)) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "info.circle.fill")
+                                    .font(.body)
+                                Text("Details")
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                            }
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 44)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(
+                                        LinearGradient(
+                                            gradient: Gradient(colors: [.purple, .purple.opacity(0.8)]),
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        )
+                                    )
+                            )
+                            .shadow(color: Color.purple.opacity(0.3), radius: 4, x: 0, y: 2)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        
+                        if hasLocations {
+                            Button(action: { showingExportMenu = true }) {
+                                HStack(spacing: 6) {
+                                    Image(systemName: "square.and.arrow.down.fill")
+                                        .font(.body)
+                                    Text("Export")
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                }
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 44)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(
+                                            LinearGradient(
+                                                gradient: Gradient(colors: [.green, .green.opacity(0.8)]),
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            )
+                                        )
+                                )
+                                .shadow(color: Color.green.opacity(0.3), radius: 4, x: 0, y: 2)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
                     }
                 }
             }

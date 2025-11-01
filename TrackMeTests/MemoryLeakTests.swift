@@ -47,14 +47,7 @@ class MemoryLeakTests: XCTestCase {
             weakSession = session
             
             // Create view (simulating what happens in the list)
-            var tapSessionCalled = false
-            var tapMapCalled = false
-            
-            _ = ModernSessionRowView(
-                session: session,
-                onTapSession: { tapSessionCalled = true },
-                onTapMap: { tapMapCalled = true }
-            )
+            _ = ModernSessionRowView(session: session)
             
             // View shouldn't retain the session beyond its scope
             XCTAssertNotNil(weakSession, "Session should exist while in scope")

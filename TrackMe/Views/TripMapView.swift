@@ -4,7 +4,6 @@ import CoreData
 
 struct TripMapView: View {
     let session: TrackingSession
-    @Environment(\.presentationMode) var presentationMode
     @Environment(\.managedObjectContext) private var viewContext
     @State private var region = MKCoordinateRegion()
     @State private var mapPosition: MapCameraPosition = .automatic
@@ -147,18 +146,6 @@ struct TripMapView: View {
         .navigationTitle("Trip Map")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }) {
-                    HStack {
-                        Image(systemName: "chevron.left")
-                        Text("Done")
-                    }
-                    .foregroundColor(.blue)
-                }
-            }
-            
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack(spacing: 12) {
                     VStack(alignment: .trailing, spacing: 2) {
