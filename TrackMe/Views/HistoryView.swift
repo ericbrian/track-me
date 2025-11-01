@@ -67,9 +67,9 @@ struct HistoryView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @StateObject private var viewModel = HistoryViewModel()
     
-    @State private var selectedSession: TrackingSession?
-    @State private var showingSessionDetail = false
-    @State private var showingMapView = false
+    // Drive sheet presentation with Identifiable items to avoid blank sheets
+    @State private var detailSession: TrackingSession?
+    @State private var mapSession: TrackingSession?
     
     var body: some View {
         NavigationView {
@@ -118,12 +118,10 @@ struct HistoryView: View {
                             ModernSessionRowView(
                                 session: session,
                                 onTapSession: {
-                                    selectedSession = session
-                                    showingSessionDetail = true
+                                    detailSession = session
                                 },
                                 onTapMap: {
-                                    selectedSession = session
-                                    showingMapView = true
+                                    mapSession = session
                                 }
                             )
                             .listRowBackground(Color.clear)
@@ -140,17 +138,14 @@ struct HistoryView: View {
                     EditButton()
                 }
             }
-            .sheet(isPresented: $showingSessionDetail) {
-                if let session = selectedSession {
-                    SessionDetailView(session: session)
-                        .environment(\.managedObjectContext, viewContext)
-                }
+            // Present sheets using item bindings to guarantee content exists when shown
+            .sheet(item: $detailSession) { session in
+                SessionDetailView(session: session)
+                    .environment(\.managedObjectContext, viewContext)
             }
-            .sheet(isPresented: $showingMapView) {
-                if let session = selectedSession {
-                    TripMapView(session: session)
-                        .environment(\.managedObjectContext, viewContext)
-                }
+            .sheet(item: $mapSession) { session in
+                TripMapView(session: session)
+                    .environment(\.managedObjectContext, viewContext)
             }
             .onAppear {
                 viewModel.attach(context: viewContext)
