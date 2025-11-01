@@ -174,102 +174,6 @@ struct HistoryView: View {
     }
 }
 
-struct SessionRowView: View {
-    let session: TrackingSession
-    let onTapSession: () -> Void
-    let onTapMap: () -> Void
-    
-    private var hasLocations: Bool {
-        (session.locations?.count ?? 0) > 0
-    }
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(session.narrative ?? "Unnamed Session")
-                        .font(.headline)
-                        .lineLimit(1)
-                    
-                    if let startDate = session.startDate {
-                        Text(startDate, style: .date)
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
-                }
-                
-                Spacer()
-                
-                // Action buttons
-                HStack(spacing: 12) {
-                    if hasLocations {
-                        Button(action: onTapMap) {
-                            Image(systemName: "map")
-                                .font(.title3)
-                                .foregroundColor(.blue)
-                                .frame(width: 32, height: 32)
-                                .background(Color.blue.opacity(0.1))
-                                .clipShape(Circle())
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                    }
-                    
-                    VStack(alignment: .trailing, spacing: 4) {
-                        if session.isActive {
-                            Label("Active", systemImage: "location.fill")
-                                .font(.caption)
-                                .foregroundColor(.green)
-                        } else {
-                            Text("\(session.locations?.count ?? 0) locations")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                        
-                        if let duration = sessionDuration {
-                            Text(duration)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                }
-            }
-            
-            if let startDate = session.startDate {
-                HStack {
-                    Text("Started: \(startDate, style: .time)")
-                    
-                    if let endDate = session.endDate {
-                        Text("• Ended: \(endDate, style: .time)")
-                    }
-                }
-                .font(.caption)
-                .foregroundColor(.secondary)
-            }
-        }
-        .padding(.vertical, 4)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            onTapSession()
-        }
-    }
-    
-    private var sessionDuration: String? {
-        guard let startDate = session.startDate else { return nil }
-        
-        let endDate = session.endDate ?? Date()
-        let duration = endDate.timeIntervalSince(startDate)
-        
-        let hours = Int(duration) / 3600
-        let minutes = Int(duration) % 3600 / 60
-        
-        if hours > 0 {
-            return "\(hours)h \(minutes)m"
-        } else {
-            return "\(minutes)m"
-        }
-    }
-}
-
 struct SessionDetailView: View {
     let session: TrackingSession
     @Environment(\.presentationMode) var presentationMode
@@ -542,8 +446,18 @@ struct ModernSessionRowView: View {
     let onTapSession: () -> Void
     let onTapMap: () -> Void
     
+    @Environment(\.managedObjectContext) private var viewContext
+    @State private var showingExportMenu = false
+    @State private var showingExportSheet = false
+    @State private var exportFileURL: URL?
+    
     private var hasLocations: Bool {
         (session.locations?.count ?? 0) > 0
+    }
+    
+    private var sortedLocations: [LocationEntry] {
+        let locations = session.locations?.allObjects as? [LocationEntry] ?? []
+        return locations.sorted { ($0.timestamp ?? Date.distantPast) < ($1.timestamp ?? Date.distantPast) }
     }
     
     var body: some View {
@@ -603,6 +517,25 @@ struct ModernSessionRowView: View {
                                                 )
                                         )
                                         .shadow(color: Color.blue.opacity(0.3), radius: 4, x: 0, y: 2)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                
+                                Button(action: { showingExportMenu = true }) {
+                                    Image(systemName: "square.and.arrow.down.fill")
+                                        .font(.title3)
+                                        .foregroundColor(.white)
+                                        .frame(width: 36, height: 36)
+                                        .background(
+                                            Circle()
+                                                .fill(
+                                                    LinearGradient(
+                                                        gradient: Gradient(colors: [.green, .green.opacity(0.8)]),
+                                                        startPoint: .topLeading,
+                                                        endPoint: .bottomTrailing
+                                                    )
+                                                )
+                                        )
+                                        .shadow(color: Color.green.opacity(0.3), radius: 4, x: 0, y: 2)
                                 }
                                 .buttonStyle(PlainButtonStyle())
                             }
@@ -677,6 +610,21 @@ struct ModernSessionRowView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
+        .confirmationDialog("Export Session", isPresented: $showingExportMenu) {
+            ForEach(ExportFormat.allCases, id: \.self) { format in
+                Button(format.rawValue) {
+                    exportSession(format: format)
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Choose a format to export this tracking session")
+        }
+        .sheet(isPresented: $showingExportSheet) {
+            if let fileURL = exportFileURL {
+                ActivityViewController(activityItems: [fileURL])
+            }
+        }
     }
     
     private var sessionDuration: String? {
@@ -692,6 +640,29 @@ struct ModernSessionRowView: View {
             return "\(hours)h \(minutes)m"
         } else {
             return "\(minutes)m"
+        }
+    }
+    
+    private func exportSession(format: ExportFormat) {
+        let exportService = ExportService.shared
+        let content: String
+        
+        switch format {
+        case .gpx:
+            content = exportService.exportToGPX(session: session, locations: sortedLocations)
+        case .kml:
+            content = exportService.exportToKML(session: session, locations: sortedLocations)
+        case .csv:
+            content = exportService.exportToCSV(session: session, locations: sortedLocations)
+        case .geojson:
+            content = exportService.exportToGeoJSON(session: session, locations: sortedLocations)
+        }
+        
+        let filename = exportService.generateFilename(session: session, format: format)
+        
+        if let fileURL = exportService.saveToTemporaryFile(content: content, filename: filename) {
+            exportFileURL = fileURL
+            showingExportSheet = true
         }
     }
 }
