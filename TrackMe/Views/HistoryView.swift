@@ -193,9 +193,8 @@ struct SessionDetailView: View {
     }
     
     var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
                     // Session Info
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Session Details")
@@ -267,41 +266,46 @@ struct SessionDetailView: View {
                         .background(Color(.systemGray6))
                         .cornerRadius(10)
                     }
-                }
-                .padding()
             }
-            .onAppear {
-                // Refresh session in current context to ensure data is accessible
-                viewContext.refresh(session, mergeChanges: true)
-                // Cache sorted locations once
-                cachedSortedLocations = locations.sorted { ($0.timestamp ?? Date.distantPast) < ($1.timestamp ?? Date.distantPast) }
-                print("SessionDetailView: Loaded session '\(session.narrative ?? "Unnamed")' with \(locations.count) locations")
-            }
-            .navigationTitle("Session Details")
-            .navigationBarItems(
-                leading: Button(action: {
+            .padding()
+        }
+        .onAppear {
+            // Refresh session in current context to ensure data is accessible
+            viewContext.refresh(session, mergeChanges: true)
+            // Cache sorted locations once
+            cachedSortedLocations = locations.sorted { ($0.timestamp ?? Date.distantPast) < ($1.timestamp ?? Date.distantPast) }
+            print("SessionDetailView: Loaded session '\(session.narrative ?? "Unnamed")' with \(locations.count) locations")
+        }
+        .navigationTitle("Session Details")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
                     showingExportMenu = true
                 }) {
                     Label("Export", systemImage: "square.and.arrow.up")
-                },
-                trailing: Button("Done") {
+                }
+            }
+            
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("Done") {
                     presentationMode.wrappedValue.dismiss()
                 }
-            )
-            .confirmationDialog("Export Session", isPresented: $showingExportMenu) {
-                ForEach(ExportFormat.allCases, id: \.self) { format in
-                    Button(format.rawValue) {
-                        exportSession(format: format)
-                    }
-                }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("Choose a format to export this tracking session")
             }
-            .sheet(isPresented: $showingExportSheet) {
-                if let fileURL = exportFileURL {
-                    ActivityViewController(activityItems: [fileURL])
+        }
+        .confirmationDialog("Export Session", isPresented: $showingExportMenu) {
+            ForEach(ExportFormat.allCases, id: \.self) { format in
+                Button(format.rawValue) {
+                    exportSession(format: format)
                 }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Choose a format to export this tracking session")
+        }
+        .sheet(isPresented: $showingExportSheet) {
+            if let fileURL = exportFileURL {
+                ActivityViewController(activityItems: [fileURL])
             }
         }
     }

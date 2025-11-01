@@ -17,138 +17,138 @@ struct TripMapView: View {
     }
     
     var body: some View {
-        NavigationView {
-            ZStack {
-                if locations.isEmpty {
-                    // Empty state view
-                    VStack(spacing: 20) {
-                        Image(systemName: "map.fill")
-                            .font(.system(size: 60))
-                            .foregroundColor(.gray)
-                        
-                        Text(NSLocalizedString("No Location Data", comment: "Empty map state title"))
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        
-                        Text(NSLocalizedString("This session has no recorded locations.", comment: "Empty map state description"))
-                            .font(.body)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
-                    }
-                    .padding()
-                } else {
-                    // Map View - Modern iOS 17+ API
-                    Map(position: $mapPosition) {
-                        ForEach(locations, id: \.id) { location in
-                            Annotation(
-                                "",
-                                coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
-                            ) {
-                                LocationPin(
-                                    location: location,
-                                    isSelected: selectedLocation?.id == location.id,
-                                    isStart: isStartLocation(location),
-                                    isEnd: isEndLocation(location)
-                                )
-                                .onTapGesture {
-                                    selectedLocation = location
-                                }
+        ZStack {
+            if locations.isEmpty {
+                // Empty state view
+                VStack(spacing: 20) {
+                    Image(systemName: "map.fill")
+                        .font(.system(size: 60))
+                        .foregroundColor(.gray)
+                    
+                    Text(NSLocalizedString("No Location Data", comment: "Empty map state title"))
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    
+                    Text(NSLocalizedString("This session has no recorded locations.", comment: "Empty map state description"))
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .padding()
+            } else {
+                // Map View - Modern iOS 17+ API
+                Map(position: $mapPosition) {
+                    ForEach(locations, id: \.id) { location in
+                        Annotation(
+                            "",
+                            coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
+                        ) {
+                            LocationPin(
+                                location: location,
+                                isSelected: selectedLocation?.id == location.id,
+                                isStart: isStartLocation(location),
+                                isEnd: isEndLocation(location)
+                            )
+                            .onTapGesture {
+                                selectedLocation = location
                             }
                         }
                     }
-                    .overlay(
-                        // Route overlay
-                        RouteOverlay(coordinates: coordinates, showRoute: showingRoute)
-                    )
                 }
+                .overlay(
+                    // Route overlay
+                    RouteOverlay(coordinates: coordinates, showRoute: showingRoute)
+                )
+            }
+            
+            // Fetch locations when view appears
+            Color.clear.onAppear {
+                fetchLocations()
+            }
+            
+            // Control panel
+            VStack {
+                Spacer()
                 
-                // Fetch locations when view appears
-                Color.clear.onAppear {
-                    fetchLocations()
-                }
-                
-                // Control panel
-                VStack {
+                HStack {
                     Spacer()
                     
-                    HStack {
-                        Spacer()
-                        
-                        VStack(spacing: 16) {
-                            // Route toggle
-                            Button(action: {
-                                withAnimation(.easeInOut(duration: 0.2)) {
-                                    showingRoute.toggle()
-                                }
-                            }) {
-                                Image(systemName: showingRoute ? "location.fill" : "location")
-                                    .font(.title2)
-                                    .foregroundColor(.white)
-                                    .frame(width: 50, height: 50)
-                                    .background(
-                                        Circle()
-                                            .fill(
-                                                LinearGradient(
-                                                    gradient: Gradient(colors: showingRoute ? 
-                                                        [Color.blue, Color.blue.opacity(0.8)] : 
-                                                        [Color.gray, Color.gray.opacity(0.8)]
-                                                    ),
-                                                    startPoint: .topLeading,
-                                                    endPoint: .bottomTrailing
-                                                )
-                                            )
-                                    )
-                                    .shadow(color: (showingRoute ? Color.blue : Color.gray).opacity(0.3), radius: 8, x: 0, y: 4)
-                            }
-                            .scaleEffect(showingRoute ? 1.0 : 0.9)
-                            .animation(.easeInOut(duration: 0.2), value: showingRoute)
-                            
-                            // Fit to route button
-                            Button(action: {
-                                withAnimation(.easeInOut(duration: 0.3)) {
-                                    fitToRoute()
-                                }
-                            }) {
-                                Image(systemName: "arrow.up.left.and.arrow.down.right")
-                                    .font(.title2)
-                                    .foregroundColor(.white)
-                                    .frame(width: 50, height: 50)
-                                    .background(
-                                        Circle()
-                                            .fill(
-                                                LinearGradient(
-                                                    gradient: Gradient(colors: [Color.green, Color.green.opacity(0.8)]),
-                                                    startPoint: .topLeading,
-                                                    endPoint: .bottomTrailing
-                                                )
-                                            )
-                                    )
-                                    .shadow(color: Color.green.opacity(0.3), radius: 8, x: 0, y: 4)
-                            }
-                        }
-                        .padding(.trailing, 20)
-                    }
-                    .padding(.bottom, 100)
-                }
-                
-                // Location details panel
-                if let selectedLocation = selectedLocation {
-                    VStack {
-                        Spacer()
-                        LocationDetailPanel(location: selectedLocation) {
+                    VStack(spacing: 16) {
+                        // Route toggle
+                        Button(action: {
                             withAnimation(.easeInOut(duration: 0.2)) {
-                                self.selectedLocation = nil
+                                showingRoute.toggle()
                             }
+                        }) {
+                            Image(systemName: showingRoute ? "location.fill" : "location")
+                                .font(.title2)
+                                .foregroundColor(.white)
+                                .frame(width: 50, height: 50)
+                                .background(
+                                    Circle()
+                                        .fill(
+                                            LinearGradient(
+                                                gradient: Gradient(colors: showingRoute ? 
+                                                    [Color.blue, Color.blue.opacity(0.8)] : 
+                                                    [Color.gray, Color.gray.opacity(0.8)]
+                                                ),
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            )
+                                        )
+                                )
+                                .shadow(color: (showingRoute ? Color.blue : Color.gray).opacity(0.3), radius: 8, x: 0, y: 4)
                         }
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 30)
+                        .scaleEffect(showingRoute ? 1.0 : 0.9)
+                        .animation(.easeInOut(duration: 0.2), value: showingRoute)
+                        
+                        // Fit to route button
+                        Button(action: {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                fitToRoute()
+                            }
+                        }) {
+                            Image(systemName: "arrow.up.left.and.arrow.down.right")
+                                .font(.title2)
+                                .foregroundColor(.white)
+                                .frame(width: 50, height: 50)
+                                .background(
+                                    Circle()
+                                        .fill(
+                                            LinearGradient(
+                                                gradient: Gradient(colors: [Color.green, Color.green.opacity(0.8)]),
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            )
+                                        )
+                                )
+                                .shadow(color: Color.green.opacity(0.3), radius: 8, x: 0, y: 4)
+                        }
                     }
+                    .padding(.trailing, 20)
+                }
+                .padding(.bottom, 100)
+            }
+            
+            // Location details panel
+            if let selectedLocation = selectedLocation {
+                VStack {
+                    Spacer()
+                    LocationDetailPanel(location: selectedLocation) {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            self.selectedLocation = nil
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 30)
                 }
             }
-            .navigationTitle("Trip Map")
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(
-                leading: Button(action: {
+        }
+        .navigationTitle("Trip Map")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 }) {
                     HStack {
@@ -156,8 +156,11 @@ struct TripMapView: View {
                         Text("Done")
                     }
                     .foregroundColor(.blue)
-                },
-                trailing: HStack(spacing: 12) {
+                }
+            }
+            
+            ToolbarItem(placement: .navigationBarTrailing) {
+                HStack(spacing: 12) {
                     VStack(alignment: .trailing, spacing: 2) {
                         Text("\(locations.count)")
                             .font(.headline)
@@ -171,7 +174,7 @@ struct TripMapView: View {
                         .foregroundColor(.blue)
                         .font(.title3)
                 }
-            )
+            }
         }
     }
 
