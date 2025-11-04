@@ -35,6 +35,17 @@ final class HistoryViewModel: NSObject, ObservableObject {
             sessions = []
         }
     }
+
+    func detach() {
+        // Safely detach to avoid callbacks to a deallocated delegate
+        fetchedResultsController?.delegate = nil
+        fetchedResultsController = nil
+        isConfigured = false
+    }
+
+    deinit {
+        detach()
+    }
 }
 
 extension HistoryViewModel: NSFetchedResultsControllerDelegate {
@@ -131,6 +142,10 @@ struct HistoryView: View {
             }
         }
         .navigationViewStyle(.stack)
+        .onDisappear {
+            // Avoid FRC delegate callbacks after view disappears
+            viewModel.detach()
+        }
     }
     
     private func deleteSessions(offsets: IndexSet) {
@@ -275,7 +290,11 @@ struct SessionDetailView: View {
         } message: {
             Text("Choose a format to export this tracking session")
         }
-        .sheet(isPresented: $showingExportSheet) {
+        .sheet(isPresented: $showingExportSheet, onDismiss: {
+            // Reset export state to avoid stale references
+            exportFileURL = nil
+            showingExportSheet = false
+        }) {
             if let fileURL = exportFileURL {
                 ActivityViewController(activityItems: [fileURL])
             }
@@ -612,7 +631,11 @@ struct ModernSessionRowView: View {
         } message: {
             Text("Choose a format to export this tracking session")
         }
-        .sheet(isPresented: $showingExportSheet) {
+        .sheet(isPresented: $showingExportSheet, onDismiss: {
+            // Reset export state to avoid stale references
+            exportFileURL = nil
+            showingExportSheet = false
+        }) {
             if let fileURL = exportFileURL {
                 ActivityViewController(activityItems: [fileURL])
             }
