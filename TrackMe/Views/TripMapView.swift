@@ -6,28 +6,30 @@ import CoreData
 struct TripMapView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @ObservedObject var session: TrackingSession
-    
-    // State for the map's region and selected location
-    @State private var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
-        span: MKCoordinateSpan(latitudeDelta: 100, longitudeDelta: 100)
-    )
+
+    // Map camera state and UI selections
+    @State private var mapPosition: MapCameraPosition = .automatic
+    @State private var didSetInitialRegion = false
     @State private var selectedLocation: LocationEntry?
     @State private var showRoute = true
-    
-    // Location manager to get the user's current location for default region
-    private let locationManager = CLLocationManager()
-    
+
     // Fetch request for the session's locations, sorted by timestamp
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \LocationEntry.timestamp, ascending: true)],
-        animation: .default)
-    private var locations: FetchedResults<LocationEntry>
-    
+    @FetchRequest private var locations: FetchedResults<LocationEntry>
+
+    init(session: TrackingSession) {
+        self._session = ObservedObject(wrappedValue: session)
+        let predicate = NSPredicate(format: "session == %@", session)
+        self._locations = FetchRequest(
+            sortDescriptors: [NSSortDescriptor(keyPath: \LocationEntry.timestamp, ascending: true)],
+            predicate: predicate,
+            animation: .default
+        )
+    }
+
     var body: some View {
-        Map(coordinateRegion: $region, interactionModes: .all, showsUserLocation: true) {
+        Map(position: $mapPosition) {
             // Add annotations for each location point
-            ForEach(locations) { location in
+            ForEach(locations, id: \.objectID) { location in
                 Annotation(
                     "",
                     coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude),
@@ -53,6 +55,22 @@ struct TripMapView: View {
                     .stroke(.blue, lineWidth: 4)
             }
         }
+        .overlay {
+            if locations.isEmpty {
+                VStack(spacing: 12) {
+                    Image(systemName: "map")
+                        .font(.system(size: 48))
+                        .foregroundColor(.secondary)
+                    Text("No location data")
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    Text("This session has no recorded locations")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .padding()
+            }
+        }
         .overlay(alignment: .bottom) {
             // Show detail panel for selected location
             if let selectedLocation = selectedLocation {
@@ -73,7 +91,15 @@ struct TripMapView: View {
             MapCompass()
             MapScaleView()
         }
-        .onAppear(perform: setupView)
+        .onAppear {
+            // Refresh the session to ensure relationships are loaded in this context
+            viewContext.refresh(session, mergeChanges: true)
+            setInitialCameraPositionIfNeeded()
+        }
+        .onChange(of: locations.count) { _, _ in
+            // Recompute only the first time locations appear
+            setInitialCameraPositionIfNeeded()
+        }
         .navigationTitle("Trip Map")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -93,41 +119,21 @@ struct TripMapView: View {
             }
         }
     }
-    
-    /// Sets up the view by configuring the fetch request and initial map region.
-    private func setupView() {
-        locations.nsPredicate = NSPredicate(format: "session == %@", session)
-        setupInitialRegion()
-    }
-    
-    /// Calculates and sets the initial map region to fit the entire route.
-    private func setupInitialRegion() {
-        guard !locations.isEmpty else {
-            // If no locations, center on user's current location or a default
-            if let userLocation = locationManager.location?.coordinate {
-                region = MKCoordinateRegion(
-                    center: userLocation,
-                    span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-                )
-            }
-            // The default region is already set in the @State property
+
+    /// Calculates and sets the initial camera position to fit the entire route.
+    private func setInitialCameraPositionIfNeeded() {
+        guard !didSetInitialRegion else { return }
+
+        if locations.isEmpty {
+            // Default to a neutral world view
+            mapPosition = .automatic
+            didSetInitialRegion = true
             return
         }
-        
-        // Calculate bounding box
-        let latitudes = locations.map { $0.latitude }
-        let longitudes = locations.map { $0.longitude }
-        
-        let minLat = latitudes.min()!
-        let maxLat = latitudes.max()!
-        let minLon = longitudes.min()!
-        let maxLon = longitudes.max()!
-        
-        // Set region with padding
-        let center = CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2, longitude: (minLon + maxLon) / 2)
-        let span = MKCoordinateSpan(latitudeDelta: max(maxLat - minLat, 0.01) * 1.4, longitudeDelta: max(maxLon - minLon, 0.01) * 1.4)
-        
-        region = MKCoordinateRegion(center: center, span: span)
+
+        let region = computeRegion(for: Array(locations))
+        mapPosition = .region(region)
+        didSetInitialRegion = true
     }
     
     /// A computed property that creates an `MKPolyline` from the session's locations.
@@ -135,6 +141,32 @@ struct TripMapView: View {
         guard locations.count > 1 else { return nil }
         let coordinates = locations.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
         return MKPolyline(coordinates: coordinates, count: coordinates.count)
+    }
+
+    /// Compute a region that fits all provided locations with some padding.
+    private func computeRegion(for locs: [LocationEntry]) -> MKCoordinateRegion {
+        guard !locs.isEmpty else {
+            return MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
+                span: MKCoordinateSpan(latitudeDelta: 100, longitudeDelta: 100)
+            )
+        }
+
+        let latitudes = locs.map { $0.latitude }
+        let longitudes = locs.map { $0.longitude }
+
+        let minLat = latitudes.min() ?? 0
+        let maxLat = latitudes.max() ?? 0
+        let minLon = longitudes.min() ?? 0
+        let maxLon = longitudes.max() ?? 0
+
+        let center = CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2, longitude: (minLon + maxLon) / 2)
+        let span = MKCoordinateSpan(
+            latitudeDelta: max(maxLat - minLat, 0.01) * 1.4,
+            longitudeDelta: max(maxLon - minLon, 0.01) * 1.4
+        )
+
+        return MKCoordinateRegion(center: center, span: span)
     }
     
     /// Checks if a location is the first in the session.

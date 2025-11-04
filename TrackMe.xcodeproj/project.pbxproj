@@ -26,6 +26,7 @@
 		7C8E9F592B4A1D2000123456 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F582B4A1D2000123456 /* WatchConnectivityManager.swift */; };
 		7C8E9F5B2B4A1D3000123456 /* TrackingControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F5A2B4A1D3000123456 /* TrackingControlView.swift */; };
 		7C8E9F5D2B4A1D4000123456 /* SessionStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F5C2B4A1D4000123456 /* SessionStatusView.swift */; };
+        A1B2C3D42B4A1E0000123456 /* KalmanFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D32B4A1E0000123456 /* KalmanFilter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,7 @@
 		7C8E9F582B4A1D2000123456 /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
 		7C8E9F5A2B4A1D3000123456 /* TrackingControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingControlView.swift; sourceTree = "<group>"; };
 		7C8E9F5C2B4A1D4000123456 /* SessionStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStatusView.swift; sourceTree = "<group>"; };
+        A1B2C3D32B4A1E0000123456 /* KalmanFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KalmanFilter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -159,6 +161,7 @@
 				076726E72EB18CCF00BEDA68 /* ExportService.swift */,
 				7C8E9F3D2B4A1C1000123456 /* LocationManager.swift */,
 				7C8E9F452B4A1C5000123456 /* PhoneConnectivityManager.swift */,
+                A1B2C3D32B4A1E0000123456 /* KalmanFilter.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -353,6 +356,7 @@
 				7C8E9F442B4A1C4000123456 /* TripMapView.swift in Sources */,
 				7C8E9F462B4A1C5000123456 /* PhoneConnectivityManager.swift in Sources */,
 				076726E82EB18CCF00BEDA68 /* ExportService.swift in Sources */,
+                A1B2C3D42B4A1E0000123456 /* KalmanFilter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
