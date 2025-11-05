@@ -12,18 +12,20 @@ struct TripMapView: View {
     @State private var didSetInitialRegion = false
     @State private var selectedLocation: LocationEntry?
     @State private var showRoute = true
+    @State private var isPresentingShare = false
+    @State private var shareURL: URL?
 
     // Fetch request for the session's locations, sorted by timestamp
     @FetchRequest private var locations: FetchedResults<LocationEntry>
 
     init(session: TrackingSession) {
         self._session = ObservedObject(wrappedValue: session)
-        let predicate = NSPredicate(format: "session == %@", session)
-        self._locations = FetchRequest(
-            sortDescriptors: [NSSortDescriptor(keyPath: \LocationEntry.timestamp, ascending: true)],
-            predicate: predicate,
-            animation: .default
-        )
+        // Build an explicit fetch request with an entity to avoid runtime crashes like
+        // "executeFetchRequest:error: A fetch request must have an entity."
+        let request = NSFetchRequest<LocationEntry>(entityName: "LocationEntry")
+        request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: true)]
+        request.predicate = NSPredicate(format: "session == %@", session)
+        self._locations = FetchRequest(fetchRequest: request, animation: .default)
     }
 
     var body: some View {
@@ -111,13 +113,15 @@ struct TripMapView: View {
                     Button(action: { showRoute.toggle() }) {
                         Image(systemName: showRoute ? "eye.slash.fill" : "eye.fill")
                     }
-                    ShareLink(item: ExportService.shared.exportToCSV(session: session, locations: Array(locations)),
-                              subject: Text("TrackMe Session Data"),
-                              message: Text("Here is the data for my tracking session."),
-                              preview: SharePreview("Session Data",
-                                                    image: Image(systemName: "doc.text"),
-                                                    icon: Image(systemName: "plus")))
+                    Button(action: shareSession) {
+                        Image(systemName: "square.and.arrow.up")
+                    }
                 }
+            }
+        }
+        .sheet(isPresented: $isPresentingShare) {
+            if let url = shareURL {
+                ActivityShareSheet(activityItems: [url])
             }
         }
     }
@@ -158,6 +162,37 @@ struct TripMapView: View {
     private func isEndLocation(_ location: LocationEntry) -> Bool {
         return locations.last?.id == location.id
     }
+
+    /// Lazily generate the export on demand to avoid heavy work in the view body.
+    private func shareSession() {
+        let currentLocations = Array(locations)
+        guard !currentLocations.isEmpty else {
+            // Nothing to share
+            return
+        }
+        // Perform export off the main thread to keep UI responsive
+        DispatchQueue.global(qos: .userInitiated).async {
+            let csv = ExportService.shared.exportToCSV(session: session, locations: currentLocations)
+            let filename = ExportService.shared.generateFilename(session: session, format: .csv)
+            let fileURL = ExportService.shared.saveToTemporaryFile(content: csv, filename: filename)
+            DispatchQueue.main.async {
+                self.shareURL = fileURL
+                self.isPresentingShare = (fileURL != nil)
+            }
+        }
+    }
+}
+
+// Simple wrapper for UIActivityViewController to present shares from SwiftUI
+private struct ActivityShareSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+    let applicationActivities: [UIActivity]? = nil
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) { }
 }
 
 // MARK: - Subviews for TripMapView
