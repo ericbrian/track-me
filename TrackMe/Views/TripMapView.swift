@@ -49,10 +49,12 @@ struct TripMapView: View {
                 }
             }
             
-            // Add the route polyline if enabled
-            if showRoute, let polyline = routePolyline {
-                MapPolyline(polyline)
-                    .stroke(.blue, lineWidth: 4)
+            // Add the route polyline(s) if enabled
+            if showRoute {
+                ForEach(Array(routePolylines.enumerated()), id: \.offset) { _, poly in
+                    MapPolyline(poly)
+                        .stroke(.blue, lineWidth: 4)
+                }
             }
         }
         .overlay {
@@ -131,42 +133,20 @@ struct TripMapView: View {
             return
         }
 
-        let region = computeRegion(for: Array(locations))
+        let coords = Array(locations).map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
+        let region = MapMath.computeRegion(for: coords, minSpan: 0.01, paddingScale: 1.4)
         mapPosition = .region(region)
         didSetInitialRegion = true
     }
     
-    /// A computed property that creates an `MKPolyline` from the session's locations.
-    private var routePolyline: MKPolyline? {
-        guard locations.count > 1 else { return nil }
+    /// Computed polylines split across antimeridian if needed to avoid long wrap-around lines.
+    private var routePolylines: [MKPolyline] {
+        guard locations.count > 1 else { return [] }
         let coordinates = locations.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
-        return MKPolyline(coordinates: coordinates, count: coordinates.count)
-    }
-
-    /// Compute a region that fits all provided locations with some padding.
-    private func computeRegion(for locs: [LocationEntry]) -> MKCoordinateRegion {
-        guard !locs.isEmpty else {
-            return MKCoordinateRegion(
-                center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
-                span: MKCoordinateSpan(latitudeDelta: 100, longitudeDelta: 100)
-            )
+        let segments = MapMath.splitSegmentsAcrossAntimeridian(coordinates)
+        return segments.map { segment in
+            MKPolyline(coordinates: segment, count: segment.count)
         }
-
-        let latitudes = locs.map { $0.latitude }
-        let longitudes = locs.map { $0.longitude }
-
-        let minLat = latitudes.min() ?? 0
-        let maxLat = latitudes.max() ?? 0
-        let minLon = longitudes.min() ?? 0
-        let maxLon = longitudes.max() ?? 0
-
-        let center = CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2, longitude: (minLon + maxLon) / 2)
-        let span = MKCoordinateSpan(
-            latitudeDelta: max(maxLat - minLat, 0.01) * 1.4,
-            longitudeDelta: max(maxLon - minLon, 0.01) * 1.4
-        )
-
-        return MKCoordinateRegion(center: center, span: span)
     }
     
     /// Checks if a location is the first in the session.
