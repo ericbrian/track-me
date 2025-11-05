@@ -121,7 +121,7 @@ struct TripMapView: View {
         }
         .sheet(isPresented: $isPresentingShare) {
             if let url = shareURL {
-                ActivityShareSheet(activityItems: [url])
+                ShareSheet(activityItems: [url])
             }
         }
     }
@@ -181,18 +181,6 @@ struct TripMapView: View {
             }
         }
     }
-}
-
-// Simple wrapper for UIActivityViewController to present shares from SwiftUI
-private struct ActivityShareSheet: UIViewControllerRepresentable {
-    let activityItems: [Any]
-    let applicationActivities: [UIActivity]? = nil
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
-    }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) { }
 }
 
 // MARK: - Subviews for TripMapView

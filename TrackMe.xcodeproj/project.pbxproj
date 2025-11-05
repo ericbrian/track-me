@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		076726E82EB18CCF00BEDA68 /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076726E72EB18CCF00BEDA68 /* ExportService.swift */; };
 		0767AAAA2EB18DDC00BEDAFF /* MapMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767AAAB2EB18DDC00BEDAFF /* MapMath.swift */; };
+		0767AABE2EB18E6A00BEDAFF /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767AABD2EB18E6A00BEDAFF /* ShareSheet.swift */; };
 		7C8E9F2A2B4A1B3C00123456 /* TrackMeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F292B4A1B3C00123456 /* TrackMeApp.swift */; };
 		7C8E9F2C2B4A1B3C00123456 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F2B2B4A1B3C00123456 /* ContentView.swift */; };
 		7C8E9F2E2B4A1B3D00123456 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8E9F2D2B4A1B3D00123456 /* Assets.xcassets */; };
@@ -46,6 +47,7 @@
 		07216F482EB170870091E25F /* TrackMeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackMeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		076726E72EB18CCF00BEDA68 /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
 		0767AAAB2EB18DDC00BEDAFF /* MapMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapMath.swift; sourceTree = "<group>"; };
+		0767AABD2EB18E6A00BEDAFF /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		7C8E9F292B4A1B3C00123456 /* TrackMeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMeApp.swift; sourceTree = "<group>"; };
 		7C8E9F2B2B4A1B3C00123456 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7C8E9F2D2B4A1B3D00123456 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 				7C8E9F3F2B4A1C2000123456 /* TrackingView.swift */,
 				7C8E9F412B4A1C3000123456 /* HistoryView.swift */,
 				7C8E9F432B4A1C4000123456 /* TripMapView.swift */,
+				0767AABD2EB18E6A00BEDAFF /* ShareSheet.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -360,6 +363,7 @@
 				7C8E9F442B4A1C4000123456 /* TripMapView.swift in Sources */,
 				7C8E9F462B4A1C5000123456 /* PhoneConnectivityManager.swift in Sources */,
 				076726E82EB18CCF00BEDA68 /* ExportService.swift in Sources */,
+				0767AABE2EB18E6A00BEDAFF /* ShareSheet.swift in Sources */,
                 A1B2C3D42B4A1E0000123456 /* KalmanFilter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
