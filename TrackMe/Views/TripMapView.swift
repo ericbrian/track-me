@@ -172,12 +172,26 @@ struct TripMapView: View {
         }
         // Perform export off the main thread to keep UI responsive
         DispatchQueue.global(qos: .userInitiated).async {
-            let csv = ExportService.shared.exportToCSV(session: session, locations: currentLocations)
-            let filename = ExportService.shared.generateFilename(session: session, format: .csv)
-            let fileURL = ExportService.shared.saveToTemporaryFile(content: csv, filename: filename)
-            DispatchQueue.main.async {
-                self.shareURL = fileURL
-                self.isPresentingShare = (fileURL != nil)
+            do {
+                let csv = try ExportService.shared.exportToCSV(session: session, locations: currentLocations)
+                let filename = ExportService.shared.generateFilename(session: session, format: .csv)
+                let fileURL = try ExportService.shared.saveToTemporaryFile(content: csv, filename: filename)
+                DispatchQueue.main.async {
+                    self.shareURL = fileURL
+                    self.isPresentingShare = true
+                }
+            } catch let error as AppError {
+                DispatchQueue.main.async {
+                    Task { @MainActor in
+                        ErrorHandler.shared.handle(error)
+                    }
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    Task { @MainActor in
+                        ErrorHandler.shared.handle(.unknown(error))
+                    }
+                }
             }
         }
     }

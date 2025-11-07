@@ -174,24 +174,34 @@ struct ModernSessionRowView: View {
     private func exportSession(format: ExportFormat) {
         let exportService = ExportService.shared
         let sortedLocations = getSortedLocations()
-        let content: String
 
-        switch format {
-        case .gpx:
-            content = exportService.exportToGPX(session: session, locations: sortedLocations)
-        case .kml:
-            content = exportService.exportToKML(session: session, locations: sortedLocations)
-        case .csv:
-            content = exportService.exportToCSV(session: session, locations: sortedLocations)
-        case .geojson:
-            content = exportService.exportToGeoJSON(session: session, locations: sortedLocations)
-        }
+        do {
+            let content: String
 
-        let filename = exportService.generateFilename(session: session, format: format)
+            switch format {
+            case .gpx:
+                content = try exportService.exportToGPX(session: session, locations: sortedLocations)
+            case .kml:
+                content = try exportService.exportToKML(session: session, locations: sortedLocations)
+            case .csv:
+                content = try exportService.exportToCSV(session: session, locations: sortedLocations)
+            case .geojson:
+                content = try exportService.exportToGeoJSON(session: session, locations: sortedLocations)
+            }
 
-        if let fileURL = exportService.saveToTemporaryFile(content: content, filename: filename) {
+            let filename = exportService.generateFilename(session: session, format: format)
+            let fileURL = try exportService.saveToTemporaryFile(content: content, filename: filename)
+
             exportFileURL = fileURL
             showingExportSheet = true
+        } catch let error as AppError {
+            Task { @MainActor in
+                ErrorHandler.shared.handle(error)
+            }
+        } catch {
+            Task { @MainActor in
+                ErrorHandler.shared.handle(.unknown(error))
+            }
         }
     }
 }

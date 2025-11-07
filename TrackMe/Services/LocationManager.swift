@@ -15,12 +15,17 @@ class LocationManager: NSObject, ObservableObject {
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     private var hasSetupObservers = false
     var kalmanFilter: KalmanFilter?
-    
+
+    // Error handler
+    private let errorHandler = ErrorHandler.shared
+
     @Published var isTracking = false
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
     @Published var currentLocation: CLLocation?
     @Published var currentSession: TrackingSession?
     @Published var locationCount = 0
+
+    // Deprecated: Use errorHandler instead
     @Published var trackingStartError: String?
     @Published var trackingStopError: String?
     
@@ -72,6 +77,7 @@ class LocationManager: NSObject, ObservableObject {
         } catch {
             print("Failed to recover orphaned sessions: \(error)")
             DispatchQueue.main.async {
+                // Non-critical error - log but don't show to user
                 self.phoneConnectivity?.sendStatusUpdateToWatch()
             }
         }
@@ -119,7 +125,11 @@ class LocationManager: NSObject, ObservableObject {
     func startTracking(with narrative: String) {
         guard authorizationStatus == .authorizedAlways else {
             requestLocationPermission()
-            trackingStartError = "Location permission is not set to 'Always'. Please enable it in Settings."
+            let error = AppError.locationPermissionNotAlways
+            trackingStartError = error.failureReason // Backward compatibility
+            Task { @MainActor in
+                errorHandler.handle(error)
+            }
             phoneConnectivity?.sendStatusUpdateToWatch()
             return
         }
@@ -131,7 +141,11 @@ class LocationManager: NSObject, ObservableObject {
         fetchRequest.fetchLimit = 1
         if let activeSessions = try? context.fetch(fetchRequest), activeSessions.first != nil {
             print("An active tracking session already exists. Only one tracker allowed at a time.")
-            trackingStartError = "A tracker is already running. Please stop it before starting a new one."
+            let error = AppError.sessionAlreadyActive
+            trackingStartError = error.failureReason // Backward compatibility
+            Task { @MainActor in
+                errorHandler.handle(error)
+            }
             phoneConnectivity?.sendStatusUpdateToWatch()
             return
         }
@@ -160,7 +174,11 @@ class LocationManager: NSObject, ObservableObject {
             phoneConnectivity?.sendStatusUpdateToWatch()
         } catch {
             print("Error creating tracking session: \(error)")
-            trackingStartError = "Failed to save tracking session. Please try again."
+            let appError = AppError.sessionCreationFailed(error)
+            trackingStartError = appError.failureReason // Backward compatibility
+            Task { @MainActor in
+                errorHandler.handle(appError)
+            }
             phoneConnectivity?.sendStatusUpdateToWatch()
             return
         }
@@ -241,7 +259,11 @@ class LocationManager: NSObject, ObservableObject {
             phoneConnectivity?.sendStatusUpdateToWatch()
         } catch {
             print("Error ending tracking session: \(error)")
-            trackingStopError = "Failed to end tracking session. Please try again."
+            let appError = AppError.sessionEndFailed(error)
+            trackingStopError = appError.failureReason // Backward compatibility
+            Task { @MainActor in
+                errorHandler.handle(appError)
+            }
             phoneConnectivity?.sendStatusUpdateToWatch()
             return
         }
@@ -328,7 +350,9 @@ class LocationManager: NSObject, ObservableObject {
                 }
                 print("Location saved successfully in background")
             } catch {
-                print("Error saving location: \(error)")
+                print("⚠️ Error saving location: \(error)")
+                // Don't show error to user for individual location save failures
+                // Log for debugging but continue tracking
             }
         }
         
@@ -387,21 +411,37 @@ extension LocationManager: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("Location manager failed with error: \(error)")
-        
+        print("⚠️ Location manager failed with error: \(error)")
+
         if let clError = error as? CLError {
             switch clError.code {
             case .denied:
                 print("Location access denied")
+                Task { @MainActor in
+                    errorHandler.handle(.locationPermissionDenied)
+                }
                 if isTracking {
                     stopTracking()
                 }
             case .locationUnknown:
                 print("Location unknown, but keep trying")
+                // Don't show error - this is transient
             case .network:
                 print("Network error")
+                // Show error only if tracking is active and error persists
+                if isTracking {
+                    Task { @MainActor in
+                        errorHandler.handle(.networkUnavailable)
+                    }
+                }
             default:
                 print("Other location error: \(clError.localizedDescription)")
+                // Show generic location update error
+                if isTracking {
+                    Task { @MainActor in
+                        errorHandler.handle(.locationUpdateFailed(error))
+                    }
+                }
             }
         }
     }
