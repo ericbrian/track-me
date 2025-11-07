@@ -63,7 +63,12 @@ struct TrackMeApp: App {
             using: nil
         ) { task in
             print("TrackMeApp: Background location task triggered")
-            self.handleBackgroundLocationRefresh(task: task as! BGAppRefreshTask)
+            guard let refreshTask = task as? BGAppRefreshTask else {
+                print("TrackMeApp: ERROR - Task is not BGAppRefreshTask, aborting")
+                task.setTaskCompleted(success: false)
+                return
+            }
+            self.handleBackgroundLocationRefresh(task: refreshTask)
         }
         
         if locationRegistered {
@@ -78,7 +83,12 @@ struct TrackMeApp: App {
             using: nil
         ) { task in
             print("TrackMeApp: Background data sync task triggered")
-            self.handleBackgroundDataSync(task: task as! BGProcessingTask)
+            guard let processingTask = task as? BGProcessingTask else {
+                print("TrackMeApp: ERROR - Task is not BGProcessingTask, aborting")
+                task.setTaskCompleted(success: false)
+                return
+            }
+            self.handleBackgroundDataSync(task: processingTask)
         }
         
         if syncRegistered {

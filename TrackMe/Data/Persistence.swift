@@ -25,9 +25,14 @@ struct PersistenceController {
         do {
             try viewContext.save()
         } catch {
-            // Replace this implementation with code to handle the error appropriately.
             let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            print("⚠️ Preview data creation error: \(nsError), \(nsError.userInfo)")
+            #if DEBUG
+            // Only crash in DEBUG when running tests
+            if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil {
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+            #endif
         }
         return result
     }()
@@ -37,7 +42,9 @@ struct PersistenceController {
     init(inMemory: Bool = false) {
         container = NSPersistentContainer(name: "TrackMe")
         if inMemory {
-            container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
+            if let storeDescription = container.persistentStoreDescriptions.first {
+                storeDescription.url = URL(fileURLWithPath: "/dev/null")
+            }
         }
         
         // For in-memory stores (tests), load synchronously
@@ -62,13 +69,20 @@ struct PersistenceController {
 extension PersistenceController {
     func save() {
         let context = container.viewContext
-        
+
         if context.hasChanges {
             do {
                 try context.save()
             } catch {
                 let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                print("⚠️ Core Data save error: \(nsError), \(nsError.userInfo)")
+                // Don't crash in production - log error and continue
+                #if DEBUG
+                // Only crash in DEBUG when running tests
+                if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil {
+                    fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                }
+                #endif
             }
         }
     }

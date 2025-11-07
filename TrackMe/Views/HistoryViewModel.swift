@@ -31,6 +31,17 @@ final class HistoryViewModel: NSObject, ObservableObject {
             sessions = []
         }
     }
+
+    func detach() {
+        // Safely detach to avoid callbacks to a deallocated delegate
+        fetchedResultsController?.delegate = nil
+        fetchedResultsController = nil
+        isConfigured = false
+    }
+
+    deinit {
+        detach()
+    }
 }
 
 extension HistoryViewModel: NSFetchedResultsControllerDelegate {
