@@ -59,26 +59,31 @@ class LocationManager: NSObject, ObservableObject {
     /// Mark any orphaned active sessions as inactive on app launch
     private func recoverOrphanedSessions() {
         let context = persistenceController.container.newBackgroundContext()
-        let fetchRequest: NSFetchRequest<TrackingSession> = TrackingSession.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "isActive == YES")
-        do {
-            let orphaned = try context.fetch(fetchRequest)
-            if !orphaned.isEmpty {
-                for session in orphaned {
-                    session.isActive = false
-                    session.endDate = Date()
+
+        // Use async perform for proper Core Data threading
+        context.perform {
+            let fetchRequest: NSFetchRequest<TrackingSession> = TrackingSession.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "isActive == YES")
+
+            do {
+                let orphaned = try context.fetch(fetchRequest)
+                if !orphaned.isEmpty {
+                    for session in orphaned {
+                        session.isActive = false
+                        session.endDate = Date()
+                    }
+                    try context.save()
+                    print("Recovered \(orphaned.count) orphaned active sessions on launch.")
+                    DispatchQueue.main.async {
+                        self.phoneConnectivity?.sendStatusUpdateToWatch()
+                    }
                 }
-                try context.save()
-                print("Recovered orphaned active sessions on launch.")
+            } catch {
+                print("⚠️ Failed to recover orphaned sessions: \(error)")
                 DispatchQueue.main.async {
+                    // Non-critical error - log but don't show to user
                     self.phoneConnectivity?.sendStatusUpdateToWatch()
                 }
-            }
-        } catch {
-            print("Failed to recover orphaned sessions: \(error)")
-            DispatchQueue.main.async {
-                // Non-critical error - log but don't show to user
-                self.phoneConnectivity?.sendStatusUpdateToWatch()
             }
         }
     }
@@ -318,19 +323,21 @@ class LocationManager: NSObject, ObservableObject {
         let taskId = UIApplication.shared.beginBackgroundTask {
             print("Background task for location save expired")
         }
-        
+
         // Use background context for thread safety
         let context = persistenceController.container.newBackgroundContext()
-        context.performAndWait {
+
+        // Use async perform instead of performAndWait to avoid blocking the location update thread
+        context.perform {
             // Fetch the session in this context
             let sessionID = session.objectID
             guard let sessionInContext = try? context.existingObject(with: sessionID) as? TrackingSession else {
                 UIApplication.shared.endBackgroundTask(taskId)
                 return
             }
-            
+
             let locationEntry = LocationEntry(context: context)
-        
+
             locationEntry.id = UUID()
             locationEntry.latitude = location.coordinate.latitude
             locationEntry.longitude = location.coordinate.longitude
@@ -340,9 +347,10 @@ class LocationManager: NSObject, ObservableObject {
             locationEntry.speed = location.speed >= 0 ? location.speed : 0
             locationEntry.course = location.course >= 0 ? location.course : 0
             locationEntry.session = sessionInContext
-            
+
             do {
                 try context.save()
+                // Update location count on main thread
                 DispatchQueue.main.async {
                     self.locationCount += 1
                     // Notify Watch about location count change
@@ -354,9 +362,10 @@ class LocationManager: NSObject, ObservableObject {
                 // Don't show error to user for individual location save failures
                 // Log for debugging but continue tracking
             }
+
+            // End background task after save completes
+            UIApplication.shared.endBackgroundTask(taskId)
         }
-        
-        UIApplication.shared.endBackgroundTask(taskId)
     }
 }
 

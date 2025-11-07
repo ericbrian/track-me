@@ -102,17 +102,42 @@ struct HistoryView: View {
     }
 
     private func deleteSessions(offsets: IndexSet) {
-        // Disable implicit animation from @FetchRequest
-        withAnimation(.default) {
-            offsets.map { viewModel.sessions[$0] }.forEach(viewContext.delete)
-        }
+        // Get object IDs for the sessions to delete
+        let sessionsToDelete = offsets.map { viewModel.sessions[$0] }
+        let objectIDs = sessionsToDelete.map { $0.objectID }
 
-        do {
-            try viewContext.save()
-            // Refresh the list
-            viewModel.attach(context: viewContext)
-        } catch {
-            print("Error deleting sessions: \(error.localizedDescription)")
+        // Perform deletion on background context for better performance
+        let backgroundContext = PersistenceController.shared.container.newBackgroundContext()
+
+        backgroundContext.perform {
+            do {
+                // Delete sessions in background context
+                for objectID in objectIDs {
+                    if let sessionToDelete = try? backgroundContext.existingObject(with: objectID) {
+                        backgroundContext.delete(sessionToDelete)
+                    }
+                }
+
+                // Save the background context
+                try backgroundContext.save()
+
+                print("Successfully deleted \(objectIDs.count) session(s)")
+
+                // Refresh the UI on main thread
+                DispatchQueue.main.async {
+                    withAnimation(.default) {
+                        // The FetchedResultsController will automatically update
+                        // No need to manually refresh
+                    }
+                }
+            } catch {
+                print("⚠️ Error deleting sessions: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    Task { @MainActor in
+                        ErrorHandler.shared.handle(.dataDeleteFailed(error))
+                    }
+                }
+            }
         }
     }
 }
