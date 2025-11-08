@@ -13,8 +13,8 @@ struct ModernSessionRowView: View {
     }
 
     private func getSortedLocations() -> [LocationEntry] {
-        let locations = session.locations?.allObjects as? [LocationEntry] ?? []
-        return locations.sorted { ($0.timestamp ?? Date.distantPast) < ($1.timestamp ?? Date.distantPast) }
+        // Use Core Data fetch request with sort descriptors for efficient database-level sorting
+        return session.fetchSortedLocations()
     }
 
     private var sessionDuration: String? {

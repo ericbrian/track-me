@@ -8,6 +8,25 @@
 
 /* Begin PBXBuildFile section */
 		076726E82EB18CCF00BEDA68 /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076726E72EB18CCF00BEDA68 /* ExportService.swift */; };
+		982CF5E182E890CD78FE6240 /* EmptyHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B7A2AB053A94AC1BB0DC04C /* EmptyHistoryView.swift */; };
+		7858E9EE7FDA1C36EB65E87C /* ModernSessionRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4619B0135A9EC7F9501CA4 /* ModernSessionRowView.swift */; };
+		B664BB359DF33549BE45C758 /* ErrorHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E8F9447653B016BA5AF298 /* ErrorHandling.swift */; };
+		C9132393BB0BF265F32414FF /* BackgroundTrackingInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE143871B747DC0D17E297B2 /* BackgroundTrackingInfoView.swift */; };
+		74A7FE5BA78E1F2D60D25B94 /* CurrentLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B53DEEA33CA8EC574A4C05 /* CurrentLocationView.swift */; };
+		FB665B47B7749B4C88B25BBB /* ErrorAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBF1DD3C6406920EEE29E14 /* ErrorAlertView.swift */; };
+		3B1115DDFAE5CB4AEB1BCE95 /* HistoryComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5F203F22A0881250AF3116 /* HistoryComponents.swift */; };
+		97817187B58561E3540ACC24 /* NarrativeInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08FDDC6A164BD61F0DE7125 /* NarrativeInputView.swift */; };
+		861E38E19EA5E9EA97AC7C4A /* PermissionBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E914F2CD5892FA0AA7B8EB94 /* PermissionBanner.swift */; };
+		0FD7628EC1B5368AAA654795 /* PermissionStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABE5C9782CC8CACA39E735 /* PermissionStatusView.swift */; };
+		1D40674C463D3B7AB6F60652 /* RecentLocationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FAD7BA446F0F7CD594BB760 /* RecentLocationsView.swift */; };
+		FE39A2A87C27BE4E92C56784 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBD46E4EC1B24C4315ACA6F /* SessionDetailView.swift */; };
+		708EDB67C8B6485242B14447 /* SessionInfoCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34ED702B2F1A9F553D8B4276 /* SessionInfoCard.swift */; };
+		1FA6DF0169A7A84762A0757F /* SessionStatisticsCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = D59CAF947C50CCD6300C887F /* SessionStatisticsCard.swift */; };
+		CF3744EC5558C9247CE53B1D /* SessionStatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F298DA005ACCA2A6C3D1CA30 /* SessionStatisticsView.swift */; };
+		37271912A8AB9EAD6947E6CF /* TrackingComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2CDE3B6068120221FCE30F5 /* TrackingComponents.swift */; };
+		1F00239F337DDF5FB1F2E7CE /* TrackingControlButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A1AF1DF82AF7653074BC8C /* TrackingControlButton.swift */; };
+		93D28559EC42E856F22AE215 /* TrackingStatusIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE3261C3EC4921318B1EBC6 /* TrackingStatusIndicator.swift */; };
+		8DFDAE7C5530A6C44266E0C1 /* TrackingSession+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F53884B837EE5BC2D70A17B /* TrackingSession+Helpers.swift */; };
 		0767AAAA2EB18DDC00BEDAFF /* MapMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767AAAB2EB18DDC00BEDAFF /* MapMath.swift */; };
 		0767AABE2EB18E6A00BEDAFF /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767AABD2EB18E6A00BEDAFF /* ShareSheet.swift */; };
 		7C8E9F2A2B4A1B3C00123456 /* TrackMeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F292B4A1B3C00123456 /* TrackMeApp.swift */; };
@@ -46,6 +65,25 @@
 		070366E62EB14C8600C2E1F4 /* TrackMe Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TrackMe Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		07216F482EB170870091E25F /* TrackMeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackMeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		076726E72EB18CCF00BEDA68 /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
+		36E8F9447653B016BA5AF298 /* ErrorHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandling.swift; sourceTree = "<group>"; };
+		6B7A2AB053A94AC1BB0DC04C /* EmptyHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyHistoryView.swift; sourceTree = "<group>"; };
+		BC4619B0135A9EC7F9501CA4 /* ModernSessionRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernSessionRowView.swift; sourceTree = "<group>"; };
+		EE143871B747DC0D17E297B2 /* BackgroundTrackingInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTrackingInfoView.swift; sourceTree = "<group>"; };
+		31B53DEEA33CA8EC574A4C05 /* CurrentLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentLocationView.swift; sourceTree = "<group>"; };
+		BEBF1DD3C6406920EEE29E14 /* ErrorAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlertView.swift; sourceTree = "<group>"; };
+		CA5F203F22A0881250AF3116 /* HistoryComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryComponents.swift; sourceTree = "<group>"; };
+		F08FDDC6A164BD61F0DE7125 /* NarrativeInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NarrativeInputView.swift; sourceTree = "<group>"; };
+		E914F2CD5892FA0AA7B8EB94 /* PermissionBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionBanner.swift; sourceTree = "<group>"; };
+		08ABE5C9782CC8CACA39E735 /* PermissionStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionStatusView.swift; sourceTree = "<group>"; };
+		9FAD7BA446F0F7CD594BB760 /* RecentLocationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentLocationsView.swift; sourceTree = "<group>"; };
+		CDBD46E4EC1B24C4315ACA6F /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
+		34ED702B2F1A9F553D8B4276 /* SessionInfoCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionInfoCard.swift; sourceTree = "<group>"; };
+		D59CAF947C50CCD6300C887F /* SessionStatisticsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStatisticsCard.swift; sourceTree = "<group>"; };
+		F298DA005ACCA2A6C3D1CA30 /* SessionStatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStatisticsView.swift; sourceTree = "<group>"; };
+		F2CDE3B6068120221FCE30F5 /* TrackingComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingComponents.swift; sourceTree = "<group>"; };
+		D4A1AF1DF82AF7653074BC8C /* TrackingControlButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingControlButton.swift; sourceTree = "<group>"; };
+		3FE3261C3EC4921318B1EBC6 /* TrackingStatusIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingStatusIndicator.swift; sourceTree = "<group>"; };
+		7F53884B837EE5BC2D70A17B /* TrackingSession+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackingSession+Helpers.swift"; sourceTree = "<group>"; };
 		0767AAAB2EB18DDC00BEDAFF /* MapMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapMath.swift; sourceTree = "<group>"; };
 		0767AABD2EB18E6A00BEDAFF /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		7C8E9F292B4A1B3C00123456 /* TrackMeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMeApp.swift; sourceTree = "<group>"; };
@@ -144,6 +182,7 @@
 			isa = PBXGroup;
 			children = (
 				7C8E9F322B4A1B3D00123456 /* Persistence.swift */,
+				7F53884B837EE5BC2D70A17B /* TrackingSession+Helpers.swift */,
 				7C8E9F342B4A1B3D00123456 /* TrackMe.xcdatamodeld */,
 			);
 			path = Data;
@@ -156,13 +195,39 @@
 				7C8E9F412B4A1C3000123456 /* HistoryView.swift */,
 				7C8E9F432B4A1C4000123456 /* TripMapView.swift */,
 				0767AABD2EB18E6A00BEDAFF /* ShareSheet.swift */,
+				DB3AAA9558569F114C9D880F /* Components */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		DB3AAA9558569F114C9D880F /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				6B7A2AB053A94AC1BB0DC04C /* EmptyHistoryView.swift */,
+				BC4619B0135A9EC7F9501CA4 /* ModernSessionRowView.swift */,
+				EE143871B747DC0D17E297B2 /* BackgroundTrackingInfoView.swift */,
+				31B53DEEA33CA8EC574A4C05 /* CurrentLocationView.swift */,
+				BEBF1DD3C6406920EEE29E14 /* ErrorAlertView.swift */,
+				CA5F203F22A0881250AF3116 /* HistoryComponents.swift */,
+				F08FDDC6A164BD61F0DE7125 /* NarrativeInputView.swift */,
+				E914F2CD5892FA0AA7B8EB94 /* PermissionBanner.swift */,
+				08ABE5C9782CC8CACA39E735 /* PermissionStatusView.swift */,
+				9FAD7BA446F0F7CD594BB760 /* RecentLocationsView.swift */,
+				CDBD46E4EC1B24C4315ACA6F /* SessionDetailView.swift */,
+				34ED702B2F1A9F553D8B4276 /* SessionInfoCard.swift */,
+				D59CAF947C50CCD6300C887F /* SessionStatisticsCard.swift */,
+				F298DA005ACCA2A6C3D1CA30 /* SessionStatisticsView.swift */,
+				F2CDE3B6068120221FCE30F5 /* TrackingComponents.swift */,
+				D4A1AF1DF82AF7653074BC8C /* TrackingControlButton.swift */,
+				3FE3261C3EC4921318B1EBC6 /* TrackingStatusIndicator.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 		7C8E9F3C2B4A1C0000123456 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				36E8F9447653B016BA5AF298 /* ErrorHandling.swift */,
 				076726E72EB18CCF00BEDA68 /* ExportService.swift */,
 				7C8E9F3D2B4A1C1000123456 /* LocationManager.swift */,
 				0767AAAB2EB18DDC00BEDAFF /* MapMath.swift */,
@@ -353,9 +418,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				7C8E9F332B4A1B3D00123456 /* Persistence.swift in Sources */,
+				8DFDAE7C5530A6C44266E0C1 /* TrackingSession+Helpers.swift in Sources */,
 				7C8E9F2C2B4A1B3C00123456 /* ContentView.swift in Sources */,
 				7C8E9F2A2B4A1B3C00123456 /* TrackMeApp.swift in Sources */,
 				7C8E9F362B4A1B3D00123456 /* TrackMe.xcdatamodeld in Sources */,
+				B664BB359DF33549BE45C758 /* ErrorHandling.swift in Sources */,
 				7C8E9F3E2B4A1C1000123456 /* LocationManager.swift in Sources */,
 				0767AAAA2EB18DDC00BEDAFF /* MapMath.swift in Sources */,
 				7C8E9F402B4A1C2000123456 /* TrackingView.swift in Sources */,
@@ -364,6 +431,23 @@
 				7C8E9F462B4A1C5000123456 /* PhoneConnectivityManager.swift in Sources */,
 				076726E82EB18CCF00BEDA68 /* ExportService.swift in Sources */,
 				0767AABE2EB18E6A00BEDAFF /* ShareSheet.swift in Sources */,
+				982CF5E182E890CD78FE6240 /* EmptyHistoryView.swift in Sources */,
+				7858E9EE7FDA1C36EB65E87C /* ModernSessionRowView.swift in Sources */,
+				C9132393BB0BF265F32414FF /* BackgroundTrackingInfoView.swift in Sources */,
+				74A7FE5BA78E1F2D60D25B94 /* CurrentLocationView.swift in Sources */,
+				FB665B47B7749B4C88B25BBB /* ErrorAlertView.swift in Sources */,
+				3B1115DDFAE5CB4AEB1BCE95 /* HistoryComponents.swift in Sources */,
+				97817187B58561E3540ACC24 /* NarrativeInputView.swift in Sources */,
+				861E38E19EA5E9EA97AC7C4A /* PermissionBanner.swift in Sources */,
+				0FD7628EC1B5368AAA654795 /* PermissionStatusView.swift in Sources */,
+				1D40674C463D3B7AB6F60652 /* RecentLocationsView.swift in Sources */,
+				FE39A2A87C27BE4E92C56784 /* SessionDetailView.swift in Sources */,
+				708EDB67C8B6485242B14447 /* SessionInfoCard.swift in Sources */,
+				1FA6DF0169A7A84762A0757F /* SessionStatisticsCard.swift in Sources */,
+				CF3744EC5558C9247CE53B1D /* SessionStatisticsView.swift in Sources */,
+				37271912A8AB9EAD6947E6CF /* TrackingComponents.swift in Sources */,
+				1F00239F337DDF5FB1F2E7CE /* TrackingControlButton.swift in Sources */,
+				93D28559EC42E856F22AE215 /* TrackingStatusIndicator.swift in Sources */,
                 A1B2C3D42B4A1E0000123456 /* KalmanFilter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

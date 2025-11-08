@@ -39,41 +39,6 @@
   Recommendation: Add configurable accuracy thresholds and anomaly detection.
 
   ---
-  3. Performance & Best Practices
-
-  Issues
-
-
-  3.2 Inefficient Sorting
-
-  Location: HistoryView.swift:184
-
-  let sorted = locations.sorted {
-      ($0.timestamp ?? Date.distantPast) < ($1.timestamp ?? Date.distantPast)
-  }
-
-  Problem: Repeatedly sorting potentially thousands of locations on the main thread.
-
-  Recommendation: Use Core Data fetch request with sort descriptors instead.
-
-  3.3 Memory Management
-
-  Location: TripMapView.swift:174-183
-
-  Positive: Export performed off main thread ✅
-  DispatchQueue.global(qos: .userInitiated).async {
-      let csv = ExportService.shared.exportToCSV(...)
-  }
-
-  3.4 Potential Memory Leak
-
-  Location: LocationManager.swift:199-214
-
-  Problem: Adding observers without strong reference management could cause retain cycles.
-
-  Recommendation: Already has proper cleanup in deinit - Good! ✅
-
-  ---
   4. Testing
 
   Current State

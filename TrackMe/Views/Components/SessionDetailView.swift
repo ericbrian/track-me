@@ -20,8 +20,8 @@ struct SessionDetailView: View {
         if let cached = cachedSortedLocations {
             return cached
         }
-        let sorted = locations.sorted { ($0.timestamp ?? Date.distantPast) < ($1.timestamp ?? Date.distantPast) }
-        return sorted
+        // Use Core Data fetch request with sort descriptors for efficient database-level sorting
+        return session.fetchSortedLocations()
     }
 
     private var sessionDuration: String {
@@ -63,7 +63,8 @@ struct SessionDetailView: View {
         }
         .onAppear {
             viewContext.refresh(session, mergeChanges: true)
-            cachedSortedLocations = locations.sorted { ($0.timestamp ?? Date.distantPast) < ($1.timestamp ?? Date.distantPast) }
+            // Use Core Data fetch request with sort descriptors for efficient database-level sorting
+            cachedSortedLocations = session.fetchSortedLocations(in: viewContext)
             print("SessionDetailView: Loaded session '\(session.narrative ?? "Unnamed")' with \(locations.count) locations")
         }
         .navigationTitle("Session Details")
