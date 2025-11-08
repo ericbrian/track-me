@@ -145,13 +145,39 @@ class ExportService {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd_HHmmss"
         let dateString = dateFormatter.string(from: session.startDate ?? Date())
-        
-        let narrative = session.narrative?
-            .replacingOccurrences(of: " ", with: "_")
-            .replacingOccurrences(of: "/", with: "-")
-            .prefix(30) ?? "session"
-        
+
+        let narrative = sanitizeFilename(session.narrative ?? "session")
+            .prefix(30)
+
         return "TrackMe_\(narrative)_\(dateString).\(format.fileExtension)"
+    }
+
+    /// Sanitize a string to be safe for use in filenames
+    /// Removes or replaces characters that are invalid on common filesystems (Windows, macOS, Linux)
+    /// - Parameter input: The string to sanitize
+    /// - Returns: A filesystem-safe string with invalid characters replaced by hyphens
+    private func sanitizeFilename(_ input: String) -> String {
+        // Define invalid characters for filenames across common filesystems:
+        // \ / : * ? " < > | (Windows)
+        // / (macOS/Linux)
+        // Additionally replace control characters and whitespace with safe alternatives
+        let invalidChars = CharacterSet(charactersIn: "\\/:*?\"<>|")
+            .union(.controlCharacters)
+            .union(.illegalCharacters)
+
+        // Replace spaces with underscores for readability
+        var sanitized = input.replacingOccurrences(of: " ", with: "_")
+
+        // Replace invalid characters with hyphens
+        sanitized = sanitized.components(separatedBy: invalidChars)
+            .filter { !$0.isEmpty }
+            .joined(separator: "-")
+
+        // Remove leading/trailing periods and hyphens (problematic on some systems)
+        sanitized = sanitized.trimmingCharacters(in: CharacterSet(charactersIn: ".-"))
+
+        // Ensure the result is not empty
+        return sanitized.isEmpty ? "unnamed" : sanitized
     }
     
     /// Save export data to a temporary file and return the URL

@@ -14,22 +14,6 @@
 
   Issues Found
 
-  2.2 No Input Validation
-
-  Location: ExportService.swift:131-136 (filename generation)
-
-  let narrative = session.narrative?
-      .replacingOccurrences(of: " ", with: "_")
-      .replacingOccurrences(of: "/", with: "-")
-
-  Problem: Limited sanitization of user input for filenames.
-
-  Recommendation: Add comprehensive filename sanitization:
-  func sanitizeFilename(_ input: String) -> String {
-      let invalidChars = CharacterSet(charactersIn: "\\/:*?\"<>|")
-      return input.components(separatedBy: invalidChars).joined(separator: "-")
-  }
-
   2.3 No Data Validation
 
   Location: LocationManager.swift:286-336
