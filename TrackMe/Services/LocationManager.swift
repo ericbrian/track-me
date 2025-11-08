@@ -4,6 +4,80 @@ import CoreData
 import UIKit
 import BackgroundTasks
 
+// MARK: - Location Validation Configuration
+
+/// Configuration for location data validation and filtering
+struct LocationValidationConfig {
+    /// Maximum acceptable horizontal accuracy in meters
+    /// Locations with accuracy worse than this will be filtered out
+    let maxHorizontalAccuracy: Double
+
+    /// Maximum acceptable speed in meters per second
+    /// Speeds above this are considered anomalous (e.g., 250 km/h = ~69 m/s)
+    let maxReasonableSpeed: Double
+
+    /// Maximum acceptable distance jump in meters between consecutive points
+    /// Larger jumps may indicate GPS errors or teleportation
+    let maxDistanceJump: Double
+
+    /// Minimum time interval in seconds between saved locations
+    /// Prevents saving too many points too quickly
+    let minTimeBetweenUpdates: TimeInterval
+
+    /// Minimum distance in meters that must be traveled before saving a new point
+    /// This is the primary filter for reducing dataset size on long trips
+    /// Nil means distance filtering is disabled (time-based only)
+    let minDistanceBetweenPoints: Double?
+
+    /// Enable adaptive sampling based on speed
+    /// When true, saves more points when stationary/slow, fewer when moving fast
+    let adaptiveSampling: Bool
+
+    /// Default configuration - optimized for long trips with reasonable data size
+    /// 350km trip: ~700-1,750 points (depending on route complexity)
+    static let `default` = LocationValidationConfig(
+        maxHorizontalAccuracy: 50.0,       // 50m - good accuracy
+        maxReasonableSpeed: 69.0,          // ~250 km/h - very fast but possible
+        maxDistanceJump: 1000.0,           // 1km - large but possible in vehicles
+        minTimeBetweenUpdates: 5.0,        // 5 seconds between points (reduced from 1s)
+        minDistanceBetweenPoints: 200.0,   // Save every 200m - key for long trips!
+        adaptiveSampling: true             // Use adaptive sampling
+    )
+
+    /// High-precision configuration for walking, hiking, or detailed tracking
+    /// 10km walk: ~5,000-10,000 points (very detailed)
+    static let highPrecision = LocationValidationConfig(
+        maxHorizontalAccuracy: 20.0,       // 20m - high accuracy
+        maxReasonableSpeed: 30.0,          // ~108 km/h - fast car speed
+        maxDistanceJump: 500.0,            // 500m - moderate jump
+        minTimeBetweenUpdates: 2.0,        // 2 seconds between points
+        minDistanceBetweenPoints: 10.0,    // Save every 10m - very detailed
+        adaptiveSampling: false            // Disable adaptive (want all detail)
+    )
+
+    /// Efficient configuration for very long trips (road trips, flights)
+    /// 350km trip: ~350-700 points (very efficient)
+    static let efficient = LocationValidationConfig(
+        maxHorizontalAccuracy: 65.0,       // 65m - moderate accuracy
+        maxReasonableSpeed: 150.0,         // ~540 km/h - airplane speed
+        maxDistanceJump: 5000.0,           // 5km - very large jump
+        minTimeBetweenUpdates: 10.0,       // 10 seconds between points
+        minDistanceBetweenPoints: 500.0,   // Save every 500m - very efficient!
+        adaptiveSampling: true             // Use adaptive sampling
+    )
+
+    /// Legacy permissive configuration (kept for compatibility)
+    /// Not recommended for trips - will generate huge datasets
+    static let permissive = LocationValidationConfig(
+        maxHorizontalAccuracy: 100.0,      // 100m - original threshold
+        maxReasonableSpeed: 150.0,         // ~540 km/h - airplane speed
+        maxDistanceJump: 5000.0,           // 5km - very large jump
+        minTimeBetweenUpdates: 1.0,        // 1 second between points
+        minDistanceBetweenPoints: nil,     // No distance filtering
+        adaptiveSampling: false            // No adaptive sampling
+    )
+}
+
 class LocationManager: NSObject, ObservableObject {
     private let deniedAlwaysKey = "TrackMeDeniedAlwaysCount"
     @Published var showSettingsSuggestion = false
@@ -18,6 +92,11 @@ class LocationManager: NSObject, ObservableObject {
 
     // Error handler
     private let errorHandler = ErrorHandler.shared
+
+    // Location validation
+    private let validationConfig: LocationValidationConfig = .default
+    private var lastSavedLocation: CLLocation?
+    private var lastSaveTime: Date?
 
     @Published var isTracking = false
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
@@ -174,6 +253,9 @@ class LocationManager: NSObject, ObservableObject {
             currentSession = session
             isTracking = true
             locationCount = 0
+            // Reset validation tracking for new session
+            lastSavedLocation = nil
+            lastSaveTime = nil
             // Notify Watch about tracking state change
             NotificationCenter.default.post(name: NSNotification.Name("TrackingStateChanged"), object: nil)
             phoneConnectivity?.sendStatusUpdateToWatch()
@@ -257,6 +339,9 @@ class LocationManager: NSObject, ObservableObject {
             currentSession = nil
             isTracking = false
             kalmanFilter = nil // Reset Kalman filter
+            // Reset validation tracking
+            lastSavedLocation = nil
+            lastSaveTime = nil
             // Notify Watch about tracking state change
             NotificationCenter.default.post(name: NSNotification.Name("TrackingStateChanged"), object: nil)
             // Notify app to refresh history
@@ -309,13 +394,83 @@ class LocationManager: NSObject, ObservableObject {
             locationManager.startUpdatingLocation()
         }
     }
-    
+
+    // MARK: - Location Validation
+
+    /// Validates a location update against configured thresholds and anomaly detection
+    /// - Parameter location: The location to validate
+    /// - Returns: ValidationResult indicating whether the location is valid and why
+    private func validateLocation(_ location: CLLocation) -> LocationValidationResult {
+        // 1. Check horizontal accuracy
+        if location.horizontalAccuracy < 0 {
+            return .rejected(reason: "Invalid accuracy (negative)")
+        }
+
+        if location.horizontalAccuracy > validationConfig.maxHorizontalAccuracy {
+            return .rejected(reason: "Poor accuracy: \(String(format: "%.1f", location.horizontalAccuracy))m (threshold: \(validationConfig.maxHorizontalAccuracy)m)")
+        }
+
+        // 2. Check time interval since last save
+        if let lastTime = lastSaveTime {
+            let timeSinceLastSave = location.timestamp.timeIntervalSince(lastTime)
+            if timeSinceLastSave < validationConfig.minTimeBetweenUpdates {
+                return .rejected(reason: "Too frequent: \(String(format: "%.1f", timeSinceLastSave))s since last save")
+            }
+        }
+
+        // 3. Anomaly detection: Check for impossible speeds and distance jumps
+        if let lastLocation = lastSavedLocation {
+            let distance = location.distance(from: lastLocation)
+            let timeInterval = location.timestamp.timeIntervalSince(lastLocation.timestamp)
+
+            // Avoid division by zero
+            if timeInterval > 0 {
+                let speed = distance / timeInterval
+
+                // Check for impossible speed
+                if speed > validationConfig.maxReasonableSpeed {
+                    return .rejected(reason: "Impossible speed: \(String(format: "%.1f", speed * 3.6)) km/h (threshold: \(String(format: "%.1f", validationConfig.maxReasonableSpeed * 3.6)) km/h)")
+                }
+
+                // Check for unreasonable distance jump
+                if distance > validationConfig.maxDistanceJump {
+                    return .rejected(reason: "Large distance jump: \(String(format: "%.0f", distance))m (threshold: \(String(format: "%.0f", validationConfig.maxDistanceJump))m)")
+                }
+            }
+        }
+
+        return .accepted
+    }
+
+    /// Result of location validation
+    private enum LocationValidationResult {
+        case accepted
+        case rejected(reason: String)
+
+        var isValid: Bool {
+            if case .accepted = self {
+                return true
+            }
+            return false
+        }
+
+        var rejectionReason: String? {
+            if case .rejected(let reason) = self {
+                return reason
+            }
+            return nil
+        }
+    }
+
     private func saveLocation(_ location: CLLocation) {
         guard let session = currentSession else { return }
-        
-        // Filter out inaccurate locations
-        guard location.horizontalAccuracy > 0 && location.horizontalAccuracy < 100 else {
-            print("Location filtered out due to poor accuracy: \(location.horizontalAccuracy)m")
+
+        // Validate location with comprehensive checks
+        let validationResult = validateLocation(location)
+        guard validationResult.isValid else {
+            if let reason = validationResult.rejectionReason {
+                print("⚠️ Location filtered out: \(reason)")
+            }
             return
         }
         
@@ -350,9 +505,12 @@ class LocationManager: NSObject, ObservableObject {
 
             do {
                 try context.save()
-                // Update location count on main thread
+                // Update location count and tracking info on main thread
                 DispatchQueue.main.async {
                     self.locationCount += 1
+                    // Update last saved location for anomaly detection
+                    self.lastSavedLocation = location
+                    self.lastSaveTime = location.timestamp
                     // Notify Watch about location count change
                     NotificationCenter.default.post(name: NSNotification.Name("LocationCountChanged"), object: nil)
                 }
