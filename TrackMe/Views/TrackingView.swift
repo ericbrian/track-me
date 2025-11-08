@@ -9,6 +9,7 @@ struct TrackingView: View {
     @State private var showTrackingErrorAlert = false
     @State private var showSettingsAlert = false
     @State private var showTrackingStopErrorAlert = false
+    @State private var showTrackingModeSettings = false
 
     var body: some View {
         NavigationView {
@@ -72,6 +73,16 @@ struct TrackingView: View {
             )
             .navigationTitle("GPS Tracker")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showTrackingModeSettings = true
+                    } label: {
+                        Image(systemName: "gearshape")
+                            .foregroundColor(.primary)
+                    }
+                }
+            }
             .sheet(isPresented: $showingNarrativeInput) {
                 NarrativeInputView(narrative: $narrative) {
                     locationManager.startTracking(with: narrative)
@@ -85,6 +96,9 @@ struct TrackingView: View {
                         }
                     }
                 }
+            }
+            .sheet(isPresented: $showTrackingModeSettings) {
+                TrackingModeSettingsView()
             }
             .alert(isPresented: $showTrackingErrorAlert) {
                 Alert(

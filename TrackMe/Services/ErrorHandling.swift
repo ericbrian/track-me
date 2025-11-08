@@ -244,12 +244,12 @@ extension AppError: LocalizedError {
 /// Centralized error handling service
 @MainActor
 class ErrorHandler: ObservableObject {
-    static let shared = ErrorHandler()
+    nonisolated(unsafe) static let shared = ErrorHandler()
 
     @Published var currentError: AppError?
     @Published var showErrorAlert = false
 
-    private init() {}
+    nonisolated private init() {}
 
     /// Handle an error and prepare it for display
     func handle(_ error: AppError) {

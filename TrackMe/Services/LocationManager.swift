@@ -90,11 +90,15 @@ class LocationManager: NSObject, ObservableObject {
     private var hasSetupObservers = false
     var kalmanFilter: KalmanFilter?
 
-    // Error handler
-    private let errorHandler = ErrorHandler.shared
+    // Error handler - computed property to avoid main actor isolation warning
+    private var errorHandler: ErrorHandler {
+        ErrorHandler.shared
+    }
 
-    // Location validation
-    private let validationConfig: LocationValidationConfig = .efficient
+    // Location validation - uses user's selected tracking mode
+    private var validationConfig: LocationValidationConfig {
+        UserDefaults.standard.selectedTrackingMode.validationConfig
+    }
     private var lastSavedLocation: CLLocation?
     private var lastSaveTime: Date?
 

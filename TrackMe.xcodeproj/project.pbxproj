@@ -27,6 +27,8 @@
 		1F00239F337DDF5FB1F2E7CE /* TrackingControlButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A1AF1DF82AF7653074BC8C /* TrackingControlButton.swift */; };
 		93D28559EC42E856F22AE215 /* TrackingStatusIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE3261C3EC4921318B1EBC6 /* TrackingStatusIndicator.swift */; };
 		8DFDAE7C5530A6C44266E0C1 /* TrackingSession+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F53884B837EE5BC2D70A17B /* TrackingSession+Helpers.swift */; };
+		2B4D66234587161685C16D6B /* TrackingMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74588DD5803D317063AE2660 /* TrackingMode.swift */; };
+		905EBE97720ED330D8400170 /* TrackingModeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F8D6328889461EF061FA85 /* TrackingModeSettingsView.swift */; };
 		0767AAAA2EB18DDC00BEDAFF /* MapMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767AAAB2EB18DDC00BEDAFF /* MapMath.swift */; };
 		0767AABE2EB18E6A00BEDAFF /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767AABD2EB18E6A00BEDAFF /* ShareSheet.swift */; };
 		7C8E9F2A2B4A1B3C00123456 /* TrackMeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F292B4A1B3C00123456 /* TrackMeApp.swift */; };
@@ -84,6 +86,8 @@
 		D4A1AF1DF82AF7653074BC8C /* TrackingControlButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingControlButton.swift; sourceTree = "<group>"; };
 		3FE3261C3EC4921318B1EBC6 /* TrackingStatusIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingStatusIndicator.swift; sourceTree = "<group>"; };
 		7F53884B837EE5BC2D70A17B /* TrackingSession+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackingSession+Helpers.swift"; sourceTree = "<group>"; };
+		74588DD5803D317063AE2660 /* TrackingMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMode.swift; sourceTree = "<group>"; };
+		64F8D6328889461EF061FA85 /* TrackingModeSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingModeSettingsView.swift; sourceTree = "<group>"; };
 		0767AAAB2EB18DDC00BEDAFF /* MapMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapMath.swift; sourceTree = "<group>"; };
 		0767AABD2EB18E6A00BEDAFF /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		7C8E9F292B4A1B3C00123456 /* TrackMeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackMeApp.swift; sourceTree = "<group>"; };
@@ -161,6 +165,7 @@
 			children = (
 				7C8E9F292B4A1B3C00123456 /* TrackMeApp.swift */,
 				7C8E9F2B2B4A1B3C00123456 /* ContentView.swift */,
+				BF38F9AD945A8BA38F0C3E36 /* Models */,
 				7C8E9F3C2B4A1C0000123456 /* Services */,
 				7C8E9F3B2B4A1BF000123456 /* Views */,
 				7C8E9F372B4A1BE000123456 /* Data */,
@@ -168,6 +173,14 @@
 				7C8E9F2F2B4A1B3D00123456 /* Preview Content */,
 			);
 			path = TrackMe;
+			sourceTree = "<group>";
+		};
+		BF38F9AD945A8BA38F0C3E36 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				74588DD5803D317063AE2660 /* TrackingMode.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		7C8E9F2F2B4A1B3D00123456 /* Preview Content */ = {
@@ -194,6 +207,7 @@
 				7C8E9F3F2B4A1C2000123456 /* TrackingView.swift */,
 				7C8E9F412B4A1C3000123456 /* HistoryView.swift */,
 				7C8E9F432B4A1C4000123456 /* TripMapView.swift */,
+				64F8D6328889461EF061FA85 /* TrackingModeSettingsView.swift */,
 				0767AABD2EB18E6A00BEDAFF /* ShareSheet.swift */,
 				DB3AAA9558569F114C9D880F /* Components */,
 			);
@@ -419,6 +433,8 @@
 			files = (
 				7C8E9F332B4A1B3D00123456 /* Persistence.swift in Sources */,
 				8DFDAE7C5530A6C44266E0C1 /* TrackingSession+Helpers.swift in Sources */,
+				2B4D66234587161685C16D6B /* TrackingMode.swift in Sources */,
+				905EBE97720ED330D8400170 /* TrackingModeSettingsView.swift in Sources */,
 				7C8E9F2C2B4A1B3C00123456 /* ContentView.swift in Sources */,
 				7C8E9F2A2B4A1B3C00123456 /* TrackMeApp.swift in Sources */,
 				7C8E9F362B4A1B3D00123456 /* TrackMe.xcdatamodeld in Sources */,
