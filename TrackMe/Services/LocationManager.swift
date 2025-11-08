@@ -94,7 +94,7 @@ class LocationManager: NSObject, ObservableObject {
     private let errorHandler = ErrorHandler.shared
 
     // Location validation
-    private let validationConfig: LocationValidationConfig = .default
+    private let validationConfig: LocationValidationConfig = .efficient
     private var lastSavedLocation: CLLocation?
     private var lastSaveTime: Date?
 
