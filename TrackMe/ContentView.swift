@@ -1,13 +1,13 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var locationManager = LocationManager()
+    @StateObject private var dependencyContainer = DependencyContainer()
     @EnvironmentObject private var phoneConnectivity: PhoneConnectivityManager
     
     var body: some View {
         TabView {
-            TrackingView()
-                .environmentObject(locationManager)
+            TrackingView(viewModel: dependencyContainer.makeTrackingViewModel())
+                .environmentObject(dependencyContainer.locationManager)
                 .tabItem {
                     Image(systemName: "location")
                     Text("Track")
@@ -21,17 +21,18 @@ struct ContentView: View {
         }
         .ignoresSafeArea(.keyboard)
         .onAppear {
-            phoneConnectivity.setLocationManager(locationManager)
+            phoneConnectivity.setLocationManager(dependencyContainer.locationManager)
             // Defer heavy setup until after UI appears
             DispatchQueue.main.async {
-                locationManager.asyncSetup()
+                dependencyContainer.locationManager.asyncSetup()
             }
         }
     }
 }
 
 #Preview {
-    ContentView()
+    let container = DependencyContainer()
+    return ContentView()
         .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-    .environmentObject(PhoneConnectivityManager.shared)
+        .environmentObject(PhoneConnectivityManager.shared)
 }

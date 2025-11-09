@@ -48,17 +48,18 @@
 		97817187B58561E3540ACC24 /* NarrativeInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08FDDC6A164BD61F0DE7125 /* NarrativeInputView.swift */; };
 		982CF5E182E890CD78FE6240 /* EmptyHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B7A2AB053A94AC1BB0DC04C /* EmptyHistoryView.swift */; };
 		A1B2C3D42B4A1E0000123456 /* KalmanFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D32B4A1E0000123456 /* KalmanFilter.swift */; };
+		AA11BB22CC33DD4411223344 /* HistoryListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE5522334455 /* HistoryListViewModel.swift */; };
+		AA77BB88CC99DD1144889900 /* TripMapSubViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB88CC99DD00EE2255990011 /* TripMapSubViews.swift */; };
 		B664BB359DF33549BE45C758 /* ErrorHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E8F9447653B016BA5AF298 /* ErrorHandling.swift */; };
+		B9BA4F23A55B60820A6820BB /* DependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009A4A28BFF77560999FAFA3 /* DependencyContainer.swift */; };
+		BB99CC00DD11EE2244001122 /* TrackingSubViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00DD11EE22FF3355112233 /* TrackingSubViews.swift */; };
 		C9132393BB0BF265F32414FF /* BackgroundTrackingInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE143871B747DC0D17E297B2 /* BackgroundTrackingInfoView.swift */; };
+		CC33DD44EE55FF6622445566 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD44EE55FF66AA7733556677 /* MapViewModel.swift */; };
 		CF3744EC5558C9247CE53B1D /* SessionStatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F298DA005ACCA2A6C3D1CA30 /* SessionStatisticsView.swift */; };
+		DD11EE22FF3300AA44223355 /* PrivacyNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE22FF3300AA11BB55334466 /* PrivacyNoticeView.swift */; };
+		EE55FF66AA77BB8833667788 /* TrackingControlBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF66AA77BB88CC9944778899 /* TrackingControlBarViewModel.swift */; };
 		FB665B47B7749B4C88B25BBB /* ErrorAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBF1DD3C6406920EEE29E14 /* ErrorAlertView.swift */; };
 		FE39A2A87C27BE4E92C56784 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBD46E4EC1B24C4315ACA6F /* SessionDetailView.swift */; };
-		AA11BB22CC33DD4411223344 /* HistoryListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE5522334455 /* HistoryListViewModel.swift */; };
-		CC33DD44EE55FF6622445566 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD44EE55FF66AA7733556677 /* MapViewModel.swift */; };
-		EE55FF66AA77BB8833667788 /* TrackingControlBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF66AA77BB88CC9944778899 /* TrackingControlBarViewModel.swift */; };
-		AA77BB88CC99DD1144889900 /* TripMapSubViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB88CC99DD00EE2255990011 /* TripMapSubViews.swift */; };
-		BB99CC00DD11EE2244001122 /* TrackingSubViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00DD11EE22FF3355112233 /* TrackingSubViews.swift */; };
-		DD11EE22FF3300AA44223355 /* PrivacyNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE22FF3300AA11BB55334466 /* PrivacyNoticeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		009A4A28BFF77560999FAFA3 /* DependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DependencyContainer.swift; path = TrackMe/DependencyContainer.swift; sourceTree = SOURCE_ROOT; };
 		070366E42EB14C8600C2E1F4 /* TrackMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrackMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		070366E62EB14C8600C2E1F4 /* TrackMe Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TrackMe Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		07216F482EB170870091E25F /* TrackMeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackMeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -108,25 +110,25 @@
 		7F53884B837EE5BC2D70A17B /* TrackingSession+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrackingSession+Helpers.swift"; sourceTree = "<group>"; };
 		9FAD7BA446F0F7CD594BB760 /* RecentLocationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentLocationsView.swift; sourceTree = "<group>"; };
 		A1B2C3D32B4A1E0000123456 /* KalmanFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KalmanFilter.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE5522334455 /* HistoryListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListViewModel.swift; sourceTree = "<group>"; };
+		BB88CC99DD00EE2255990011 /* TripMapSubViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripMapSubViews.swift; sourceTree = "<group>"; };
 		BC4619B0135A9EC7F9501CA4 /* ModernSessionRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernSessionRowView.swift; sourceTree = "<group>"; };
 		BEBF1DD3C6406920EEE29E14 /* ErrorAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlertView.swift; sourceTree = "<group>"; };
 		CA5F203F22A0881250AF3116 /* HistoryComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryComponents.swift; sourceTree = "<group>"; };
+		CC00DD11EE22FF3355112233 /* TrackingSubViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingSubViews.swift; sourceTree = "<group>"; };
 		CDBD46E4EC1B24C4315ACA6F /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
 		D4A1AF1DF82AF7653074BC8C /* TrackingControlButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingControlButton.swift; sourceTree = "<group>"; };
 		D59CAF947C50CCD6300C887F /* SessionStatisticsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStatisticsCard.swift; sourceTree = "<group>"; };
+		DD44EE55FF66AA7733556677 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		E6A49A431CAA4ACABE960D26 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		E914F2CD5892FA0AA7B8EB94 /* PermissionBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionBanner.swift; sourceTree = "<group>"; };
 		E94CA6875E8C4784A6976C72 /* CoreDataRepositories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataRepositories.swift; sourceTree = "<group>"; };
 		EE143871B747DC0D17E297B2 /* BackgroundTrackingInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTrackingInfoView.swift; sourceTree = "<group>"; };
+		EE22FF3300AA11BB55334466 /* PrivacyNoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyNoticeView.swift; sourceTree = "<group>"; };
 		F08FDDC6A164BD61F0DE7125 /* NarrativeInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NarrativeInputView.swift; sourceTree = "<group>"; };
 		F298DA005ACCA2A6C3D1CA30 /* SessionStatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStatisticsView.swift; sourceTree = "<group>"; };
 		F2CDE3B6068120221FCE30F5 /* TrackingComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingComponents.swift; sourceTree = "<group>"; };
-		BB22CC33DD44EE5522334455 /* HistoryListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListViewModel.swift; sourceTree = "<group>"; };
-		DD44EE55FF66AA7733556677 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		FF66AA77BB88CC9944778899 /* TrackingControlBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingControlBarViewModel.swift; sourceTree = "<group>"; };
-		BB88CC99DD00EE2255990011 /* TripMapSubViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripMapSubViews.swift; sourceTree = "<group>"; };
-		CC00DD11EE22FF3355112233 /* TrackingSubViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingSubViews.swift; sourceTree = "<group>"; };
-		EE22FF3300AA11BB55334466 /* PrivacyNoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyNoticeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -191,6 +193,7 @@
 				7C8E9F372B4A1BE000123456 /* Data */,
 				7C8E9F2D2B4A1B3D00123456 /* Assets.xcassets */,
 				7C8E9F2F2B4A1B3D00123456 /* Preview Content */,
+				009A4A28BFF77560999FAFA3 /* DependencyContainer.swift */,
 			);
 			path = TrackMe;
 			sourceTree = "<group>";
@@ -279,6 +282,16 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		AA11BB22CC33DD4466778899 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				BB22CC33DD44EE5522334455 /* HistoryListViewModel.swift */,
+				DD44EE55FF66AA7733556677 /* MapViewModel.swift */,
+				FF66AA77BB88CC9944778899 /* TrackingControlBarViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
 		BF38F9AD945A8BA38F0C3E36 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -312,16 +325,6 @@
 				EE22FF3300AA11BB55334466 /* PrivacyNoticeView.swift */,
 			);
 			path = Components;
-			sourceTree = "<group>";
-		};
-		AA11BB22CC33DD4466778899 /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-				BB22CC33DD44EE5522334455 /* HistoryListViewModel.swift */,
-				DD44EE55FF66AA7733556677 /* MapViewModel.swift */,
-				FF66AA77BB88CC9944778899 /* TrackingControlBarViewModel.swift */,
-			);
-			path = ViewModels;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -509,6 +512,7 @@
 				AA77BB88CC99DD1144889900 /* TripMapSubViews.swift in Sources */,
 				BB99CC00DD11EE2244001122 /* TrackingSubViews.swift in Sources */,
 				DD11EE22FF3300AA44223355 /* PrivacyNoticeView.swift in Sources */,
+				B9BA4F23A55B60820A6820BB /* DependencyContainer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

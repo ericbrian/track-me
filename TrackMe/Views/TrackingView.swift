@@ -2,10 +2,12 @@ import SwiftUI
 import CoreLocation
 
 struct TrackingView: View {
+    @StateObject private var viewModel: TrackingViewModel
     @EnvironmentObject var locationManager: LocationManager
-    @State private var appState = UIApplication.shared.applicationState
-    @State private var showTrackingModeSettings = false
-    @State private var showPrivacyNotice = false
+    
+    init(viewModel: TrackingViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
 
     var body: some View {
         NavigationView {
@@ -16,8 +18,8 @@ struct TrackingView: View {
 
                     // Hero status section
                     TrackingStatusIndicator(
-                        isTracking: locationManager.isTracking,
-                        appState: appState
+                        isTracking: viewModel.isTracking,
+                        appState: viewModel.appState
                     )
 
                     // Control button with narrative input
@@ -27,14 +29,14 @@ struct TrackingView: View {
                     TrackingStatsView(locationManager: locationManager)
 
                     // Current location display
-                    if let location = locationManager.currentLocation {
+                    if let location = viewModel.currentLocation {
                         CurrentLocationView(location: location)
                     }
 
                     Spacer(minLength: 20)
 
                     // Background tracking info
-                    if locationManager.isTracking {
+                    if viewModel.isTracking {
                         BackgroundTrackingInfoView()
                     }
                 }
@@ -53,7 +55,7 @@ struct TrackingView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
-                        showPrivacyNotice = true
+                        viewModel.showPrivacy()
                     } label: {
                         Image(systemName: "hand.raised.fill")
                             .foregroundColor(.blue)
@@ -63,24 +65,18 @@ struct TrackingView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        showTrackingModeSettings = true
+                        viewModel.showSettings()
                     } label: {
                         Image(systemName: "gearshape")
                             .foregroundColor(.primary)
                     }
                 }
             }
-            .sheet(isPresented: $showTrackingModeSettings) {
+            .sheet(isPresented: $viewModel.showTrackingModeSettings) {
                 TrackingModeSettingsView()
             }
-            .sheet(isPresented: $showPrivacyNotice) {
+            .sheet(isPresented: $viewModel.showPrivacyNotice) {
                 PrivacyNoticeView()
-            }
-            .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
-                appState = .background
-            }
-            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-                appState = .active
             }
         }
         .navigationViewStyle(.stack)
@@ -88,6 +84,7 @@ struct TrackingView: View {
 }
 
 #Preview {
-    TrackingView()
-        .environmentObject(LocationManager())
+    let container = DependencyContainer()
+    return TrackingView(viewModel: container.makeTrackingViewModel())
+        .environmentObject(container.locationManager)
 }
