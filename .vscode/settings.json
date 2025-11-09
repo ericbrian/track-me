@@ -7,9 +7,12 @@
         "exclamationmark",
         "kalman",
         "lons",
+        "MVVM",
         "radiowaves",
         "sandboxing",
         "subheadline",
+        "xcdatamodeld",
+        "xcodeproj",
         "xmark"
     ]
 }
