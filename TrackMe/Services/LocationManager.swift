@@ -129,7 +129,8 @@ class LocationManager: NSObject, ObservableObject {
         }
         // Prompt for Always permission on launch if not already granted
         if locationManager.authorizationStatus != .authorizedAlways {
-            if UserDefaults.standard.integer(forKey: deniedAlwaysKey) < 2 {
+            let maxDenials = AppConfig.shared.features.maxPermissionDenials
+            if UserDefaults.standard.integer(forKey: deniedAlwaysKey) < maxDenials {
                 self.requestLocationPermission()
             } else {
                 DispatchQueue.main.async {
@@ -172,12 +173,14 @@ class LocationManager: NSObject, ObservableObject {
     }
     
     private func setupLocationManager() {
+        let config = AppConfig.shared.location
+        
         locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.distanceFilter = 5 // Update every 5 meters
-        locationManager.pausesLocationUpdatesAutomatically = false
-        locationManager.activityType = .otherNavigation // travel app
-        locationManager.showsBackgroundLocationIndicator = true
+        locationManager.desiredAccuracy = config.desiredAccuracy
+        locationManager.distanceFilter = config.distanceFilter
+        locationManager.pausesLocationUpdatesAutomatically = config.pausesAutomatically
+        locationManager.activityType = config.activityType
+        locationManager.showsBackgroundLocationIndicator = config.showBackgroundIndicator
         
         // Note: allowsBackgroundLocationUpdates should only be set when tracking starts
         // and after authorization is granted
@@ -187,8 +190,9 @@ class LocationManager: NSObject, ObservableObject {
     // This class only schedules requests when appropriate.
     
     private func scheduleBackgroundLocationTask() {
+        let config = AppConfig.shared.performance
         let request = BGAppRefreshTaskRequest(identifier: "com.ericbrian.TrackMe.background-location")
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 15 * 60) // 15 minutes
+        request.earliestBeginDate = Date(timeIntervalSinceNow: config.backgroundRefreshInterval)
         
         try? BGTaskScheduler.shared.submit(request)
     }
@@ -248,8 +252,10 @@ class LocationManager: NSObject, ObservableObject {
         session.startDate = Date()
         session.isActive = true
         
-        // Initialize Kalman filter for this session
-        self.kalmanFilter = KalmanFilter()
+        // Initialize Kalman filter for this session if enabled
+        if AppConfig.shared.performance.enableKalmanFilter {
+            self.kalmanFilter = KalmanFilter()
+        }
 
         // Save the session
         do {
@@ -559,7 +565,8 @@ extension LocationManager: CLLocationManagerDelegate {
         case .authorizedWhenInUse:
             print("Location permission granted for when in use")
             // Always request 'Always' authorization if not already granted
-            if UserDefaults.standard.integer(forKey: deniedAlwaysKey) < 2 {
+            let maxDenials = AppConfig.shared.features.maxPermissionDenials
+            if UserDefaults.standard.integer(forKey: deniedAlwaysKey) < maxDenials {
                 manager.requestAlwaysAuthorization()
             } else {
                 showSettingsSuggestion = true
@@ -568,7 +575,8 @@ extension LocationManager: CLLocationManagerDelegate {
             print("Location permission denied")
             let deniedCount = UserDefaults.standard.integer(forKey: deniedAlwaysKey) + 1
             UserDefaults.standard.set(deniedCount, forKey: deniedAlwaysKey)
-            if deniedCount >= 2 {
+            let maxDenials = AppConfig.shared.features.maxPermissionDenials
+            if deniedCount >= maxDenials {
                 showSettingsSuggestion = true
             }
             if isTracking {

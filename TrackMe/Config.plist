@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Location</key>
+	<dict>
+		<key>DesiredAccuracy</key>
+		<real>-1</real>
+		<!-- kCLLocationAccuracyBest = -1 -->
+		<key>DistanceFilter</key>
+		<real>5.0</real>
+		<!-- Update every 5 meters -->
+		<key>ActivityType</key>
+		<string>OtherNavigation</string>
+		<!-- Options: Other, AutomotiveNavigation, Fitness, OtherNavigation, Airborne -->
+		<key>ShowBackgroundIndicator</key>
+		<true/>
+		<key>PausesAutomatically</key>
+		<false/>
+	</dict>
+	<key>UI</key>
+	<dict>
+		<key>MapDefaultZoom</key>
+		<real>0.01</real>
+		<!-- Default coordinate span for map -->
+		<key>AnimationDuration</key>
+		<real>0.3</real>
+		<!-- Standard animation duration in seconds -->
+		<key>UpdateDelay</key>
+		<real>0.1</real>
+		<!-- Delay for UI updates in seconds -->
+		<key>ShadowOpacity</key>
+		<real>0.1</real>
+		<!-- Opacity for shadows (0.0 - 1.0) -->
+		<key>ShadowRadius</key>
+		<real>4.0</real>
+		<!-- Blur radius for shadows -->
+	</dict>
+	<key>Performance</key>
+	<dict>
+		<key>FetchBatchSize</key>
+		<integer>100</integer>
+		<!-- Batch size for Core Data fetches -->
+		<key>BackgroundRefreshInterval</key>
+		<real>15</real>
+		<!-- Background task refresh interval in minutes -->
+		<key>EnableKalmanFilter</key>
+		<true/>
+		<!-- Enable Kalman filtering for location smoothing -->
+	</dict>
+	<key>Features</key>
+	<dict>
+		<key>EnableWatchSync</key>
+		<true/>
+		<!-- Enable Apple Watch connectivity and sync -->
+		<key>EnableGPXExport</key>
+		<true/>
+		<!-- Enable GPX file export -->
+		<key>EnableCSVExport</key>
+		<true/>
+		<!-- Enable CSV file export -->
+		<key>MaxPermissionDenials</key>
+		<integer>2</integer>
+		<!-- Number of permission denials before showing settings suggestion -->
+	</dict>
+	<key>Debug</key>
+	<dict>
+		<key>VerboseLogging</key>
+		<false/>
+		<!-- Enable detailed console logging -->
+		<key>LogLocationValidation</key>
+		<false/>
+		<!-- Log location validation decisions -->
+		<key>LogCoreData</key>
+		<false/>
+		<!-- Log Core Data operations -->
+		<key>LogConnectivity</key>
+		<false/>
+		<!-- Log Watch connectivity events -->
+	</dict>
+</dict>
+</plist>
