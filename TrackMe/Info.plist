@@ -3,11 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app needs location access to track your movements and provide accurate GPS tracking data.</string>
+	<string>TrackMe records your GPS location to create a personal tracking history. All data stays private on your device—nothing is shared or uploaded. Background access allows continuous tracking when the app isn't open.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app needs always location access to track your movements even when the app is in the background.</string>
+	<string>TrackMe needs continuous location access to record your GPS path even when the app is in the background. Your location data is stored locally on your device only and is never transmitted to servers or third parties.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs location access to track your movements when you're using the app.</string>
+	<string>TrackMe records your GPS location to create a personal tracking history. All data is stored locally on your device and never shared with anyone.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>TrackMe is a privacy-first GPS tracker that stores your location history locally on your device. No data is ever transmitted to servers or shared with third parties.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>

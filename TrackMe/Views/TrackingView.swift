@@ -5,6 +5,7 @@ struct TrackingView: View {
     @EnvironmentObject var locationManager: LocationManager
     @State private var appState = UIApplication.shared.applicationState
     @State private var showTrackingModeSettings = false
+    @State private var showPrivacyNotice = false
 
     var body: some View {
         NavigationView {
@@ -50,6 +51,16 @@ struct TrackingView: View {
             .navigationTitle("GPS Tracker")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        showPrivacyNotice = true
+                    } label: {
+                        Image(systemName: "hand.raised.fill")
+                            .foregroundColor(.blue)
+                    }
+                    .accessibilityLabel("Privacy Information")
+                }
+                
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         showTrackingModeSettings = true
@@ -61,6 +72,9 @@ struct TrackingView: View {
             }
             .sheet(isPresented: $showTrackingModeSettings) {
                 TrackingModeSettingsView()
+            }
+            .sheet(isPresented: $showPrivacyNotice) {
+                PrivacyNoticeView()
             }
             .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
                 appState = .background

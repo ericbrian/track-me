@@ -58,6 +58,7 @@
 		EE55FF66AA77BB8833667788 /* TrackingControlBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF66AA77BB88CC9944778899 /* TrackingControlBarViewModel.swift */; };
 		AA77BB88CC99DD1144889900 /* TripMapSubViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB88CC99DD00EE2255990011 /* TripMapSubViews.swift */; };
 		BB99CC00DD11EE2244001122 /* TrackingSubViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00DD11EE22FF3355112233 /* TrackingSubViews.swift */; };
+		DD11EE22FF3300AA44223355 /* PrivacyNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE22FF3300AA11BB55334466 /* PrivacyNoticeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -125,6 +126,7 @@
 		FF66AA77BB88CC9944778899 /* TrackingControlBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingControlBarViewModel.swift; sourceTree = "<group>"; };
 		BB88CC99DD00EE2255990011 /* TripMapSubViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripMapSubViews.swift; sourceTree = "<group>"; };
 		CC00DD11EE22FF3355112233 /* TrackingSubViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingSubViews.swift; sourceTree = "<group>"; };
+		EE22FF3300AA11BB55334466 /* PrivacyNoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyNoticeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -307,6 +309,7 @@
 				3FE3261C3EC4921318B1EBC6 /* TrackingStatusIndicator.swift */,
 				BB88CC99DD00EE2255990011 /* TripMapSubViews.swift */,
 				CC00DD11EE22FF3355112233 /* TrackingSubViews.swift */,
+				EE22FF3300AA11BB55334466 /* PrivacyNoticeView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -505,6 +508,7 @@
 				EE55FF66AA77BB8833667788 /* TrackingControlBarViewModel.swift in Sources */,
 				AA77BB88CC99DD1144889900 /* TripMapSubViews.swift in Sources */,
 				BB99CC00DD11EE2244001122 /* TrackingSubViews.swift in Sources */,
+				DD11EE22FF3300AA44223355 /* PrivacyNoticeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
