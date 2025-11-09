@@ -123,7 +123,9 @@ final class HistoryListViewModel: NSObject, ObservableObject {
     }
     
     deinit {
-        detach()
+        // Note: deinit is nonisolated, so we directly clean up without calling detach()
+        fetchedResultsController?.delegate = nil
+        fetchedResultsController = nil
     }
 }
 

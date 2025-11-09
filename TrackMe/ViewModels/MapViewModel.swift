@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import MapKit
 import CoreLocation
 import CoreData
@@ -100,15 +101,19 @@ final class MapViewModel: ObservableObject {
     func shareSession() {
         guard !locations.isEmpty else { return }
         
+        // Capture values on the main actor before going to background
+        let session = self.session
+        let locations = self.locations
+        
         // Perform export off the main thread
         Task.detached(priority: .userInitiated) {
             do {
                 let csv = try ExportService.shared.exportToCSV(
-                    session: self.session, 
-                    locations: self.locations
+                    session: session, 
+                    locations: locations
                 )
                 let filename = ExportService.shared.generateFilename(
-                    session: self.session, 
+                    session: session, 
                     format: .csv
                 )
                 let fileURL = try ExportService.shared.saveToTemporaryFile(

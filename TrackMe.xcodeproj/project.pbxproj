@@ -53,6 +53,11 @@
 		CF3744EC5558C9247CE53B1D /* SessionStatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F298DA005ACCA2A6C3D1CA30 /* SessionStatisticsView.swift */; };
 		FB665B47B7749B4C88B25BBB /* ErrorAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBF1DD3C6406920EEE29E14 /* ErrorAlertView.swift */; };
 		FE39A2A87C27BE4E92C56784 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBD46E4EC1B24C4315ACA6F /* SessionDetailView.swift */; };
+		AA11BB22CC33DD4411223344 /* HistoryListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22CC33DD44EE5522334455 /* HistoryListViewModel.swift */; };
+		CC33DD44EE55FF6622445566 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD44EE55FF66AA7733556677 /* MapViewModel.swift */; };
+		EE55FF66AA77BB8833667788 /* TrackingControlBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF66AA77BB88CC9944778899 /* TrackingControlBarViewModel.swift */; };
+		AA77BB88CC99DD1144889900 /* TripMapSubViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB88CC99DD00EE2255990011 /* TripMapSubViews.swift */; };
+		BB99CC00DD11EE2244001122 /* TrackingSubViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00DD11EE22FF3355112233 /* TrackingSubViews.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -115,6 +120,11 @@
 		F08FDDC6A164BD61F0DE7125 /* NarrativeInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NarrativeInputView.swift; sourceTree = "<group>"; };
 		F298DA005ACCA2A6C3D1CA30 /* SessionStatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStatisticsView.swift; sourceTree = "<group>"; };
 		F2CDE3B6068120221FCE30F5 /* TrackingComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingComponents.swift; sourceTree = "<group>"; };
+		BB22CC33DD44EE5522334455 /* HistoryListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryListViewModel.swift; sourceTree = "<group>"; };
+		DD44EE55FF66AA7733556677 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
+		FF66AA77BB88CC9944778899 /* TrackingControlBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingControlBarViewModel.swift; sourceTree = "<group>"; };
+		BB88CC99DD00EE2255990011 /* TripMapSubViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripMapSubViews.swift; sourceTree = "<group>"; };
+		CC00DD11EE22FF3355112233 /* TrackingSubViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingSubViews.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -174,6 +184,7 @@
 				7C8E9F2B2B4A1B3C00123456 /* ContentView.swift */,
 				BF38F9AD945A8BA38F0C3E36 /* Models */,
 				7C8E9F3C2B4A1C0000123456 /* Services */,
+				AA11BB22CC33DD4466778899 /* ViewModels */,
 				7C8E9F3B2B4A1BF000123456 /* Views */,
 				7C8E9F372B4A1BE000123456 /* Data */,
 				7C8E9F2D2B4A1B3D00123456 /* Assets.xcassets */,
@@ -294,8 +305,20 @@
 				F2CDE3B6068120221FCE30F5 /* TrackingComponents.swift */,
 				D4A1AF1DF82AF7653074BC8C /* TrackingControlButton.swift */,
 				3FE3261C3EC4921318B1EBC6 /* TrackingStatusIndicator.swift */,
+				BB88CC99DD00EE2255990011 /* TripMapSubViews.swift */,
+				CC00DD11EE22FF3355112233 /* TrackingSubViews.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		AA11BB22CC33DD4466778899 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				BB22CC33DD44EE5522334455 /* HistoryListViewModel.swift */,
+				DD44EE55FF66AA7733556677 /* MapViewModel.swift */,
+				FF66AA77BB88CC9944778899 /* TrackingControlBarViewModel.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -477,6 +500,11 @@
 				1F00239F337DDF5FB1F2E7CE /* TrackingControlButton.swift in Sources */,
 				93D28559EC42E856F22AE215 /* TrackingStatusIndicator.swift in Sources */,
 				A1B2C3D42B4A1E0000123456 /* KalmanFilter.swift in Sources */,
+				AA11BB22CC33DD4411223344 /* HistoryListViewModel.swift in Sources */,
+				CC33DD44EE55FF6622445566 /* MapViewModel.swift in Sources */,
+				EE55FF66AA77BB8833667788 /* TrackingControlBarViewModel.swift in Sources */,
+				AA77BB88CC99DD1144889900 /* TripMapSubViews.swift in Sources */,
+				BB99CC00DD11EE2244001122 /* TrackingSubViews.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
