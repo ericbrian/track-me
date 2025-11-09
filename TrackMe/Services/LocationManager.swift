@@ -4,6 +4,10 @@ import CoreData
 import UIKit
 import BackgroundTasks
 
+// Note: Repository protocols and implementations are defined in TrackMe/Data/
+// - RepositoryProtocols.swift: SessionRepositoryProtocol, LocationRepositoryProtocol
+// - CoreDataRepositories.swift: CoreDataSessionRepository, CoreDataLocationRepository
+
 // MARK: - Location Validation Configuration
 
 /// Configuration for location data validation and filtering

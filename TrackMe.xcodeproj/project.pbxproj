@@ -50,7 +50,10 @@
 		7C8E9F5B2B4A1D3000123456 /* TrackingControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F5A2B4A1D3000123456 /* TrackingControlView.swift */; };
 		7C8E9F5D2B4A1D4000123456 /* SessionStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E9F5C2B4A1D4000123456 /* SessionStatusView.swift */; };
         A1B2C3D42B4A1E0000123456 /* KalmanFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D32B4A1E0000123456 /* KalmanFilter.swift */; };
-/* End PBXBuildFile section */
+		8F03923C43E14B76B73E1007 /* RepositoryProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75461525581C41A79FA516E6 /* RepositoryProtocols.swift */; };
+		556BC21BE3EF47C9B74CFAF5 /* CoreDataRepositories.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94CA6875E8C4784A6976C72 /* CoreDataRepositories.swift */; };
+			4B24020CC7B647A5A0647AF7 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6A49A431CAA4ACABE960D26 /* Config.swift */; };
+	/* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		07216F4C2EB170870091E25F /* PBXContainerItemProxy */ = {
@@ -109,7 +112,10 @@
 		7C8E9F5A2B4A1D3000123456 /* TrackingControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingControlView.swift; sourceTree = "<group>"; };
 		7C8E9F5C2B4A1D4000123456 /* SessionStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStatusView.swift; sourceTree = "<group>"; };
         A1B2C3D32B4A1E0000123456 /* KalmanFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KalmanFilter.swift; sourceTree = "<group>"; };
-/* End PBXFileReference section */
+		75461525581C41A79FA516E6 /* RepositoryProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryProtocols.swift; sourceTree = "<group>"; };
+		E94CA6875E8C4784A6976C72 /* CoreDataRepositories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataRepositories.swift; sourceTree = "<group>"; };
+			E6A49A431CAA4ACABE960D26 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+	/* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		07216F492EB170870091E25F /* TrackMeTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TrackMeTests; sourceTree = "<group>"; };
@@ -164,6 +170,7 @@
 			isa = PBXGroup;
 			children = (
 				7C8E9F292B4A1B3C00123456 /* TrackMeApp.swift */,
+				E6A49A431CAA4ACABE960D26 /* Config.swift */,
 				7C8E9F2B2B4A1B3C00123456 /* ContentView.swift */,
 				BF38F9AD945A8BA38F0C3E36 /* Models */,
 				7C8E9F3C2B4A1C0000123456 /* Services */,
@@ -195,6 +202,8 @@
 			isa = PBXGroup;
 			children = (
 				7C8E9F322B4A1B3D00123456 /* Persistence.swift */,
+				75461525581C41A79FA516E6 /* RepositoryProtocols.swift */,
+				E94CA6875E8C4784A6976C72 /* CoreDataRepositories.swift */,
 				7F53884B837EE5BC2D70A17B /* TrackingSession+Helpers.swift */,
 				7C8E9F342B4A1B3D00123456 /* TrackMe.xcdatamodeld */,
 			);
@@ -432,9 +441,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				7C8E9F332B4A1B3D00123456 /* Persistence.swift in Sources */,
+				8F03923C43E14B76B73E1007 /* RepositoryProtocols.swift in Sources */,
+				556BC21BE3EF47C9B74CFAF5 /* CoreDataRepositories.swift in Sources */,
 				8DFDAE7C5530A6C44266E0C1 /* TrackingSession+Helpers.swift in Sources */,
 				2B4D66234587161685C16D6B /* TrackingMode.swift in Sources */,
 				905EBE97720ED330D8400170 /* TrackingModeSettingsView.swift in Sources */,
+				4B24020CC7B647A5A0647AF7 /* Config.swift in Sources */,
 				7C8E9F2C2B4A1B3C00123456 /* ContentView.swift in Sources */,
 				7C8E9F2A2B4A1B3C00123456 /* TrackMeApp.swift in Sources */,
 				7C8E9F362B4A1B3D00123456 /* TrackMe.xcdatamodeld in Sources */,
