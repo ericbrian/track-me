@@ -61,6 +61,7 @@ TrackMe is a privacy-first iOS app for real-time GPS tracking, session managemen
 - Before fixing bugs and the like, create a unit test that reproduces the issue. Then fix the issue and ensure the test passes.
 - Ensure all new features have corresponding unit tests.
 - After adding a unit test, run the full test suite to ensure no regressions and then update the code coverage report.
+- Never Force Unwrap optionals. Use guard statements or optional binding.
 
 
 ---
