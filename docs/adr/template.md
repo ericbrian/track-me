@@ -36,6 +36,10 @@ What other options were considered and why were they not chosen?
 
 Any additional information, links, or context.
 
+## Additional Resources
+
+Any references, sources
+
 ---
 
 **Date**: YYYY-MM-DD  

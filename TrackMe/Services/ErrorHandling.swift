@@ -18,6 +18,7 @@ enum AppError: Error {
     case sessionNotFound
     case sessionEndFailed(Error)
     case noActiveSession
+    case sessionQueryFailed(Error)
 
     // Core Data Errors
     case dataStorageError(Error)
@@ -73,6 +74,8 @@ extension AppError: LocalizedError {
             return "Failed to Stop Tracking"
         case .noActiveSession:
             return "No Active Session"
+        case .sessionQueryFailed:
+            return "Failed to Query Sessions"
 
         // Core Data Errors
         case .dataStorageError:
@@ -140,6 +143,8 @@ extension AppError: LocalizedError {
             return "Unable to stop the tracking session. Error: \(error.localizedDescription). Please try again."
         case .noActiveSession:
             return "There is no active tracking session to stop."
+        case .sessionQueryFailed(let error):
+            return "Unable to check for active sessions. Error: \(error.localizedDescription). Please try again."
 
         // Core Data Errors
         case .dataStorageError(let error):
@@ -203,6 +208,8 @@ extension AppError: LocalizedError {
             return "Refresh the history view."
         case .noActiveSession:
             return "Start a new tracking session first."
+        case .sessionQueryFailed:
+            return "Try again in a few moments."
 
         // Core Data Errors
         case .dataStorageError, .dataSaveFailed:

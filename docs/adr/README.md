@@ -16,6 +16,7 @@ An Architecture Decision Record captures a single architectural decision. Each A
 | [004](004-privacy-first-local-only.md) | Privacy-First, Local-Only Data Storage | Accepted | 2025-11-09 |
 | [005](005-centralized-location-management.md) | Centralized Location Management | Accepted | 2025-11-09 |
 | [006](006-centralized-configuration-management.md) | Centralized Configuration Management | Accepted | 2025-11-09 |
+| [007](007-dependency-injection-repositories.md) | Adopt Dependency Injection with Protocol-Based Repositories | Accepted | 2025-11-09 |
 
 ## Creating a New ADR
 

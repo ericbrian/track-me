@@ -85,10 +85,13 @@ class LocationManager: NSObject, ObservableObject {
         PhoneConnectivityManager.shared
     }
     private let locationManager = CLLocationManager()
-    private var persistenceController = PersistenceController.shared
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     private var hasSetupObservers = false
     var kalmanFilter: KalmanFilter?
+    
+    // Injected dependencies
+    private let sessionRepository: SessionRepositoryProtocol
+    private let locationRepository: LocationRepositoryProtocol
 
     // Error handler - computed property to avoid main actor isolation warning
     private var errorHandler: ErrorHandler {
@@ -112,9 +115,25 @@ class LocationManager: NSObject, ObservableObject {
     @Published var trackingStartError: String?
     @Published var trackingStopError: String?
     
-    override init() {
+    /// Initialize with injected dependencies
+    init(sessionRepository: SessionRepositoryProtocol,
+         locationRepository: LocationRepositoryProtocol) {
+        self.sessionRepository = sessionRepository
+        self.locationRepository = locationRepository
         super.init()
         // Defer heavy setup to asyncSetup()
+    }
+    
+    /// Legacy initializer for backward compatibility (uses default repositories)
+    /// - Note: Prefer dependency injection via init(sessionRepository:locationRepository:)
+    @available(*, deprecated, message: "Use init(sessionRepository:locationRepository:) instead")
+    override convenience init() {
+        let persistence = PersistenceController.shared
+        let context = persistence.container.viewContext
+        self.init(
+            sessionRepository: CoreDataSessionRepository(context: context),
+            locationRepository: CoreDataLocationRepository(context: context)
+        )
     }
 
     /// Call this after UI appears to perform heavy setup
@@ -142,25 +161,16 @@ class LocationManager: NSObject, ObservableObject {
 
     /// Mark any orphaned active sessions as inactive on app launch
     private func recoverOrphanedSessions() {
-        let context = persistenceController.container.newBackgroundContext()
-
-        // Use async perform for proper Core Data threading
-        context.perform {
-            let fetchRequest: NSFetchRequest<TrackingSession> = TrackingSession.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "isActive == YES")
-
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+            
             do {
-                let orphaned = try context.fetch(fetchRequest)
-                if !orphaned.isEmpty {
-                    for session in orphaned {
-                        session.isActive = false
-                        session.endDate = Date()
-                    }
-                    try context.save()
-                    print("Recovered \(orphaned.count) orphaned active sessions on launch.")
-                    DispatchQueue.main.async {
-                        self.phoneConnectivity?.sendStatusUpdateToWatch()
-                    }
+                let recoveredCount = try self.sessionRepository.recoverOrphanedSessions()
+                if recoveredCount > 0 {
+                    print("Recovered \(recoveredCount) orphaned active sessions on launch.")
+                }
+                DispatchQueue.main.async {
+                    self.phoneConnectivity?.sendStatusUpdateToWatch()
                 }
             } catch {
                 print("⚠️ Failed to recover orphaned sessions: \(error)")
@@ -226,17 +236,25 @@ class LocationManager: NSObject, ObservableObject {
             return
         }
 
-        // Prevent multiple active sessions
-        let context = persistenceController.container.viewContext
-        let fetchRequest: NSFetchRequest<TrackingSession> = TrackingSession.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "isActive == YES")
-        fetchRequest.fetchLimit = 1
-        if let activeSessions = try? context.fetch(fetchRequest), activeSessions.first != nil {
-            print("An active tracking session already exists. Only one tracker allowed at a time.")
-            let error = AppError.sessionAlreadyActive
-            trackingStartError = error.failureReason // Backward compatibility
+        // Prevent multiple active sessions using repository
+        do {
+            let activeSessions = try sessionRepository.fetchActiveSessions()
+            if !activeSessions.isEmpty {
+                print("An active tracking session already exists. Only one tracker allowed at a time.")
+                let error = AppError.sessionAlreadyActive
+                trackingStartError = error.failureReason // Backward compatibility
+                Task { @MainActor in
+                    errorHandler.handle(error)
+                }
+                phoneConnectivity?.sendStatusUpdateToWatch()
+                return
+            }
+        } catch {
+            print("Error checking for active sessions: \(error)")
+            let appError = AppError.sessionQueryFailed(error)
+            trackingStartError = appError.failureReason
             Task { @MainActor in
-                errorHandler.handle(error)
+                errorHandler.handle(appError)
             }
             phoneConnectivity?.sendStatusUpdateToWatch()
             return
@@ -245,27 +263,21 @@ class LocationManager: NSObject, ObservableObject {
         // Begin background task to ensure we don't get terminated
         beginBackgroundTask()
 
-        // Create new tracking session
-        let session = TrackingSession(context: context)
-        session.id = UUID()
-        session.narrative = narrative
-        session.startDate = Date()
-        session.isActive = true
-        
-        // Initialize Kalman filter for this session if enabled
-        if AppConfig.shared.performance.enableKalmanFilter {
-            self.kalmanFilter = KalmanFilter()
-        }
-
-        // Save the session
+        // Create new tracking session using repository
         do {
-            try context.save()
+            let session = try sessionRepository.createSession(narrative: narrative, startDate: Date())
             currentSession = session
             isTracking = true
             locationCount = 0
             // Reset validation tracking for new session
             lastSavedLocation = nil
             lastSaveTime = nil
+            
+            // Initialize Kalman filter for this session if enabled
+            if AppConfig.shared.performance.enableKalmanFilter {
+                self.kalmanFilter = KalmanFilter()
+            }
+            
             // Notify Watch about tracking state change
             NotificationCenter.default.post(name: NSNotification.Name("TrackingStateChanged"), object: nil)
             phoneConnectivity?.sendStatusUpdateToWatch()
@@ -340,12 +352,9 @@ class LocationManager: NSObject, ObservableObject {
         locationManager.allowsBackgroundLocationUpdates = false
         #endif
 
-        let context = persistenceController.container.viewContext
-        session.endDate = Date()
-        session.isActive = false
-
+        // End session using repository
         do {
-            try context.save()
+            try sessionRepository.endSession(session, endDate: Date())
             currentSession = nil
             isTracking = false
             kalmanFilter = nil // Reset Kalman filter
@@ -489,32 +498,16 @@ class LocationManager: NSObject, ObservableObject {
             print("Background task for location save expired")
         }
 
-        // Use background context for thread safety
-        let context = persistenceController.container.newBackgroundContext()
-
-        // Use async perform instead of performAndWait to avoid blocking the location update thread
-        context.perform {
-            // Fetch the session in this context
-            let sessionID = session.objectID
-            guard let sessionInContext = try? context.existingObject(with: sessionID) as? TrackingSession else {
+        // Use repository to save location in background
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else {
                 UIApplication.shared.endBackgroundTask(taskId)
                 return
             }
-
-            let locationEntry = LocationEntry(context: context)
-
-            locationEntry.id = UUID()
-            locationEntry.latitude = location.coordinate.latitude
-            locationEntry.longitude = location.coordinate.longitude
-            locationEntry.timestamp = location.timestamp
-            locationEntry.accuracy = location.horizontalAccuracy
-            locationEntry.altitude = location.altitude
-            locationEntry.speed = location.speed >= 0 ? location.speed : 0
-            locationEntry.course = location.course >= 0 ? location.course : 0
-            locationEntry.session = sessionInContext
-
+            
             do {
-                try context.save()
+                _ = try self.locationRepository.saveLocation(location, for: session)
+                
                 // Update location count and tracking info on main thread
                 DispatchQueue.main.async {
                     self.locationCount += 1
@@ -524,7 +517,7 @@ class LocationManager: NSObject, ObservableObject {
                     // Notify Watch about location count change
                     NotificationCenter.default.post(name: NSNotification.Name("LocationCountChanged"), object: nil)
                 }
-                print("Location saved successfully in background")
+                print("Location saved successfully using repository")
             } catch {
                 print("⚠️ Error saving location: \(error)")
                 // Don't show error to user for individual location save failures
