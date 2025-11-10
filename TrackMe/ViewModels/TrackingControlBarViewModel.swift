@@ -9,11 +9,14 @@ final class TrackingControlBarViewModel: ObservableObject {
     // MARK: - Dependencies
     
     private let locationManager: LocationManager
+    private let errorHandler: ErrorHandler
     
     // MARK: - Published State
     
     @Published var narrative = ""
     @Published var showingNarrativeInput = false
+    
+    // Deprecated: Use ErrorHandler instead
     @Published var showTrackingErrorAlert = false
     @Published var showTrackingStopErrorAlert = false
     @Published var trackingStartError: String?
@@ -39,15 +42,23 @@ final class TrackingControlBarViewModel: ObservableObject {
     
     // MARK: - Initialization
     
-    init(locationManager: LocationManager) {
+    init(locationManager: LocationManager, errorHandler: ErrorHandler = .shared) {
         self.locationManager = locationManager
+        self.errorHandler = errorHandler
         setupBindings()
     }
     
     // MARK: - Setup
     
     private func setupBindings() {
-        // Observe tracking start errors
+        // Observe changes to location manager's published properties
+        locationManager.objectWillChange
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+        
+        // Observe tracking start errors (backward compatibility)
         locationManager.$trackingStartError
             .sink { [weak self] error in
                 if let error = error {
@@ -57,7 +68,7 @@ final class TrackingControlBarViewModel: ObservableObject {
             }
             .store(in: &cancellables)
         
-        // Observe tracking stop errors
+        // Observe tracking stop errors (backward compatibility)
         locationManager.$trackingStopError
             .sink { [weak self] error in
                 if let error = error {
@@ -76,8 +87,10 @@ final class TrackingControlBarViewModel: ObservableObject {
     
     func startTracking() {
         guard !narrative.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            trackingStartError = "Please enter a narrative for this tracking session"
-            showTrackingErrorAlert = true
+            errorHandler.handle(.sessionCreationFailed(
+                NSError(domain: "TrackMe", code: 1001, 
+                       userInfo: [NSLocalizedDescriptionKey: "Please enter a narrative for this tracking session"])
+            ))
             return
         }
         

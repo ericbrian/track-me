@@ -26,24 +26,6 @@ struct TrackingControlBarView: View {
                 viewModel.startTracking()
             }
         }
-        .alert(isPresented: $viewModel.showTrackingErrorAlert) {
-            Alert(
-                title: Text("Unable to Start Tracking"),
-                message: Text(viewModel.trackingStartError ?? "Unknown error"),
-                dismissButton: .default(Text("OK")) {
-                    viewModel.clearStartError()
-                }
-            )
-        }
-        .alert(isPresented: $viewModel.showTrackingStopErrorAlert) {
-            Alert(
-                title: Text("Unable to Stop Tracking"),
-                message: Text(viewModel.trackingStopError ?? "Unknown error"),
-                dismissButton: .default(Text("OK")) {
-                    viewModel.clearStopError()
-                }
-            )
-        }
     }
 }
 

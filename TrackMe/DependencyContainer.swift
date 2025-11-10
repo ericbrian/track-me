@@ -80,6 +80,7 @@ class DependencyContainer: ObservableObject {
     // MARK: - ViewModel Factory Methods
     
     /// Create a TrackingViewModel with injected dependencies
+    @MainActor
     func makeTrackingViewModel() -> TrackingViewModel {
         TrackingViewModel(
             locationManager: _locationManager,
@@ -88,19 +89,17 @@ class DependencyContainer: ObservableObject {
         )
     }
     
-    /// Create a HistoryViewModel with injected dependencies
+    /// Create a HistoryViewModel (uses NSFetchedResultsController)
     func makeHistoryViewModel() -> HistoryViewModel {
-        HistoryViewModel(
-            sessionRepository: _sessionRepository,
-            locationRepository: _locationRepository
-        )
+        HistoryViewModel()
     }
     
-    /// Create a TripMapViewModel with injected dependencies
-    func makeTripMapViewModel(session: TrackingSession) -> TripMapViewModel {
-        TripMapViewModel(
+    /// Create a MapViewModel with injected dependencies
+    @MainActor
+    func makeMapViewModel(session: TrackingSession) -> MapViewModel {
+        MapViewModel(
             session: session,
-            locationRepository: _locationRepository
+            viewContext: dataContext.viewContext
         )
     }
     

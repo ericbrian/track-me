@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import UIKit
 import CoreLocation
 import Combine
 
@@ -12,7 +13,9 @@ final class TrackingViewModel: ObservableObject {
     
     private let locationManager: LocationManager
     private let sessionRepository: SessionRepositoryProtocol
-    private let errorHandler: ErrorHandler
+    
+    /// Error handler for displaying alerts - exposed for view binding
+    let errorHandler: ErrorHandler
     
     // MARK: - Published State
     

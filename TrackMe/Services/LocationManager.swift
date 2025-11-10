@@ -115,8 +115,14 @@ class LocationManager: NSObject, ObservableObject {
     @Published var currentSession: TrackingSession?
     @Published var locationCount = 0
 
-    // Deprecated: Use errorHandler instead
+    /// Deprecated: Use ErrorHandler.shared instead for centralized error handling
+    /// This property is maintained for backward compatibility only
+    @available(*, deprecated, message: "Use ErrorHandler.shared to handle errors instead")
     @Published var trackingStartError: String?
+    
+    /// Deprecated: Use ErrorHandler.shared instead for centralized error handling
+    /// This property is maintained for backward compatibility only
+    @available(*, deprecated, message: "Use ErrorHandler.shared to handle errors instead")
     @Published var trackingStopError: String?
     
     /// Initialize with injected dependencies
@@ -576,6 +582,16 @@ extension LocationManager: CLLocationManagerDelegate {
             if deniedCount >= maxDenials {
                 showSettingsSuggestion = true
             }
+            
+            // Show error to user
+            Task { @MainActor in
+                if status == .denied {
+                    errorHandler.handle(.locationPermissionDenied)
+                } else {
+                    errorHandler.handle(.locationServicesDisabled)
+                }
+            }
+            
             if isTracking {
                 stopTracking()
             }
@@ -601,22 +617,46 @@ extension LocationManager: CLLocationManagerDelegate {
                 }
             case .locationUnknown:
                 print("Location unknown, but keep trying")
-                // Don't show error - this is transient
+                // Don't show error - this is transient and common
+                // Location services will continue attempting to get a fix
             case .network:
-                print("Network error")
-                // Show error only if tracking is active and error persists
+                print("Network error affecting location accuracy")
+                // Show error only if tracking is active
+                // Network errors can affect GPS accuracy but aren't fatal
                 if isTracking {
                     Task { @MainActor in
                         errorHandler.handle(.networkUnavailable)
                     }
                 }
+            case .headingFailure:
+                print("Heading failure - compass may be uncalibrated")
+                // Don't show error - we don't use heading/compass features
+            case .rangingUnavailable, .rangingFailure:
+                print("Ranging unavailable or failed")
+                // Don't show error - we don't use ranging features
+            case .promptDeclined:
+                print("User declined location prompt")
+                Task { @MainActor in
+                    errorHandler.handle(.locationPermissionDenied)
+                }
+                if isTracking {
+                    stopTracking()
+                }
             default:
                 print("Other location error: \(clError.localizedDescription)")
-                // Show generic location update error
+                // Show generic location update error for other cases
                 if isTracking {
                     Task { @MainActor in
                         errorHandler.handle(.locationUpdateFailed(error))
                     }
+                }
+            }
+        } else {
+            // Non-CLError - show generic error
+            print("Unknown location error: \(error.localizedDescription)")
+            if isTracking {
+                Task { @MainActor in
+                    errorHandler.handle(.locationUpdateFailed(error))
                 }
             }
         }

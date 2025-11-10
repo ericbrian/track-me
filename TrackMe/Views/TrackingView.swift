@@ -78,6 +78,7 @@ struct TrackingView: View {
             .sheet(isPresented: $viewModel.showPrivacyNotice) {
                 PrivacyNoticeView()
             }
+            .errorAlert(handler: viewModel.errorHandler)
         }
         .navigationViewStyle(.stack)
     }
@@ -85,6 +86,6 @@ struct TrackingView: View {
 
 #Preview {
     let container = DependencyContainer()
-    return TrackingView(viewModel: container.makeTrackingViewModel())
+    TrackingView(viewModel: container.makeTrackingViewModel())
         .environmentObject(container.locationManager)
 }
