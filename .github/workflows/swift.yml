@@ -16,7 +16,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Select Xcode
+      run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
     - name: Build
-      run: swift build -v
+      run: xcodebuild build -scheme TrackMe -destination 'platform=iOS Simulator,name=iPhone 15,OS=18.2'
     - name: Run tests
-      run: swift test -v
+      run: xcodebuild test -scheme TrackMe -destination 'platform=iOS Simulator,name=iPhone 15,OS=18.2'
