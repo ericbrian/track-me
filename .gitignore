@@ -134,3 +134,5 @@ Temporary Items
 *.trace
 TestResults.xcresult/*
 UserInterfaceState.xcuserstate
+coverage_report.md
+coverage.json
