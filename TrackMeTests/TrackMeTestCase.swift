@@ -42,7 +42,7 @@ class TrackMeTestCase: XCTestCase {
         mockSessionRepository = MockSessionRepository()
         mockLocationRepository = MockLocationRepository()
         
-        // Initialize error handler
+        // Error handler is a singleton - no need to initialize
         errorHandler = ErrorHandler.shared
     }
     

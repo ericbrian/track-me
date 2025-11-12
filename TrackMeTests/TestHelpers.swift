@@ -12,19 +12,38 @@ class CoreDataTestStack {
     /// Creates an in-memory Core Data stack for testing
     /// - Returns: NSPersistentContainer configured for in-memory storage
     static func createInMemoryStack() -> NSPersistentContainer {
-        let container = NSPersistentContainer(name: "TrackMe")
+        // Load the Core Data model from the app bundle
+        // Use TrackingSession class to get the bundle containing the Core Data model
+        guard let modelURL = Bundle(for: TrackingSession.self).url(forResource: "TrackMe", withExtension: "momd") else {
+            print("ERROR: Could not find TrackMe.momd in bundle: \(Bundle(for: TrackingSession.self))")
+            fatalError("Failed to find Core Data model file")
+        }
+        
+        guard let managedObjectModel = NSManagedObjectModel(contentsOf: modelURL) else {
+            print("ERROR: Could not load model from URL: \(modelURL)")
+            fatalError("Failed to load Core Data model from bundle")
+        }
+        
+        let container = NSPersistentContainer(name: "TrackMe", managedObjectModel: managedObjectModel)
         
         // Use in-memory store for testing
         let description = NSPersistentStoreDescription()
         description.type = NSInMemoryStoreType
-        description.shouldAddStoreAsynchronously = false
+        description.shouldAddStoreAsynchronously = false // This ensures synchronous loading
         
         container.persistentStoreDescriptions = [description]
         
+        // Load stores synchronously
+        var loadError: Error?
         container.loadPersistentStores { description, error in
             if let error = error {
-                fatalError("Failed to load in-memory Core Data stack: \(error)")
+                print("ERROR: Failed to load persistent stores: \(error)")
+                loadError = error
             }
+        }
+        
+        if let loadError = loadError {
+            fatalError("Failed to load in-memory Core Data stack: \(loadError)")
         }
         
         return container
