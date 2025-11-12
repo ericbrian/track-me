@@ -88,24 +88,3 @@ Start Here: Core Business Logic (Highest Priority)
     Location filtering and storage
     Export functionality
     Estimated: 2 hours
-
-## Recommended First Step: Create Test Infrastructure
-
-Before writing tests, set up:
-
-### Test helpers file (TestHelpers.swift)
-
-In-memory Core Data stack factory
-Mock location generator
-Common test fixtures
-
-### Mock implementations (Mocks.swift)
-
-    MockSessionRepository
-    MockLocationRepository
-    MockCLLocationManager (if needed)
-
-### XCTest base class (TrackMeTestCase.swift)
-
-    Common setup/teardown
-    Shared test utilities
