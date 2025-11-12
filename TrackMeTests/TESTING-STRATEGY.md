@@ -98,24 +98,14 @@ Before writing tests, set up:
 In-memory Core Data stack factory
 Mock location generator
 Common test fixtures
-Mock implementations (Mocks.swift):
+
+### Mock implementations (Mocks.swift)
 
     MockSessionRepository
     MockLocationRepository
     MockCLLocationManager (if needed)
-    XCTest base class (TrackMeTestCase.swift):
+
+### XCTest base class (TrackMeTestCase.swift)
 
     Common setup/teardown
     Shared test utilities
-    My Recommendation: Start with KalmanFilter
-    Why?
-
-        ✅ Zero dependencies - pure Swift
-        ✅ Quick wins to build momentum
-        ✅ Critical for data quality
-        ✅ Teaches testing patterns for the team
-        ✅ Can be completed in one sitting
-        ✅ Immediate value (catches math errors)
-        Next: Mock repositories → CoreData repositories → ErrorHandler → LocationManager → ViewModels → Integration
-
-This approach builds from simple to complex, establishing patterns and infrastructure as you go. Each phase provides immediate value while preparing for the next.
