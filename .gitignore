@@ -136,3 +136,5 @@ TestResults.xcresult/*
 UserInterfaceState.xcuserstate
 coverage_report.md
 coverage.json
+
+.venv
