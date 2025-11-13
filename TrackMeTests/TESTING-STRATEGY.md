@@ -10,6 +10,7 @@ Start Here: Core Business Logic (Highest Priority)
         Noise reduction verification
         Edge cases (zero variance, extreme values)
     Estimated: 30 minutes
+
 2. LocationValidationConfig Tests
     Why? Pure data structures, no side effects, used throughout tracking
     Tests to write:
@@ -17,6 +18,7 @@ Start Here: Core Business Logic (Highest Priority)
         Validate threshold values are reasonable
         Test configuration comparison
     Estimated: 20 minutes
+
 3. Repository Protocol Mock Implementations
     Why? Essential for testing components that use repositories
     Create:
@@ -24,7 +26,7 @@ Start Here: Core Business Logic (Highest Priority)
         MockLocationRepository
         Include configurable success/failure modes
     Estimated: 45 minutes
-    Phase 2: Repository Layer (Medium Priority)
+
 4. CoreDataSessionRepository Tests
     Dependencies: In-memory Core Data stack
     Tests to write:
@@ -36,6 +38,7 @@ Start Here: Core Business Logic (Highest Priority)
         Location count calculation
         Concurrent access scenarios
     Estimated: 1.5 hours
+
 5. CoreDataLocationRepository Tests
     Dependencies: In-memory Core Data stack
     Tests to write:
@@ -45,7 +48,7 @@ Start Here: Core Business Logic (Highest Priority)
         Delete locations
         Location count
     Estimated: 1 hour
-    Phase 3: Service Layer (Complex but Critical)
+
 6. ErrorHandler Tests
     Why? Centralized error handling, relatively isolated
     Tests to write:
@@ -54,6 +57,7 @@ Start Here: Core Business Logic (Highest Priority)
         Error context mapping
         Published state updates
     Estimated: 45 minutes
+
 7. LocationManager Tests (Most Complex)
     Dependencies: Mock CLLocationManager, Mock repositories
     Tests to write:
@@ -66,7 +70,7 @@ Start Here: Core Business Logic (Highest Priority)
         Session lifecycle
         Error scenarios
     Estimated: 3-4 hours (complex but critical)
-    Phase 4: ViewModels (High Value for UI Testing)
+
 8. TrackingViewModel Tests
     Dependencies: Mock LocationManager, Mock repositories
     Tests to write:
@@ -76,13 +80,14 @@ Start Here: Core Business Logic (Highest Priority)
         Error handling integration
         State synchronization
     Estimated: 1.5 hours
+
 9. HistoryListViewModel Tests
     Tests to write:
         Session fetching
         Session deletion
         Sorting/filtering
     Estimated: 1 hour
-    Phase 5: Integration Tests
+
 10. End-to-End Session Flow Tests
     Full session lifecycle with real Core Data
     Location filtering and storage
