@@ -43,7 +43,7 @@ Based on iPhone market penetration and user demographics, might want to add:
 
 ### Structure
 
-```
+```text
 TrackMe/
 ├── en.lproj/
 │   ├── InfoPlist.strings    # English Info.plist keys
@@ -176,7 +176,8 @@ cp TrackMe/en.lproj/Localizable.strings TrackMe/{language_code}.lproj/
 ### 3. Translate Strings
 
 Translate the right side of each key-value pair:
-```
+
+```text
 "Start Tracking" = "Your Translation";
 ```
 
@@ -204,7 +205,7 @@ Translate the right side of each key-value pair:
 
 Add launch argument:
 
-```
+```text
 -AppleLanguages (de)
 -AppleLanguages (ja)
 -AppleLanguages (zh-Hans)
@@ -215,6 +216,7 @@ Add launch argument:
 ### Travel-Centric Narrative Suggestions
 
 All languages include localized travel-specific suggestions:
+
 - Road Trip / City Tour
 - Scenic Drive / Hiking Trail
 - Beach Walk / Mountain Adventure
@@ -223,36 +225,43 @@ All languages include localized travel-specific suggestions:
 ### Language-Specific Notes
 
 **German (de)**
+
 - Formal "Sie" form used throughout
 - Technical terms (GPS, Tracking) kept in English as commonly used
 - Units follow metric system (km, m)
 
 **Japanese (ja)**
+
 - Polite form (です/ます) used throughout
 - Natural Japanese phrasing for UI elements
 - Katakana used for technical terms (GPS, アプリ)
 
 **Mandarin Chinese (zh-Hans)**
+
 - Simplified Chinese characters
 - Formal tone appropriate for app UI
 - Technical terms translated with commonly used Chinese equivalents
 
 **Spanish (es)**
+
 - Formal "usted" form used for consistency
 - Latin American and European Spanish compatible
 - Units follow metric system
 
 **French (fr)**
+
 - Formal "vous" form used throughout
 - Proper French UI conventions followed
 - Some English terms kept (Road Trip) as commonly used
 
 **Italian (it)**
+
 - Formal "Lei" form used throughout
 - Natural Italian phrasing
 - Units follow metric system
 
 **Portuguese (pt)**
+
 - Brazilian Portuguese conventions
 - Formal "você" form
 - Units follow metric system
