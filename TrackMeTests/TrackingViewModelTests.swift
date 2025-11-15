@@ -74,61 +74,33 @@ final class TrackingViewModelTests: TrackMeMainActorTestCase {
     // MARK: - Computed Properties Tests
     
     func testIsTracking_ReflectsLocationManagerState() {
-        // Given: Location manager is not tracking
         makeSUT()
-        XCTAssertFalse(locationManager.isTracking)
-        
-        // Then: ViewModel should reflect the same state
-        XCTAssertFalse(sut.isTracking)
-        
-        // When: Location manager starts tracking (simulated)
-        // Note: We can't easily simulate actual tracking without permissions
-        // but we verify the property correctly delegates to location manager
+        XCTAssertEqual(sut.isTracking, locationManager.isTracking)
     }
     
     func testAuthorizationStatus_ReflectsLocationManagerState() {
         makeSUT()
-        // Given: Location manager has authorization status
-        let status = locationManager.authorizationStatus
-        
-        // Then: ViewModel should reflect the same status
-        XCTAssertEqual(sut.authorizationStatus, status)
+        XCTAssertEqual(sut.authorizationStatus, locationManager.authorizationStatus)
     }
     
     func testCurrentLocation_ReflectsLocationManagerState() {
         makeSUT()
-        // Given: Location manager has no current location
-        XCTAssertNil(locationManager.currentLocation)
-        
-        // Then: ViewModel should reflect the same state
-        XCTAssertNil(sut.currentLocation)
+        XCTAssertEqual(sut.currentLocation, locationManager.currentLocation)
     }
     
     func testCurrentSession_ReflectsLocationManagerState() {
         makeSUT()
-        // Given: Location manager has no current session
-        XCTAssertNil(locationManager.currentSession)
-        
-        // Then: ViewModel should reflect the same state
-        XCTAssertNil(sut.currentSession)
+        XCTAssertTrue(sut.currentSession === locationManager.currentSession)
     }
     
     func testLocationCount_ReflectsLocationManagerState() {
         makeSUT()
-        // Given: Location manager has zero locations
-        XCTAssertEqual(locationManager.locationCount, 0)
-        
-        // Then: ViewModel should reflect the same count
-        XCTAssertEqual(sut.locationCount, 0)
+        XCTAssertEqual(sut.locationCount, locationManager.locationCount)
     }
     
     func testShowSettingsSuggestion_ReflectsLocationManagerState() {
         makeSUT()
-        // Given: Location manager not showing settings suggestion
-        XCTAssertFalse(locationManager.showSettingsSuggestion)
-        
-        // Then: ViewModel should reflect the same state
-        XCTAssertFalse(sut.showSettingsSuggestion)
+        XCTAssertEqual(sut.showSettingsSuggestion, locationManager.showSettingsSuggestion)
     }
     
     // MARK: - App Lifecycle Tests

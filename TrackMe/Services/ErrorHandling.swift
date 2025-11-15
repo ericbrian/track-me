@@ -251,7 +251,7 @@ extension AppError: LocalizedError {
 /// Centralized error handling service
 @MainActor
 class ErrorHandler: ObservableObject {
-    nonisolated(unsafe) static let shared = ErrorHandler()
+    static let shared = ErrorHandler()
 
     @Published var currentError: AppError?
     @Published var showErrorAlert = false
