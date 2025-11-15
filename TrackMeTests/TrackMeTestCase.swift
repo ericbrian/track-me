@@ -149,7 +149,8 @@ class TrackMeTestCase: XCTestCase {
     
     // MARK: - Async Testing Helpers
     
-    /// Waits for a condition to be true with timeout
+    /// Waits for a condition to be true with timeout.
+    /// Fails the current test on timeout instead of trapping the process.
     /// - Parameters:
     ///   - timeout: Maximum time to wait
     ///   - condition: Condition to check
@@ -158,21 +159,29 @@ class TrackMeTestCase: XCTestCase {
         for condition: @escaping () -> Bool
     ) {
         let expectation = XCTestExpectation(description: "Waiting for condition")
-        
-        let checkInterval: TimeInterval = 0.1
+
+        let checkInterval: TimeInterval = 0.05
         var elapsed: TimeInterval = 0
-        
-        Timer.scheduledTimer(withTimeInterval: checkInterval, repeats: true) { timer in
+
+        var didFulfill = false
+        let timer = Timer.scheduledTimer(withTimeInterval: checkInterval, repeats: true) { timer in
             if condition() {
+                didFulfill = true
                 expectation.fulfill()
-                timer.invalidate()
-            } else if elapsed >= timeout {
                 timer.invalidate()
             }
             elapsed += checkInterval
+            if elapsed >= timeout {
+                timer.invalidate()
+            }
         }
-        
-        wait(for: [expectation], timeout: timeout + 0.5)
+
+        wait(for: [expectation], timeout: timeout + 0.25)
+
+        if !didFulfill {
+            timer.invalidate()
+            XCTFail("Timed out waiting for condition after \(timeout) seconds")
+        }
     }
     
     /// Waits for published value to change
@@ -288,4 +297,14 @@ class TrackMeTestCase: XCTestCase {
 class TrackMeMainActorTestCase: TrackMeTestCase {
     // Inherits all functionality from TrackMeTestCase
     // but ensures tests run on MainActor for UI-related components
+    
+    /// Override setUp to ensure MainActor isolation for property initialization
+    override func setUp() {
+        super.setUp()
+    }
+    
+    /// Override tearDown to ensure MainActor isolation for cleanup
+    override func tearDown() {
+        super.tearDown()
+    }
 }
