@@ -138,3 +138,4 @@ coverage_report.md
 coverage.json
 
 .venv
+Test-LocationManager.xcresult/*
