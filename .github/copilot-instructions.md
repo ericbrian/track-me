@@ -187,6 +187,7 @@ TrackMe is a privacy-first iOS app for real-time GPS tracking, session managemen
 - Provide meaningful error messages and handle errors gracefully.
 - Consider accessibility in all UI implementations.
 - Optimize for battery efficiency, especially with location services.
+- Use this simulator for testing: iPhone 15 and Apple Watch (0609225E-F180-495E-8270-D487A0FB5219)
 
 ## Learning Resources
 
